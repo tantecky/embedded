@@ -1,9 +1,11 @@
 #include <SPI.h>        
 #include <Ethernet.h>
 #include <EthernetUdp.h>         
-int LED = 7;
-int PIR = 8;
-int PIEZO = 6;
+const int LED = 7;
+const int PIR = 8;
+const int PIEZO = 6;
+const unsigned int RETRIGGER_INTERVAL = 30000;
+unsigned long lastActivity;
 
 IPAddress ip(192, 168, 168, 20);
 IPAddress remote(192, 168, 168, 2);
@@ -24,18 +26,17 @@ void setup() {
   Ethernet.begin(mac, ip); 
   client.begin(1337);
 
-  delay(30000);
-  beep(1, 1000);
+  delay(RETRIGGER_INTERVAL);
+  lastActivity = millis();
 }
 
 
 void loop() {
-  int state = digitalRead(PIR);
-  if (state == HIGH) {
+  if (intervalLapsed() && digitalRead(PIR) == HIGH) {
     trigger();
-    delay(10000);
   }
-  delay(100);
+
+  delay(50);
 }
 
 void blink(int n, int duration)
@@ -61,6 +62,23 @@ void beep(int n, int duration)
   } 
 } 
 
+boolean intervalLapsed()
+{
+  long diff = millis() - lastActivity;
+
+  /* overflow handling */
+  if (diff < 0) {
+    lastActivity = millis();
+    return false;
+  }
+  else if (diff < RETRIGGER_INTERVAL) {
+    return false;
+  }
+  else {
+    return true;
+  }
+}
+
 void trigger()
 {
   client.beginPacket(remote, 4444);
@@ -70,4 +88,5 @@ void trigger()
   blink(5, 50);
 
   beep(5, 50);
+  lastActivity = millis();
 }
