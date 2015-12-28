@@ -1,0 +1,12 @@
+let g:project_dir = getcwd()
+
+function! Build()
+    execute "!cd " . g:project_dir . " && make build"
+endfunction
+
+function! Install()
+    execute "!cd " . g:project_dir . " && make install"
+endfunction
+
+nnoremap <F5> :call Build()<CR>
+nnoremap <F6> :call Install()<CR>
