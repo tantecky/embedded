@@ -1,4 +1,4 @@
-LIBRARY_NAME := NetAlarm
+LIBRARY_NAME := libnetalarm
 SRC_DIR := src
 BUILD_DIR := build
 INSTALL_DIR := ~/Arduino/libraries/$(LIBRARY_NAME)
@@ -15,7 +15,7 @@ CXX_FLAGS := -Wall -Wextra -g -D__AVR_ATmega328P__ -DF_CPU -D__OPTIMIZE__ \
 	-Wno-attributes
 VPATH := $(SRC_DIR)
 
-.PHONY: build depend clean install
+.PHONY: build depend clean install tests
 
 build: $(BUILD_DIR)/$(LIBRARY_NAME).so
 
@@ -42,6 +42,9 @@ install:
 	mkdir -p $(INSTALL_DIR)/examples/$(LIBRARY_NAME)
 	cp $(SRC_DIR)/* $(INSTALL_DIR)
 	cp -r examples/* $(INSTALL_DIR)/examples
+
+tests: build
+	@$(MAKE) -C tests
 
 clean:
 	rm -rf $(BUILD_DIR)

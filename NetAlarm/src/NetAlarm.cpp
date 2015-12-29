@@ -1,9 +1,16 @@
+#include <Arduino.h>
 #include "NetAlarm.h"
+#include "Packets.h"
 
-NetAlarm::NetAlarm(uint32_t id, long retriggerInterval, int numberOfBlinks,
-    int numberOfBeeps):
-  id_(id), armed_(false), retriggerInterval_(retriggerInterval), 
-  numberOfBlinks_(numberOfBlinks), numberOfBeeps_(numberOfBeeps)
+NetAlarm::NetAlarm(uint32_t id, 
+    func_t onArmed, func_t onDisarmed, func_t onTriggered,
+    long retriggerInterval, int blinksOnArmDisarm,
+    int beepsOnTrigger):
+  id_(id), 
+  onArmed_(onArmed), onDisarmed_(onDisarmed), onTriggered_(onTriggered),
+  armed_(false), 
+  retriggerInterval_(retriggerInterval), 
+  blinksOnArmDisarm_(blinksOnArmDisarm), beepsOnTrigger_(beepsOnTrigger)
 {
 }
 
@@ -13,8 +20,7 @@ void NetAlarm::init()
   pinMode(PIN_PIEZO, OUTPUT);
   pinMode(PIN_RED_LED, OUTPUT);
   pinMode(PIN_GREEN_LED, OUTPUT);
-  // wait for PIR initialization
-  delay(INIT_DELAY);
+
   arm();
 }
 
@@ -24,8 +30,10 @@ void NetAlarm::checkForMotion()
     trigger_();
   }
 
+  onTriggered_();
+
   // just a little break
-  delay(20);
+  delay(10);
 }
 
 void NetAlarm::arm()
@@ -34,8 +42,10 @@ void NetAlarm::arm()
     return;
 
   armed_ = true;
-  blinkLed_(PIN_RED_LED, numberOfBlinks_);
+  blinkLed_(PIN_RED_LED, blinksOnArmDisarm_);
   lastTrigger_ = millis();
+
+  onArmed_();
 }
 
 void NetAlarm::disarm()
@@ -44,7 +54,9 @@ void NetAlarm::disarm()
     return;
 
   armed_ = false;
-  blinkLed_(PIN_GREEN_LED, numberOfBlinks_);
+  blinkLed_(PIN_GREEN_LED, blinksOnArmDisarm_);
+
+  onDisarmed_();
 }
 
 bool NetAlarm::intervalLapsed_()
@@ -66,12 +78,15 @@ bool NetAlarm::intervalLapsed_()
 
 void NetAlarm::trigger_()
 {
-  beep_(numberOfBeeps_);
+  beep_(beepsOnTrigger_);
   lastTrigger_ = millis();
 }
 
 void NetAlarm::blinkLed_(int pin, int n, int duration)
 {
+  if(n < 1)
+    return;
+
   for (int i = 0; i < n; ++i) {
     digitalWrite(pin, HIGH); 
     delay(duration);    
@@ -82,6 +97,9 @@ void NetAlarm::blinkLed_(int pin, int n, int duration)
 
 void NetAlarm::beep_(int n, int duration)
 {
+  if(n < 1)
+    return;
+
   for (int i = 0; i < n; ++i) {
     analogWrite(PIN_PIEZO, 20); 
     delay(duration);    

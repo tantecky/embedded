@@ -1,2 +1,5 @@
 build/
 .depend
+*.o
+NetAlarm/tests/tests
+googletest-master
