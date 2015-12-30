@@ -1,5 +1,7 @@
 #ifndef NETALARM_H_KQRYVERN
 #define NETALARM_H_KQRYVERN
+#include "PacketTypes.h"
+#include "PacketWriter.h"
 
 // prototypes for a example sketch
 void onArmed();
@@ -21,13 +23,13 @@ class NetAlarm
     void init();
     void checkForMotion();
     uint32_t id() const { return id_; }
+    void sendPacket(byte remoteIp[4], PacketType packetType);
 
   private:
     static const int PIN_PIR = 8;
     static const int PIN_PIEZO = 6;
     static const int PIN_RED_LED = 7;
     static const int PIN_GREEN_LED = 5;
-    static const unsigned long INIT_DELAY = 30000;
 
     const uint32_t id_;
     func_t onArmed_;
@@ -43,6 +45,16 @@ class NetAlarm
     void beep_(int n, int duration = 100);
     bool intervalLapsed_();
     void trigger_();
+
+    // just for unit testing under x86
+#ifdef NETALARM_TESTING
+    void delay(int) { }
+    void pinMode(int, int) { }
+    void digitalWrite(int, int) { }
+    int digitalRead(int) { return 0; }
+    void analogWrite(int, int) { }
+    unsigned long millis() { return 0; }
+#endif
 };
 
 

@@ -3,4 +3,4 @@ set -eu
 
 make tests
 cd tests 
-./tests
+LD_LIBRARY_PATH=../build ./tests

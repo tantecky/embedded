@@ -1,6 +1,8 @@
 #include <Arduino.h>
+#include <SPI.h>        
+#include <Ethernet.h>
+#include <EthernetUdp.h>  
 #include "NetAlarm.h"
-#include "Packets.h"
 
 NetAlarm::NetAlarm(uint32_t id, 
     func_t onArmed, func_t onDisarmed, func_t onTriggered,

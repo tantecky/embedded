@@ -1,17 +1,20 @@
 LIBRARY_NAME := libnetalarm
 SRC_DIR := src
 BUILD_DIR := build
-INSTALL_DIR := ~/Arduino/libraries/$(LIBRARY_NAME)
+INSTALL_DIR := ~/Arduino/libraries/NetAlarm
 
 CPP_FILES :=	$(subst $(SRC_DIR)/,,$(wildcard $(SRC_DIR)/*.cpp))
 OBJ_FILES  :=	$(addprefix $(BUILD_DIR)/,$(CPP_FILES:.cpp=.o))
 
-INC_DIRS := -I/home/tom/arduino-1.6.6/hardware/arduino/avr/cores/arduino \
-	-I/home/tom/arduino-1.6.6/hardware/tools/avr/avr/include \
-	-I/home/tom/arduino-1.6.6/hardware/arduino/avr/variants/standard
+INC_DIRS := -I/home/tom/arduino-ide/hardware/arduino/avr/cores/arduino \
+	-I/home/tom/arduino-ide/hardware/tools/avr/avr/include \
+	-I/home/tom/arduino-ide/hardware/arduino/avr/variants/standard \
+	-I/home/tom/arduino-ide/libraries/Ethernet/src \
+	-I/home/tom/arduino-ide/hardware/arduino/avr/libraries/SPI
 
 CXX := g++
-CXX_FLAGS := -Wall -Wextra -g -D__AVR_ATmega328P__ -DF_CPU -D__OPTIMIZE__ \
+CXX_FLAGS := -Wall -g -D__AVR_ATmega328P__ -DF_CPU -D__OPTIMIZE__ \
+	-DNETALARM_TESTING \
 	-Wno-attributes
 VPATH := $(SRC_DIR)
 
@@ -31,8 +34,8 @@ depend: .depend
 
 .depend: $(CPP_FILES)
 	@rm -f ./.depend
-	@echo -n $(BUILD_DIR)/ >> ./.depend
 	@$(CXX) $(CXX_FLAGS) -MM $^ >> ./.depend
+	@sed -i 's/^/$(BUILD_DIR)\//g' .depend
 
 -include .depend
 
@@ -47,6 +50,7 @@ tests: build
 	@$(MAKE) -C tests
 
 clean:
+	@$(MAKE) -C tests clean
 	rm -rf $(BUILD_DIR)
 	rm -f ./.depend
 

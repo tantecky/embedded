@@ -10,6 +10,7 @@ LIBS_DIRS := -L./googletest-master/build/googlemock/gtest \
 LIBS := -lgtest -lpthread -lnetalarm
 
 CXX := g++
+CXX_FLAGS := -Wall -Wextra -g -DNETALARM_TESTING
 
 .PHONY: clean
 
