@@ -1,4 +1,5 @@
 #include "PacketWriter.h"
+#include "NetAlarm.h"
 
 PacketWriter::PacketWriter(const NetAlarm &alarm):
   alarm_(alarm), size_(0), tip_(packet_)
@@ -7,6 +8,9 @@ PacketWriter::PacketWriter(const NetAlarm &alarm):
 
 void PacketWriter::writePacket(PacketType packetType)
 {
+  size_ = 0;
+  tip_ = packet_;
+
   switch (packetType) {
     case PACKET_ARM:
     case PACKET_DISARM:
@@ -19,9 +23,6 @@ void PacketWriter::writePacket(PacketType packetType)
 
 void PacketWriter::writeHeader_()
 {
-  size_ = 0;
-  tip_ = packet_;
-
   uint32_t id = alarm_.id();
 
   // network is big endian

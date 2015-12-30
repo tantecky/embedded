@@ -1,16 +1,21 @@
+#include <string.h>        
 #include <SPI.h>        
 #include <Ethernet.h>
 
 #include "NetAlarm.h"
 
-NetAlarm::NetAlarm(uint32_t id, 
+NetAlarm::NetAlarm(const uint32_t id, 
     func_t onArmed, func_t onDisarmed, func_t onTriggered,
-    long retriggerInterval):
+    const long retriggerInterval,
+    const byte *mac, const IPAddress ip, const int localPort):
   id_(id), 
   onArmed_(onArmed), onDisarmed_(onDisarmed), onTriggered_(onTriggered),
-  armed_(false), 
-  retriggerInterval_(retriggerInterval)
+  armed_(false),
+  retriggerInterval_(retriggerInterval),
+  ip_(ip), localPort_(localPort),
+  packetWriter_(*this)
 {
+  memcpy(mac_, mac, sizeof(mac_));
 }
 
 void NetAlarm::init()
@@ -20,6 +25,9 @@ void NetAlarm::init()
   pinMode(PIN_RED_LED, OUTPUT);
   pinMode(PIN_GREEN_LED, OUTPUT);
 
+  Ethernet.begin(mac_, ip_); 
+  udpClient_.begin(localPort_);
+
   arm();
 }
 
@@ -28,8 +36,6 @@ void NetAlarm::checkForMotion()
   if (armed_ && intervalLapsed_() && digitalRead(PIN_PIR) == HIGH) {
     trigger_();
   }
-
-  onTriggered_();
 
   // just a little break
   delay(10);
@@ -66,6 +72,15 @@ void NetAlarm::blinkGreenLed(int n, int duration)
   blinkLed_(PIN_GREEN_LED, n, duration);
 }
 
+void NetAlarm::sendOverUdp(IPAddress remoteIp, int remotePort, 
+    PacketType packetType)
+{
+  packetWriter_.writePacket(packetType);
+  udpClient_.beginPacket(remoteIp, remotePort);
+  udpClient_.write(packetWriter_.packet(), packetWriter_.size());
+  udpClient_.endPacket();
+}
+
 void NetAlarm::beep(int n, int duration)
 {
   if(n < 1)
@@ -99,6 +114,7 @@ bool NetAlarm::intervalLapsed_()
 void NetAlarm::trigger_()
 {
   lastTrigger_ = millis();
+  onTriggered_();
 }
 
 void NetAlarm::blinkLed_(int pin, int n, int duration)

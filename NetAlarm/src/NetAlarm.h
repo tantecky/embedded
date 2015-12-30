@@ -18,7 +18,8 @@ class NetAlarm
   public:
     explicit NetAlarm(const uint32_t id, 
         func_t onArmed, func_t onDisarmed, func_t onTriggered,
-        const long retriggerInterval = 60000);
+        const long retriggerInterval,
+        const byte *mac, const IPAddress ip, const int localPort);
 
     void arm();
     void disarm();
@@ -29,6 +30,7 @@ class NetAlarm
     void blinkRedLed(int n, int duration = 100);
     void blinkGreenLed(int n, int duration = 100);
     void beep(int n, int duration = 100);
+    void sendOverUdp(IPAddress remoteIp, int remotePort, PacketType packet);
 
   private:
     static const int PIN_PIR = 8;
@@ -44,6 +46,10 @@ class NetAlarm
     const long retriggerInterval_;
     unsigned long lastTrigger_;
     EthernetUDP udpClient_;
+    byte mac_[6];
+    const IPAddress ip_;
+    const int localPort_;
+    PacketWriter packetWriter_;
 
     void blinkLed_(int pin, int n, int duration = 100);
     bool intervalLapsed_();

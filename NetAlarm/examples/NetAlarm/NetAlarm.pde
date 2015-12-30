@@ -2,17 +2,23 @@
 
 //---CUSTOM SETTINGS - START
 const uint32_t id = 0xDEADBEEF;
+const long retriggerInterval = 60000;
 
-byte arduinoMac[] = {
+const byte mac[] = {
     0xC3, 0x9F, 0xB4, 0x97, 0x0F, 0x2B
 };
-IPAddress arduinoIp(192, 168, 168, 1);
-IPAddress remoteIp(192, 168, 168, 2);
-const long retriggerInterval = 60000;
+// Arduino's IP
+const IPAddress ip(192, 168, 168, 6);
+// port which Arduino listens on
+const int localPort = 1337;
+
+// where to send UDP datagrams
+const IPAddress remoteIp(192, 168, 168, 5);
+const int remotePort = 1337;
 //---CUSTOM SETTINGS - END
 
 NetAlarm alarm(id, &onArmed, &onDisarmed, &onTriggered,
-    retriggerInterval);
+    retriggerInterval, mac, ip, localPort);
 
 void setup() 
 {
@@ -35,5 +41,6 @@ void onDisarmed()
 
 void onTriggered()
 {
+  alarm.sendOverUdp(remoteIp, remotePort, PACKET_TRIGGER);
   alarm.beep(5);
 }

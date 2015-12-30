@@ -4,7 +4,6 @@ class NetAlarm;
 #include <Arduino.h>
 
 #include "PacketTypes.h"
-#include "NetAlarm.h"
 
 class PacketWriter
 {
