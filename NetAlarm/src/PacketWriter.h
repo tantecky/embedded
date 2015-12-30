@@ -1,6 +1,7 @@
 #ifndef PACKETS_H_ACGYNJXY
 #define PACKETS_H_ACGYNJXY
 class NetAlarm;
+#include <Arduino.h>
 
 #include "PacketTypes.h"
 #include "NetAlarm.h"

@@ -1,4 +1,3 @@
-#include <Arduino.h>
 #include "PacketWriter.h"
 
 PacketWriter::PacketWriter(const NetAlarm &alarm):

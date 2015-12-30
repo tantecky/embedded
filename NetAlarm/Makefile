@@ -35,7 +35,7 @@ depend: .depend
 .depend: $(CPP_FILES)
 	@rm -f ./.depend
 	@$(CXX) $(CXX_FLAGS) -MM $^ >> ./.depend
-	@sed -i 's/^/$(BUILD_DIR)\//g' .depend
+	@sed -i 's/^\(.*:\)/build\/\1/g' .depend
 
 -include .depend
 

@@ -1,18 +1,15 @@
-#include <Arduino.h>
 #include <SPI.h>        
 #include <Ethernet.h>
-#include <EthernetUdp.h>  
+
 #include "NetAlarm.h"
 
 NetAlarm::NetAlarm(uint32_t id, 
     func_t onArmed, func_t onDisarmed, func_t onTriggered,
-    long retriggerInterval, int blinksOnArmDisarm,
-    int beepsOnTrigger):
+    long retriggerInterval):
   id_(id), 
   onArmed_(onArmed), onDisarmed_(onDisarmed), onTriggered_(onTriggered),
   armed_(false), 
-  retriggerInterval_(retriggerInterval), 
-  blinksOnArmDisarm_(blinksOnArmDisarm), beepsOnTrigger_(beepsOnTrigger)
+  retriggerInterval_(retriggerInterval)
 {
 }
 
@@ -44,7 +41,6 @@ void NetAlarm::arm()
     return;
 
   armed_ = true;
-  blinkLed_(PIN_RED_LED, blinksOnArmDisarm_);
   lastTrigger_ = millis();
 
   onArmed_();
@@ -56,9 +52,31 @@ void NetAlarm::disarm()
     return;
 
   armed_ = false;
-  blinkLed_(PIN_GREEN_LED, blinksOnArmDisarm_);
 
   onDisarmed_();
+}
+
+void NetAlarm::blinkRedLed(int n, int duration)
+{
+  blinkLed_(PIN_RED_LED, n, duration);
+}
+
+void NetAlarm::blinkGreenLed(int n, int duration)
+{
+  blinkLed_(PIN_GREEN_LED, n, duration);
+}
+
+void NetAlarm::beep(int n, int duration)
+{
+  if(n < 1)
+    return;
+
+  for (int i = 0; i < n; ++i) {
+    analogWrite(PIN_PIEZO, 20); 
+    delay(duration);    
+    analogWrite(PIN_PIEZO, 0);
+    delay(duration);
+  }
 }
 
 bool NetAlarm::intervalLapsed_()
@@ -80,7 +98,6 @@ bool NetAlarm::intervalLapsed_()
 
 void NetAlarm::trigger_()
 {
-  beep_(beepsOnTrigger_);
   lastTrigger_ = millis();
 }
 
@@ -93,19 +110,6 @@ void NetAlarm::blinkLed_(int pin, int n, int duration)
     digitalWrite(pin, HIGH); 
     delay(duration);    
     digitalWrite(pin, LOW);
-    delay(duration);
-  }
-}
-
-void NetAlarm::beep_(int n, int duration)
-{
-  if(n < 1)
-    return;
-
-  for (int i = 0; i < n; ++i) {
-    analogWrite(PIN_PIEZO, 20); 
-    delay(duration);    
-    analogWrite(PIN_PIEZO, 0);
     delay(duration);
   }
 }
