@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include <string.h>        
+#include <string.h>
 
 #include "fixtures.hpp"
 #include "PacketReader.h"
@@ -19,7 +19,7 @@ class NetAlarmTests : public Test
     PacketWriter *writer;
     PacketReader *reader;
 
-    virtual void SetUp() 
+    virtual void SetUp()
     {
       id = 0xDEADBEEF;
       alarm = new NetAlarm(id);
@@ -38,7 +38,7 @@ class NetAlarmTests : public Test
       memcpy(reader->receiveBuffer(), disarmPacket, disarmPacketSize);
     }
 
-    virtual void TearDown() 
+    virtual void TearDown()
     {
       delete[] disarmPacket;
       delete reader;

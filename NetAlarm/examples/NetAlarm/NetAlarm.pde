@@ -8,12 +8,12 @@ const byte mac[] = {
     0xC3, 0x9F, 0xB4, 0x97, 0x0F, 0x2B
 };
 // Arduino's IP
-const IPAddress ip(192, 168, 168, 6);
+const IPAddress ip(192, 168, 0, 2);
 // port which Arduino listens on
 const int localPort = 1337;
 
 // where to send UDP datagrams
-const IPAddress remoteIp(192, 168, 168, 5);
+const IPAddress remoteIp(192, 168, 0, 1);
 const int remotePort = 1337;
 //---CUSTOM SETTINGS - END
 
@@ -33,10 +33,12 @@ void loop()
 void onArmed()
 {
   alarm.blinkRedLed(10);
+  alarm.sendOverUdp(remoteIp, remotePort, PACKET_ARM);
 }
 void onDisarmed()
 {
   alarm.blinkGreenLed(10);
+  alarm.sendOverUdp(remoteIp, remotePort, PACKET_DISARM);
 }
 
 void onTriggered()

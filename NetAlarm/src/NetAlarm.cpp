@@ -3,6 +3,7 @@
 #include <Ethernet.h>
 
 #include "NetAlarm.h"
+#include "Debug.h"
 
 NetAlarm::NetAlarm(const uint32_t id, 
     func_t onArmed, func_t onDisarmed, func_t onTriggered,
@@ -25,6 +26,10 @@ void NetAlarm::init()
   pinMode(PIN_RED_LED, OUTPUT);
   pinMode(PIN_GREEN_LED, OUTPUT);
 
+#ifdef NETALARM_DEBUG
+  Serial.begin(9600);
+#endif
+
   Ethernet.begin(mac_, ip_); 
   udpClient_.begin(localPort_);
 
@@ -40,6 +45,7 @@ void NetAlarm::checkForMotion()
   int packetSize = udpClient_.parsePacket();
   if(packetSize > 0)
   {
+    DEBUG_PRINT(String("Received UDP packet of size: ") + String(packetSize));
     udpClient_.read(packetReader_.receiveBuffer(), 
         PacketReader::MAX_RX_PACKET_SIZE);
 
@@ -57,7 +63,7 @@ void NetAlarm::arm()
 
   armed_ = true;
   lastTrigger_ = millis();
-
+  DEBUG_PRINT("Armed");
   onArmed_();
 }
 
@@ -67,7 +73,7 @@ void NetAlarm::disarm()
     return;
 
   armed_ = false;
-
+  DEBUG_PRINT("Dismared");
   onDisarmed_();
 }
 
@@ -84,10 +90,12 @@ void NetAlarm::blinkGreenLed(int n, int duration)
 void NetAlarm::sendOverUdp(IPAddress remoteIp, int remotePort, 
     PacketType packetType)
 {
+  DEBUG_PRINT(String("Sending UDP packet type: ") + String(packetType));
   packetWriter_.writePacket(packetType);
   udpClient_.beginPacket(remoteIp, remotePort);
   udpClient_.write(packetWriter_.packet(), packetWriter_.size());
   udpClient_.endPacket();
+  DEBUG_PRINT("UDP packet sent");
 }
 
 void NetAlarm::beep(int n, int duration)
@@ -123,6 +131,7 @@ bool NetAlarm::intervalLapsed_()
 void NetAlarm::trigger_()
 {
   lastTrigger_ = millis();
+  DEBUG_PRINT("Triggered");
   onTriggered_();
 }
 
