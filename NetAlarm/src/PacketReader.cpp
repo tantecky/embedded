@@ -27,12 +27,12 @@ void PacketReader::processPacket(byte size)
   {
     DEBUG_PRINT("Received packet got invalid ID");
     return;
-  } 
+  }
 
   PacketType packetType = static_cast<PacketType>(readByte_());
   DEBUG_PRINT(String("Received packet type: ") + String(packetType));
 
-  switch (packetType) 
+  switch (packetType)
   {
     case PACKET_ARM:
       alarm_.arm();
@@ -58,9 +58,9 @@ byte PacketReader::readByte_()
 uint32_t PacketReader::readUint32_()
 {
   // network is big endian
-  return static_cast<uint32_t>(readByte_()) << 24 
+  return static_cast<uint32_t>(readByte_()) << 24
     | static_cast<uint32_t>(readByte_()) << 16
-    | static_cast<uint32_t>(readByte_()) << 8 
+    | static_cast<uint32_t>(readByte_()) << 8
     | static_cast<uint32_t>(readByte_());
 }
 

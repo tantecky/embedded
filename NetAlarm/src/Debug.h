@@ -9,7 +9,7 @@
 #ifdef NETALARM_DEBUG
 #define DEBUG_PRINT(msg) \
   Serial.println(msg)
-#else 
+#else
 #define DEBUG_PRINT(msg) \
   ((void)0)
 #endif
