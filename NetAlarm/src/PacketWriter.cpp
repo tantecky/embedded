@@ -36,7 +36,7 @@ void PacketWriter::writeHeader_()
 
 void PacketWriter::writeByte_(byte byte)
 {
-  if(size_ < MAX_PACKET_SIZE)
+  if(size_ < MAX_TX_PACKET_SIZE)
   {
     *tip_++ = byte;
     size_++;

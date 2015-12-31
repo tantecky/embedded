@@ -19,9 +19,9 @@ class PacketWriter
   byte size() const { return size_; }
 
   private:
-  static const byte MAX_PACKET_SIZE = 32;
+  static const byte MAX_TX_PACKET_SIZE = 32;
 
-  byte packet_[MAX_PACKET_SIZE];
+  byte packet_[MAX_TX_PACKET_SIZE];
   const NetAlarm &alarm_;
   byte size_;
   byte *tip_;

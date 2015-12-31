@@ -13,7 +13,7 @@ NetAlarm::NetAlarm(const uint32_t id,
   armed_(false),
   retriggerInterval_(retriggerInterval),
   ip_(ip), localPort_(localPort),
-  packetWriter_(*this)
+  packetWriter_(*this), packetReader_(*this)
 {
   memcpy(mac_, mac, sizeof(mac_));
 }
@@ -35,6 +35,15 @@ void NetAlarm::checkForMotion()
 {
   if (armed_ && intervalLapsed_() && digitalRead(PIN_PIR) == HIGH) {
     trigger_();
+  }
+
+  int packetSize = udpClient_.parsePacket();
+  if(packetSize > 0)
+  {
+    udpClient_.read(packetReader_.receiveBuffer(), 
+        PacketReader::MAX_RX_PACKET_SIZE);
+
+    packetReader_.processPacket(packetSize);
   }
 
   // just a little break

@@ -5,6 +5,7 @@
 
 #include "PacketTypes.h"
 #include "PacketWriter.h"
+#include "PacketReader.h"
 
 // prototypes for a example sketch
 void onArmed();
@@ -50,6 +51,7 @@ class NetAlarm
     const IPAddress ip_;
     const int localPort_;
     PacketWriter packetWriter_;
+    PacketReader packetReader_;
 
     void blinkLed_(int pin, int n, int duration = 100);
     bool intervalLapsed_();
