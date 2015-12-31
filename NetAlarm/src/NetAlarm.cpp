@@ -15,7 +15,7 @@ NetAlarm::NetAlarm(const uint32_t id,
   ip_(ip), localPort_(localPort),
   packetWriter_(*this), packetReader_(*this)
 {
-  memcpy(mac_, mac, sizeof(mac_));
+  memcpy(mac_, mac, static_cast<byte>(sizeof(mac_)));
 }
 
 void NetAlarm::init()

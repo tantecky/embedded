@@ -6,7 +6,7 @@
 #endif /* ifndef  */
 
 PacketReader::PacketReader(NetAlarm &alarm):
-  alarm_(alarm)
+  alarm_(alarm), processed_(0)
 {
 }
 

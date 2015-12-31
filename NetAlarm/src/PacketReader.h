@@ -11,6 +11,12 @@ class NetAlarm;
 
 class PacketReader
 {
+#ifdef NETALARM_TESTING
+  friend class NetAlarmTests_PacketReader_readByte_Test;
+  friend class NetAlarmTests_PacketReader_readUint32_Test;
+  friend class NetAlarmTests_PacketReader_gotValidId_Test;
+  friend class NetAlarmTests_PacketReader_processPacket_Test;
+#endif
   public:
     static const byte MAX_RX_PACKET_SIZE = 32;
     PacketReader(NetAlarm &alarm);
