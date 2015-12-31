@@ -13,5 +13,5 @@ function! RunTests()
 endfunction
 
 nnoremap <F5> :wa<CR> :call Build()<CR>
-nnoremap <F6> :call Install()<CR>
-nnoremap <F7> :call RunTests()<CR>
+nnoremap <F6> :wa<CR> :call Install()<CR>
+nnoremap <F7> :wa<CR> :call RunTests()<CR>

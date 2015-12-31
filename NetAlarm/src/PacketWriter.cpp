@@ -1,5 +1,7 @@
 #include "PacketWriter.h"
+#ifndef NETALARM_TESTING
 #include "NetAlarm.h"
+#endif /* ifndef  */
 
 PacketWriter::PacketWriter(const NetAlarm &alarm):
   alarm_(alarm), size_(0), tip_(packet_)

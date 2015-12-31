@@ -1,5 +1,9 @@
 #include "PacketReader.h"
+#ifndef NETALARM_TESTING
 #include "NetAlarm.h"
+#else
+#include "fixtures.hpp"
+#endif /* ifndef  */
 
 PacketReader::PacketReader(NetAlarm &alarm):
   alarm_(alarm)

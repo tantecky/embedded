@@ -14,7 +14,6 @@ INC_DIRS := -I/home/tom/arduino-ide/hardware/arduino/avr/cores/arduino \
 
 CXX := g++
 CXX_FLAGS := -Wall -g -D__AVR_ATmega328P__ -DF_CPU -D__OPTIMIZE__ \
-	-DNETALARM_TESTING \
 	-Wno-attributes
 VPATH := $(SRC_DIR)
 
