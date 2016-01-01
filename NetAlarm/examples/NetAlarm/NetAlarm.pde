@@ -1,31 +1,40 @@
 #include <NetAlarm.h>
 
 //---CUSTOM SETTINGS - START
-const uint32_t id = 0xDEADBEEF;
-const long retriggerInterval = 60000;
 
+// ID of your NetAlarm - CHANGE THIS
+const uint32_t id = 0xDEADBEEF;
+// Arduino's MAC - CHANGE THIS
 const byte mac[] = {
     0xC3, 0x9F, 0xB4, 0x97, 0x0F, 0x2B
 };
-// Arduino's IP
+// Arduino's IP - CHANGE THIS
 const IPAddress ip(192, 168, 0, 2);
+// where to send UDP datagrams - CHANGE THIS
+const IPAddress remoteIp(192, 168, 0, 1);
+
+// minimal time interval in milliseconds beetwen alarm triggers
+const long retriggerInterval = 60000;
 // port which Arduino listens on
 const int localPort = 1337;
-
-// where to send UDP datagrams
-const IPAddress remoteIp(192, 168, 0, 1);
+// port which remote machine listens on
 const int remotePort = 1337;
+// set this, if you need hostname resolution
+const IPAddress dnsServer = INADDR_NONE;
+// set this, if you need to send pacet over the internet
+const IPAddress gateway = INADDR_NONE;
+
 //---CUSTOM SETTINGS - END
 
 NetAlarm alarm(id, &onArmed, &onDisarmed, &onTriggered,
-    retriggerInterval, mac, ip, localPort);
+    retriggerInterval, mac, ip, localPort, dnsServer, gateway);
 
-void setup() 
+void setup()
 {
   alarm.init();
 }
 
-void loop() 
+void loop()
 {
   alarm.checkForMotion();
 }

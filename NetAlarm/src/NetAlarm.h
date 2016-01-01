@@ -1,7 +1,7 @@
 #ifndef NETALARM_H_KQRYVERN
 #define NETALARM_H_KQRYVERN
 #include <Arduino.h>
-#include <EthernetUdp.h>  
+#include <EthernetUdp.h>
 
 #include "PacketTypes.h"
 #include "PacketWriter.h"
@@ -17,10 +17,11 @@ typedef void (*func_t)();
 class NetAlarm
 {
   public:
-    explicit NetAlarm(const uint32_t id, 
+    explicit NetAlarm(const uint32_t id,
         func_t onArmed, func_t onDisarmed, func_t onTriggered,
         const long retriggerInterval,
-        const byte *mac, const IPAddress ip, const int localPort);
+        const byte *mac, const IPAddress ip, const int localPort,
+        const IPAddress dnsServer, const IPAddress gateway);
 
     void arm();
     void disarm();
@@ -52,6 +53,8 @@ class NetAlarm
     const int localPort_;
     PacketWriter packetWriter_;
     PacketReader packetReader_;
+    const IPAddress dnsServer_;
+    const IPAddress gateway_;
 
     void blinkLed_(int pin, int n, int duration = 100);
     bool intervalLapsed_();

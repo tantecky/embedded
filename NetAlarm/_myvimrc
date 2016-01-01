@@ -1,3 +1,4 @@
+set tags=tags;/
 let g:project_dir = getcwd()
 
 function! Build()
