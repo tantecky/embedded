@@ -1,3 +1,7 @@
+/*
+ * Author: Tomas Antecky
+ * Created on: 2016-01-02
+ */
 #include <string.h>
 #include <SPI.h>
 #include <Ethernet.h>
@@ -43,19 +47,18 @@ void NetAlarm::checkForMotion()
   if (armed_ && intervalLapsed_() && digitalRead(PIN_PIR) == HIGH) {
     trigger_();
   }
+}
 
+void NetAlarm::checkForIncomingPackets()
+{
   int packetSize = udpClient_.parsePacket();
-  if(packetSize > 0)
-  {
+  if(packetSize > 0) {
     DEBUG_PRINT(String("Received UDP packet of size: ") + String(packetSize));
     udpClient_.read(packetReader_.receiveBuffer(),
         PacketReader::MAX_RX_PACKET_SIZE);
 
     packetReader_.processPacket(packetSize);
   }
-
-  // just a little break
-  delay(10);
 }
 
 void NetAlarm::arm()
@@ -75,7 +78,7 @@ void NetAlarm::disarm()
     return;
 
   armed_ = false;
-  DEBUG_PRINT("Dismared");
+  DEBUG_PRINT("Disarmed");
   onDisarmed_();
 }
 

@@ -1,3 +1,7 @@
+/*
+ * Author: Tomas Antecky
+ * Created on: 2016-01-02
+*/
 #include "PacketWriter.h"
 #ifndef NETALARM_TESTING
 #include "NetAlarm.h"
@@ -38,8 +42,7 @@ void PacketWriter::writeHeader_()
 
 void PacketWriter::writeByte_(byte byte)
 {
-  if(size_ < MAX_TX_PACKET_SIZE)
-  {
+  if(size_ < MAX_TX_PACKET_SIZE) {
     *tip_++ = byte;
     size_++;
   }

@@ -1,3 +1,7 @@
+/*
+ * Author: Tomas Antecky
+ * Created on: 2016-01-02
+*/
 #ifndef PACKETS_H_ACGYNJXY
 #define PACKETS_H_ACGYNJXY
 class NetAlarm;

@@ -1,3 +1,7 @@
+/*
+ * Author: Tomas Antecky
+ * Created on: 2016-01-02
+*/
 #include "PacketReader.h"
 #ifndef NETALARM_TESTING
 #include "NetAlarm.h"
@@ -23,8 +27,7 @@ void PacketReader::processPacket(byte size)
   size_ = size;
   processed_ = 0;
 
-  if(!gotValidId_())
-  {
+  if(!gotValidId_()) {
     DEBUG_PRINT("Received packet got invalid ID");
     return;
   }
@@ -32,8 +35,7 @@ void PacketReader::processPacket(byte size)
   PacketType packetType = static_cast<PacketType>(readByte_());
   DEBUG_PRINT(String("Received packet type: ") + String(packetType));
 
-  switch (packetType)
-  {
+  switch (packetType) {
     case PACKET_ARM:
       alarm_.arm();
       break;

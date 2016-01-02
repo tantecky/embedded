@@ -1,7 +1,14 @@
+PROJECT := NetAlarm
 LIBRARY_NAME := libnetalarm
 SRC_DIR := src
 BUILD_DIR := build
-INSTALL_DIR := ~/Arduino/libraries/NetAlarm
+INSTALL_DIR := ~/Arduino/libraries/$(PROJECT)
+MAJOR_VERSION := $(shell grep -m 1 MAJOR_VERSION $(SRC_DIR)/NetAlarm.h \
+	| grep -Eo '[0-9]+')
+MINOR_VERSION := $(shell grep -m 1 MINOR_VERSION $(SRC_DIR)/NetAlarm.h \
+	| grep -Eo '[0-9]+')
+
+ARCHIVE := $(PROJECT)-$(MAJOR_VERSION).$(MINOR_VERSION).zip
 
 CPP_FILES :=	$(subst $(SRC_DIR)/,,$(wildcard $(SRC_DIR)/*.cpp))
 OBJ_FILES  :=	$(addprefix $(BUILD_DIR)/,$(CPP_FILES:.cpp=.o))
@@ -17,7 +24,7 @@ CXX_FLAGS := -Wall -g -D__AVR_ATmega328P__ -DF_CPU -D__OPTIMIZE__ \
 	-Wno-attributes
 VPATH := $(SRC_DIR)
 
-.PHONY: build depend clean install tests
+.PHONY: build depend clean install tests pack
 
 build: $(BUILD_DIR)/$(LIBRARY_NAME).so
 
@@ -38,15 +45,21 @@ depend: .depend
 
 -include .depend
 
-install:
+install: build
 	rm -rf $(INSTALL_DIR)
 	mkdir -p $(INSTALL_DIR)
-	mkdir -p $(INSTALL_DIR)/examples/$(LIBRARY_NAME)
 	cp $(SRC_DIR)/* $(INSTALL_DIR)
-	cp -r examples/* $(INSTALL_DIR)/examples
+	cp -r examples $(INSTALL_DIR)
 
 tests: build
 	@$(MAKE) -C tests
+
+pack: tests install
+	@rm -f *.zip
+	@rm -rf $(PROJECT)
+	@cp -r $(INSTALL_DIR) .
+	zip -r $(ARCHIVE) $(PROJECT)
+	@rm -rf $(PROJECT)
 
 clean:
 	@$(MAKE) -C tests clean

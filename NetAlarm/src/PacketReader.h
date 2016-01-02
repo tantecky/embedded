@@ -1,3 +1,7 @@
+/*
+ * Author: Tomas Antecky
+ * Created on: 2016-01-02
+*/
 #ifndef PACKETREADER_H_VEIWPRYR
 #define PACKETREADER_H_VEIWPRYR
 class NetAlarm;

@@ -1,5 +1,13 @@
+/*
+ * Author: Tomas Antecky
+ * Created on: 2016-01-02
+*/
 #ifndef NETALARM_H_KQRYVERN
 #define NETALARM_H_KQRYVERN
+
+#define NETALARM_MAJOR_VERSION (1)
+#define NETALARM_MINOR_VERSION (0)
+
 #include <Arduino.h>
 #include <EthernetUdp.h>
 
@@ -27,6 +35,7 @@ class NetAlarm
     void disarm();
     void init();
     void checkForMotion();
+    void checkForIncomingPackets();
     uint32_t id() const { return id_; }
     void sendPacket(byte remoteIp[4], PacketType packetType);
     void blinkRedLed(int n, int duration = 100);

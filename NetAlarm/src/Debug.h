@@ -1,9 +1,13 @@
+/*
+ * Author: Tomas Antecky
+ * Created on: 2016-01-02
+*/
 #ifndef DEBUG_H_OAAUSVHT
 #define DEBUG_H_OAAUSVHT
 
 #ifndef NETALARM_TESTING
 // (un)comment to enable/disable debugging (Serial.println)
-#define NETALARM_DEBUG
+// #define NETALARM_DEBUG
 #endif
 
 #ifdef NETALARM_DEBUG

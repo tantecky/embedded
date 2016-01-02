@@ -12,6 +12,8 @@ const byte mac[] = {
 const IPAddress ip(192, 168, 0, 2);
 // where to send UDP datagrams - CHANGE THIS
 const IPAddress remoteIp(192, 168, 0, 1);
+// set to true, if you want to be able arm/disarm alarm over network
+const bool remoteControl = true;
 
 // minimal time interval in milliseconds beetwen alarm triggers
 const long retriggerInterval = 60000;
@@ -37,6 +39,12 @@ void setup()
 void loop()
 {
   alarm.checkForMotion();
+  if (remoteControl) {
+    alarm.checkForIncomingPackets();
+  }
+
+  // just a little break
+  delay(10);
 }
 
 void onArmed()
