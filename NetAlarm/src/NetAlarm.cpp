@@ -38,8 +38,6 @@ void NetAlarm::init()
 
   Ethernet.begin(mac_, ip_, dnsServer_, gateway_);
   udpClient_.begin(localPort_);
-
-  arm();
 }
 
 void NetAlarm::checkForMotion()

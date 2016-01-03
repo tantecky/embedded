@@ -5,18 +5,22 @@
 // ID of your NetAlarm - CHANGE THIS
 const uint32_t id = 0xDEADBEEF;
 // Arduino's MAC - CHANGE THIS
+// you can use following generator
+// https://www.hellion.org.uk/cgi-bin/randmac.pl
 const byte mac[] = {
-    0xC3, 0x9F, 0xB4, 0x97, 0x0F, 0x2B
+  0x76, 0x2E, 0xc9, 0x0E, 0x65, 0x62
 };
 // Arduino's IP - CHANGE THIS
 const IPAddress ip(192, 168, 0, 2);
 // where to send UDP datagrams - CHANGE THIS
 const IPAddress remoteIp(192, 168, 0, 1);
+
 // set to true, if you want to be able arm/disarm alarm over network
 const bool remoteControl = true;
-
 // minimal time interval in milliseconds beetwen alarm triggers
 const long retriggerInterval = 60000;
+// arm on power on
+const bool armOnPowerOn = true;
 // port which Arduino listens on
 const int localPort = 1337;
 // port which remote machine listens on
@@ -34,6 +38,9 @@ NetAlarm alarm(id, &onArmed, &onDisarmed, &onTriggered,
 void setup()
 {
   alarm.init();
+  if (armOnPowerOn) {
+    alarm.arm();
+  }
 }
 
 void loop()
