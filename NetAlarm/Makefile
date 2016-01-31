@@ -17,11 +17,12 @@ INC_DIRS := -I/home/tom/arduino-ide/hardware/arduino/avr/cores/arduino \
 	-I/home/tom/arduino-ide/hardware/tools/avr/avr/include \
 	-I/home/tom/arduino-ide/hardware/arduino/avr/variants/standard \
 	-I/home/tom/arduino-ide/libraries/Ethernet/src \
+	-I/home/tom/Arduino/libraries/rc-switch-2.52 \
 	-I/home/tom/arduino-ide/hardware/arduino/avr/libraries/SPI
 
 CXX := g++
 CXX_FLAGS := -Wall -g -D__AVR_ATmega328P__ -DF_CPU -D__OPTIMIZE__ \
-	-Wno-attributes
+	-Wno-attributes -DARDUINO=100
 VPATH := $(SRC_DIR)
 
 .PHONY: build depend clean install tests pack

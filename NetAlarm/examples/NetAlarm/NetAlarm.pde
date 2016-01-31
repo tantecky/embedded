@@ -4,18 +4,34 @@
 
 // ID of your NetAlarm - CHANGE THIS
 const uint32_t id = 0xDEADBEEF;
+
+// code for a 433 MHz remote switch, which arms alaram - CHANGE THIS
+// has to be 24 bit long at the maximum
+// used when remoteControl is true (see below)
+const unsigned long remoteArmCode = 112233;
+
+// code for a 433 MHz remote switch, which disarms alaram - CHANGE THIS
+// has to be 24 bit long at the maximum
+// used when remoteControl is true (see below)
+const unsigned long remoteDisarmCode = 445566;
+
 // Arduino's MAC - CHANGE THIS
 // you can use following generator
 // https://www.hellion.org.uk/cgi-bin/randmac.pl
 const byte mac[] = {
   0x76, 0x2E, 0xc9, 0x0E, 0x65, 0x62
 };
+
 // Arduino's IP - CHANGE THIS
 const IPAddress ip(192, 168, 0, 2);
+
 // where to send UDP datagrams - CHANGE THIS
 const IPAddress remoteIp(192, 168, 0, 1);
 
-// set to true, if you want to be able arm/disarm alarm over network
+// set to true, if you want to be able arm/disarm alarm over network (UDP)
+const bool networkControl = true;
+// set to true, if you want to be able arm/disarm alarm
+// over 433 MHz with a remote control
 const bool remoteControl = true;
 // minimal time interval in milliseconds beetwen alarm triggers
 const long retriggerInterval = 60000;
@@ -33,7 +49,8 @@ const IPAddress gateway = INADDR_NONE;
 //---CUSTOM SETTINGS - END
 
 NetAlarm alarm(id, &onArmed, &onDisarmed, &onTriggered,
-    retriggerInterval, mac, ip, localPort, dnsServer, gateway);
+    retriggerInterval, mac, ip, localPort, dnsServer, gateway,
+    remoteControl, remoteArmCode, remoteDisarmCode);
 
 void setup()
 {
@@ -46,8 +63,13 @@ void setup()
 void loop()
 {
   alarm.checkForMotion();
-  if (remoteControl) {
+
+  if (networkControl) {
     alarm.checkForIncomingPackets();
+  }
+
+  if (remoteControl) {
+    alarm.checkForRemoteControl();
   }
 
   // just a little break

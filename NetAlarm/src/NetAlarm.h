@@ -10,6 +10,7 @@
 
 #include <Arduino.h>
 #include <EthernetUdp.h>
+#include <RCSwitch.h>
 
 #include "PacketTypes.h"
 #include "PacketWriter.h"
@@ -29,13 +30,16 @@ class NetAlarm
         func_t onArmed, func_t onDisarmed, func_t onTriggered,
         const long retriggerInterval,
         const byte *mac, const IPAddress ip, const int localPort,
-        const IPAddress dnsServer, const IPAddress gateway);
+        const IPAddress dnsServer, const IPAddress gateway,
+        const bool remoteControl, const unsigned long remoteArmCode,
+        const unsigned long remoteDisarmCode);
 
     void arm();
     void disarm();
     void init();
     void checkForMotion();
     void checkForIncomingPackets();
+    void checkForRemoteControl();
     uint32_t id() const { return id_; }
     void sendPacket(byte remoteIp[4], PacketType packetType);
     void blinkRedLed(int n, int duration = 100);
@@ -64,6 +68,10 @@ class NetAlarm
     PacketReader packetReader_;
     const IPAddress dnsServer_;
     const IPAddress gateway_;
+    const bool remoteControl_;
+    RCSwitch rcSwitch_;
+    const unsigned long remoteArmCode_;
+    const unsigned long remoteDisarmCode_;
 
     void blinkLed_(int pin, int n, int duration = 100);
     bool intervalLapsed_();

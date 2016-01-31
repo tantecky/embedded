@@ -13,14 +13,20 @@ NetAlarm::NetAlarm(const uint32_t id,
     func_t onArmed, func_t onDisarmed, func_t onTriggered,
     const long retriggerInterval,
     const byte *mac, const IPAddress ip, const int localPort,
-    const IPAddress dnsServer, const IPAddress gateway):
+    const IPAddress dnsServer, const IPAddress gateway,
+    const bool remoteControl,
+    const unsigned long remoteArmCode,
+    const unsigned long remoteDisarmCode):
   id_(id),
   onArmed_(onArmed), onDisarmed_(onDisarmed), onTriggered_(onTriggered),
   armed_(false),
   retriggerInterval_(retriggerInterval),
   ip_(ip), localPort_(localPort),
   packetWriter_(*this), packetReader_(*this),
-  dnsServer_(dnsServer), gateway_(gateway)
+  dnsServer_(dnsServer), gateway_(gateway),
+  remoteControl_(remoteControl),
+  remoteArmCode_(remoteArmCode),
+  remoteDisarmCode_(remoteDisarmCode)
 {
   memcpy(mac_, mac, static_cast<byte>(sizeof(mac_)));
 }
@@ -31,6 +37,11 @@ void NetAlarm::init()
   pinMode(PIN_PIEZO, OUTPUT);
   pinMode(PIN_RED_LED, OUTPUT);
   pinMode(PIN_GREEN_LED, OUTPUT);
+
+  if (remoteControl_) {
+     // Receiver on inerrupt 0 => that is pin #2
+     rcSwitch_.enableReceive(0);
+  }
 
 #ifdef NETALARM_DEBUG
   Serial.begin(9600);
@@ -47,15 +58,31 @@ void NetAlarm::checkForMotion()
   }
 }
 
+void NetAlarm::checkForRemoteControl()
+{
+  if (rcSwitch_.available()) {
+    unsigned long code = rcSwitch_.getReceivedValue();
+
+    if (code == remoteArmCode_) {
+      arm();
+    }
+    else if (code == remoteDisarmCode_) {
+      disarm();
+    }
+
+    DEBUG_PRINT(String("Received remote 433 MHz code :") + String(code));
+  }
+}
+
 void NetAlarm::checkForIncomingPackets()
 {
   int packetSize = udpClient_.parsePacket();
-  if(packetSize > 0) {
-    DEBUG_PRINT(String("Received UDP packet of size: ") + String(packetSize));
-    udpClient_.read(packetReader_.receiveBuffer(),
+  if (packetSize > 0) {
+     DEBUG_PRINT(String("Received UDP packet of size: ") + String(packetSize));
+     udpClient_.read(packetReader_.receiveBuffer(),
         PacketReader::MAX_RX_PACKET_SIZE);
 
-    packetReader_.processPacket(packetSize);
+     packetReader_.processPacket(packetSize);
   }
 }
 
@@ -107,7 +134,7 @@ void NetAlarm::beep(int n, int duration)
     return;
 
   for (int i = 0; i < n; ++i) {
-    analogWrite(PIN_PIEZO, 20);
+    analogWrite(PIN_PIEZO, 230);
     delay(duration);
     analogWrite(PIN_PIEZO, 0);
     delay(duration);
