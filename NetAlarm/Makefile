@@ -1,4 +1,5 @@
 PROJECT := NetAlarm
+ARDUINO_IDE ?= /home/tom/arduino-ide
 LIBRARY_NAME := libnetalarm
 SRC_DIR := src
 BUILD_DIR := build
@@ -13,12 +14,12 @@ ARCHIVE := $(PROJECT)-$(MAJOR_VERSION).$(MINOR_VERSION).zip
 CPP_FILES :=	$(subst $(SRC_DIR)/,,$(wildcard $(SRC_DIR)/*.cpp))
 OBJ_FILES  :=	$(addprefix $(BUILD_DIR)/,$(CPP_FILES:.cpp=.o))
 
-INC_DIRS := -I/home/tom/arduino-ide/hardware/arduino/avr/cores/arduino \
-	-I/home/tom/arduino-ide/hardware/tools/avr/avr/include \
-	-I/home/tom/arduino-ide/hardware/arduino/avr/variants/standard \
-	-I/home/tom/arduino-ide/libraries/Ethernet/src \
-	-I/home/tom/Arduino/libraries/rc-switch-2.52 \
-	-I/home/tom/arduino-ide/hardware/arduino/avr/libraries/SPI
+INC_DIRS := -I$(ARDUINO_IDE)/hardware/arduino/avr/cores/arduino \
+	-I$(ARDUINO_IDE)/hardware/tools/avr/avr/include \
+	-I$(ARDUINO_IDE)/hardware/arduino/avr/variants/standard \
+	-I$(ARDUINO_IDE)/libraries/Ethernet/src \
+	-I$(ARDUINO_IDE)/libraries/rc-switch-2.52 \
+	-I$(ARDUINO_IDE)/hardware/arduino/avr/libraries/SPI
 
 CXX := g++
 CXX_FLAGS := -Wall -g -D__AVR_ATmega328P__ -DF_CPU -D__OPTIMIZE__ \
@@ -46,7 +47,7 @@ depend: .depend
 
 -include .depend
 
-install: build
+install:
 	rm -rf $(INSTALL_DIR)
 	mkdir -p $(INSTALL_DIR)
 	cp $(SRC_DIR)/* $(INSTALL_DIR)
@@ -55,7 +56,7 @@ install: build
 tests: build
 	@$(MAKE) -C tests
 
-pack: tests install
+pack: install
 	@rm -f *.zip
 	@rm -rf $(PROJECT)
 	@cp -r $(INSTALL_DIR) .
