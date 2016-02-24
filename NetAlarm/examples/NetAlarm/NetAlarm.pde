@@ -28,6 +28,12 @@ const IPAddress ip(192, 168, 0, 2);
 // where to send UDP datagrams - CHANGE THIS
 const IPAddress remoteIp(192, 168, 0, 1);
 
+// DNS server - CHANGE THIS
+const IPAddress dnsServer(192, 168, 0, 3);
+
+// gateway address - CHANGE THIS
+const IPAddress gateway(192, 168, 0, 4);
+
 // set to true, if you want to be able arm/disarm alarm over network (UDP)
 const bool networkControl = true;
 // set to true, if you want to be able arm/disarm alarm
@@ -41,10 +47,6 @@ const bool armOnPowerOn = true;
 const int localPort = 1337;
 // port which remote machine listens on
 const int remotePort = 1337;
-// set this, if you need hostname resolution
-const IPAddress dnsServer = INADDR_NONE;
-// set this, if you need to send pacet over the internet
-const IPAddress gateway = INADDR_NONE;
 
 //---CUSTOM SETTINGS - END
 

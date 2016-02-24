@@ -19,6 +19,7 @@ INC_DIRS := -I$(ARDUINO_IDE)/hardware/arduino/avr/cores/arduino \
 	-I$(ARDUINO_IDE)/hardware/arduino/avr/variants/standard \
 	-I$(ARDUINO_IDE)/libraries/Ethernet/src \
 	-I$(ARDUINO_IDE)/libraries/rc-switch-2.52 \
+	-I$(HOME)/Arduino/libraries/rc-switch-2.52 \
 	-I$(ARDUINO_IDE)/hardware/arduino/avr/libraries/SPI
 
 CXX := g++
