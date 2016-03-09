@@ -39,8 +39,8 @@ void NetAlarm::init()
   pinMode(PIN_GREEN_LED, OUTPUT);
 
   if (remoteControl_) {
-     // Receiver on inerrupt 0 => that is pin #2
-     rcSwitch_.enableReceive(0);
+     // Receiver on interrupt 0 => that is pin #2
+     rcSwitch_.enableReceive(digitalPinToInterrupt(2));
   }
 
 #ifdef NETALARM_DEBUG
@@ -63,6 +63,8 @@ void NetAlarm::checkForRemoteControl()
   if (rcSwitch_.available()) {
     unsigned long code = rcSwitch_.getReceivedValue();
 
+    DEBUG_PRINT(String("Received remote 433 MHz code: ") + String(code));
+
     if (code == remoteArmCode_) {
       arm();
     }
@@ -70,8 +72,9 @@ void NetAlarm::checkForRemoteControl()
       disarm();
     }
 
-    DEBUG_PRINT(String("Received remote 433 MHz code :") + String(code));
+    rcSwitch_.resetAvailable();
   }
+
 }
 
 void NetAlarm::checkForIncomingPackets()
