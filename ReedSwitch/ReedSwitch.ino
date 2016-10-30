@@ -6,11 +6,11 @@ const int PIN_PIEZO = 6;
 const unsigned long ALARM_DELAY = 10000;
 unsigned long whenDisconnected = 0;
 
-void setup() {
+void setup()
+{
   pinMode(LED, OUTPUT);
   pinMode(PIN_PIEZO, OUTPUT);
   pinMode(REED, INPUT);
-
 }
 
 inline bool isConnected()
@@ -18,25 +18,25 @@ inline bool isConnected()
   return digitalRead(REED) == HIGH ? true : false;
 }
 
-void loop() {
+void loop()
+{
   if (!isConnected()) {
     digitalWrite(LED, HIGH);
 
     if (whenDisconnected == 0) {
       whenDisconnected = millis();
-    }
-    else {
+    } else {
       unsigned long now = millis();
-      long diff = now - whenDisconnected;
+      unsigned long diff;
 
-      if (diff < 0)      {
+      if (whenDisconnected > now) {
         diff = ULONG_MAX - whenDisconnected + now;
+      } else {
+        diff = now - whenDisconnected;
       }
 
-      if (diff > ALARM_DELAY)
-      {
-        while (!isConnected())
-        {
+      if (diff > ALARM_DELAY) {
+        while (!isConnected()) {
           analogWrite(PIN_PIEZO, 230);
           delay(100);
           analogWrite(PIN_PIEZO, 0);
@@ -46,9 +46,7 @@ void loop() {
         whenDisconnected = 0;
       }
     }
-  }
-  else
-  {
+  } else {
     digitalWrite(LED, LOW);
     whenDisconnected = 0;
   }
