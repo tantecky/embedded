@@ -1,21 +1,21 @@
 #include <limits.h>
 
-const int LED = 7; // or LED_BUILTIN
-const int REED = 8;
-const int PIN_PIEZO = 6;
-const unsigned long ALARM_DELAY = 10000;
+const int LED = 4; // or LED_BUILTIN
+const int REED = 6;
+const int PIN_PIEZO = 3;
+const unsigned long ALARM_DELAY = 15000;
 unsigned long whenDisconnected = 0;
 
 void setup()
 {
   pinMode(LED, OUTPUT);
   pinMode(PIN_PIEZO, OUTPUT);
-  pinMode(REED, INPUT);
+  pinMode(REED, INPUT_PULLUP);
 }
 
 inline bool isConnected()
 {
-  return digitalRead(REED) == HIGH ? true : false;
+  return digitalRead(REED) == HIGH ? false : true;
 }
 
 void loop()
