@@ -1,7 +1,12 @@
 class NetAlarm(object):
 
     def __init__(self):
-        pass
+        self.config = None
+
+    def load_config(self):
+        from ujson import load
+        with open('cfg.json', 'r') as cfg:
+            self.config = load(cfg)
 
     def connect_wifi(self):
         import network
@@ -16,11 +21,7 @@ class NetAlarm(object):
         if sta_if.isconnected():
             sta_if.disconnect()
 
-        with open('wifi.cfg', 'r') as cfg:
-            ssid = cfg.readline().strip(' \r\n')
-            passwd = cfg.readline().strip(' \r\n')
-
-        sta_if.connect(ssid, passwd)
+        sta_if.connect(self.config['ssid'], self.config['passwd'])
 
         for _ in range(20):
             time.sleep(1)
@@ -34,6 +35,7 @@ class NetAlarm(object):
 
 def main():
     alarm = NetAlarm()
+    alarm.load_config()
     alarm.connect_wifi()
 
 main()

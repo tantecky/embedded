@@ -4,4 +4,4 @@ build/
 *.o
 NetAlarm/tests/tests
 googletest-master
-wifi.cfg
+cfg.json
