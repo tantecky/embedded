@@ -1,2 +1,1 @@
-from dalarm import main
-main()
+import dalarm
