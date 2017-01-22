@@ -6,6 +6,13 @@ import ubinascii
 import ujson
 from umqtt.simple import MQTTClient
 
+#  PINS:
+#  d4 = led do not connect
+#  d1 = disarm button
+#  d2 = arm button
+#  d5 = reed switch
+#  d6 = piezo
+
 
 class Messages:
     # commands
