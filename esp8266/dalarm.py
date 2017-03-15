@@ -18,8 +18,8 @@ class Messages:
     # commands
     ARM = b'arm'
     DISARM = b'disarm'
-    # events
-    ARMED = b'armed'
+    # states
+    ARMED = b'armed_away'
     DISARMED = b'disarmed'
     TRIGGERED = b'triggered'
 
@@ -109,7 +109,7 @@ class DoorAlarm:
         self.blink(times=2)
 
     def send_msg(self, msg):
-        self.mqtt.publish(self.topic, msg)
+        self.mqtt.publish(self.topic, msg, retain=True)
 
     def mqtt_callback(self, topic, msg):
         if msg == Messages.ARM:
