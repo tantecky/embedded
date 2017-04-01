@@ -1,3 +1,6 @@
+# Author: Tomas Antecky
+# Created on: 2017-04-01
+
 import sys
 from machine import Pin, unique_id, Timer, PWM
 import network
@@ -116,15 +119,13 @@ class DoorAlarm:
             self.arm()
         elif msg == Messages.DISARM:
             self.disarm()
-        #  else:
-            #  print('Unknown message: %r' % msg)
 
     def mqtt_subscribe(self):
-        client_id = b'tom_' + ubinascii.hexlify(unique_id())
+        client_id = (str.encode(self.config['clientid_prefix'])
+                     + ubinascii.hexlify(unique_id()))
         self.mqtt = MQTTClient(client_id, self.config['host'],
                                port=int(self.config['port']),
                                keepalive=self.KEEP_ALIVE_INTERVAL)
-        #  keepalive=0)
 
         self.mqtt.set_callback(self.mqtt_callback)
         self.mqtt.connect(clean_session=True)
@@ -145,10 +146,17 @@ class DoorAlarm:
 
     def check_trigger(self):
         if self.armed and self.triggered:
+            self.triggered = False
+
+            #  simple debouncing
+            for _ in range(5):
+                sleep_ms(10)
+                if self.d5.value() == 0:
+                    return
+
             self.send_msg(Messages.TRIGGERED)
             self.beep()
             self.blink(duration=250, times=1)
-            self.triggered = False
 
     def set_trigger(self, pin):
         if self.armed and self.d5.value() == 1:
@@ -171,7 +179,7 @@ class DoorAlarm:
                 print('reconnected...')
                 return
             except OSError as e:
-                print("reconnect(): %r" % e)
+                print('reconnect(): %r' % e)
 
 
 def loop(alarm):
@@ -183,7 +191,7 @@ def loop(alarm):
             alarm.check_numpad()
             alarm.check_trigger()
         except OSError as e:
-            print("loop(): %r" % e)
+            print('loop(): %r' % e)
             alarm.reconnect()
 
 
