@@ -32,6 +32,7 @@ class DoorAlarm:
     # in seconds
     PING_INTERVAL = 60
     KEEP_ALIVE_INTERVAL = 2 * PING_INTERVAL + 30
+    ARM_DELAY = 10
 
     def __init__(self):
         self.config = None
@@ -98,9 +99,11 @@ class DoorAlarm:
         if self.armed:
             return
 
+        self.blink(times=4)
+        sleep_ms(self.ARM_DELAY * 1000)
+
         self.armed = True
         self.send_msg(Messages.ARMED)
-        self.blink(times=4)
 
     def disarm(self):
         if not self.armed:
