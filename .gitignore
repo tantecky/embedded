@@ -2,6 +2,9 @@ tags
 build/
 .depend
 *.o
+*.raw
+main
+top_block.py
 NetAlarm/tests/tests
 googletest-master
 cfg.json
