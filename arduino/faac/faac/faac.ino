@@ -1,6 +1,10 @@
 #include "faac.h"
 
+#ifdef __AVR_ATtiny85__
+const int PIN = 1;
+#else
 const int PIN = 11;
+#endif
 const int REPEAT = 5;
 const int REPLAY_DELAY = 5000;
 const int SPAN = 15500;
