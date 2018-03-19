@@ -3,7 +3,7 @@
 const int LED = 4; // or LED_BUILTIN
 const int REED = 6;
 const int PIN_PIEZO = 3;
-const unsigned long ALARM_DELAY = 15000;
+const unsigned long ALARM_DELAY = 60000;
 unsigned long whenDisconnected = 0;
 
 void setup()
