@@ -40,21 +40,7 @@ class FridgeAlarm:
         ap_if.active(False)
 
         sta_if = network.WLAN(network.STA_IF)
-        sta_if.active(True)
-
-        if sta_if.isconnected():
-            sta_if.disconnect()
-
-        sta_if.connect(self.config['ssid'], self.config['passwd'])
-
-        for _ in range(20):
-            sleep_ms(1000)
-
-            if sta_if.isconnected():
-                return
-
-        print('Unable to connect to AP: %r' % ssid)
-        sys.exit(1)
+        sta_if.active(False)
 
     def blink(self, duration=25, times=1):
         for _ in range(times):
