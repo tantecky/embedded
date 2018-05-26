@@ -1,13 +1,18 @@
 #include <limits.h>
+#include <ESP8266WiFi.h>
 
 const int LED = 2; // D4
-const int REED_PINS[] = { 14, 13 }; // D5, D7
+const int REED_PINS[] = { 14, 4 }; // D5, D2
 const int PIN_PIEZO = 12; // D6
-const unsigned long ALARM_DELAY = 6000;
+const unsigned long ALARM_DELAY = 60000;
 unsigned long whenDisconnected = 0;
 
 void setup()
 {
+  WiFi.mode(WIFI_OFF);
+  WiFi.forceSleepBegin();
+  delay(1);
+  
   pinMode(LED, OUTPUT);
   pinMode(PIN_PIEZO, OUTPUT);
 
