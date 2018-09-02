@@ -115,6 +115,7 @@ void loop()
 
     readBme();
 
+    WiFi.mode(WIFI_STA);
     WiFi.begin(MYSSID, MYPASS);
 
     Serial.print("Connecting");
