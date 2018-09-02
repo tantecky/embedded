@@ -159,7 +159,9 @@ void loop()
     if (data.length() > 6) {
 
       HTTPClient http; //Declare object of class HTTPClient
-      http.begin("http://37.205.8.10:50517/write?db=mydb&u=esp&p=esp8266ftw");
+      String url = "http://37.205.8.10:50517/write?db=mydb&u=esp&p=";
+      url += DB_PASS;
+      http.begin(url);
       http.addHeader("Content-Type", "application/x-www-form-urlencoded");
 
       int httpCode = http.POST(data); //Send the request
