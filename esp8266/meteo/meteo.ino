@@ -23,6 +23,7 @@
 
 /* in minutes */
 #define REPORT_INTERVAL (5)
+#define MAX_RETRIES (3)
 
 Ticker flipper;
 volatile bool tick = false;
@@ -108,57 +109,66 @@ void readBme()
 
 void loop()
 {
-  if (tick) {
-    tick = false;
+  if (!tick) {
+    delay(200);
+    return;
+  }
 
-    disable433();
+  tick = false;
 
-    readBme();
+  disable433();
 
-    WiFi.mode(WIFI_STA);
-    WiFi.begin(MYSSID, MYPASS);
+  readBme();
 
-    Serial.print("Connecting");
-    while (WiFi.status() != WL_CONNECTED) {
-      delay(500);
-      Serial.print(".");
+  IPAddress ip(192, 168, 168, 4); 
+  IPAddress gw(192, 168, 168, 1); 
+  IPAddress subnet(255, 255, 255, 224); 
+
+  WiFi.mode(WIFI_STA);
+  WiFi.config(ip, gw, subnet);
+  WiFi.begin(MYSSID, MYPASS);
+
+  Serial.print("Connecting");
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+  Serial.println();
+
+  Serial.print("Connected, IP address: ");
+  Serial.println(WiFi.localIP());
+
+  String data = "viva";
+
+  if (!isnan(tempIn)) {
+    data += " tIn=";
+    data += tempIn;
+    data += ",pIn=";
+    data += presIn;
+
+    if (humIn > 0) {
+      data += ",humIn=";
+      data += humIn;
     }
-    Serial.println();
+  }
 
-    Serial.print("Connected, IP address: ");
-    Serial.println(WiFi.localIP());
+  if (!data.length() < 6) {
+    data += ",";
+  } else {
+    data += " ";
+  }
 
-    String data = "viva";
+  if (!isnan(tempOut)) {
+    data += "tOut=";
+    data += tempOut;
+    data += ",humOut=";
+    data += humOut;
+  }
 
-    if (!isnan(tempIn)) {
-      data += " tIn=";
-      data += tempIn;
-      data += ",pIn=";
-      data += presIn;
+  Serial.println(data);
 
-      if (humIn > 0) {
-        data += ",humIn=";
-        data += humIn;
-      }
-    }
-
-    if (!data.length() < 6) {
-      data += ",";
-    } else {
-      data += " ";
-    }
-
-    if (!isnan(tempOut)) {
-      data += "tOut=";
-      data += tempOut;
-      data += ",humOut=";
-      data += humOut;
-    }
-
-    Serial.println(data);
-
-    if (data.length() > 6) {
-
+  if (data.length() > 6) {
+    for (int i = 0; i < MAX_RETRIES; i++) {
       HTTPClient http; //Declare object of class HTTPClient
       String url = "http://37.205.8.10:50517/write?db=mydb&u=esp&p=";
       url += DB_PASS;
@@ -172,14 +182,18 @@ void loop()
       Serial.println(httpCode); //Print HTTP return code
       Serial.println(payload); //Print request response payload
 
-      if (httpCode == 204) {
+      if (httpCode == HTTP_CODE_NO_CONTENT) {
         blink();
+        break;
+      } else {
+        delay(5000);
       }
     }
-    initVars();
-    WiFi.disconnect();
-    enable433();
   }
+
+  initVars();
+  WiFi.disconnect();
+  enable433();
 }
 
 void read433(byte* data)
