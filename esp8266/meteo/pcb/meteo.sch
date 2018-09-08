@@ -1,0 +1,183 @@
+EESchema Schematic File Version 4
+LIBS:meteo-cache
+EELAYER 26 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 1 1
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L mysyms:WeMos_mini U1
+U 1 1 5B8F7132
+P 4900 4750
+F 0 "U1" H 4900 5387 60  0000 C CNN
+F 1 "WeMos_mini" H 4900 5281 60  0000 C CNN
+F 2 "meteo:d1" H 5450 4050 60  0001 C CNN
+F 3 "" H 5450 4050 60  0000 C CNN
+	1    4900 4750
+	1    0    0    -1  
+$EndComp
+NoConn ~ 4400 5100
+NoConn ~ 4400 5000
+NoConn ~ 4400 4700
+NoConn ~ 4400 4600
+NoConn ~ 5400 4700
+NoConn ~ 5400 4600
+NoConn ~ 5400 4500
+NoConn ~ 5400 5100
+NoConn ~ 5400 5000
+NoConn ~ 5400 4900
+$Comp
+L mysyms:bme280pbc U3
+U 1 1 5B93D7F1
+P 5050 3300
+F 0 "U3" H 5150 3550 50  0000 L CNN
+F 1 "bme280pbc" H 4400 3150 50  0000 L CNN
+F 2 "meteo:bme280pcb" V 5000 3400 50  0001 C CNN
+F 3 "" V 5000 3400 50  0001 C CNN
+	1    5050 3300
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4900 3450 4900 4050
+Wire Wire Line
+	4900 4050 5400 4050
+Wire Wire Line
+	5400 4050 5400 4400
+$Comp
+L power:GND #PWR01
+U 1 1 5B93DBEF
+P 4300 4000
+F 0 "#PWR01" H 4300 3750 50  0001 C CNN
+F 1 "GND" H 4100 3950 50  0000 C CNN
+F 2 "" H 4300 4000 50  0001 C CNN
+F 3 "" H 4300 4000 50  0001 C CNN
+	1    4300 4000
+	-1   0    0    1   
+$EndComp
+$Comp
+L power:GND #PWR04
+U 1 1 5B93DC15
+P 5550 3950
+F 0 "#PWR04" H 5550 3700 50  0001 C CNN
+F 1 "GND" H 5555 3777 50  0000 C CNN
+F 2 "" H 5550 3950 50  0001 C CNN
+F 3 "" H 5550 3950 50  0001 C CNN
+	1    5550 3950
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5000 3950 5550 3950
+Wire Wire Line
+	5000 3450 5000 3950
+Wire Wire Line
+	4400 4800 4200 4800
+Wire Wire Line
+	4200 4800 4200 3750
+Wire Wire Line
+	4200 3750 5200 3750
+Wire Wire Line
+	5200 3750 5200 3450
+Wire Wire Line
+	4400 4900 4050 4900
+Wire Wire Line
+	4050 4900 4050 3650
+Wire Wire Line
+	4050 3650 5100 3650
+Wire Wire Line
+	5100 3650 5100 3450
+Wire Wire Line
+	4300 4000 4300 4500
+Wire Wire Line
+	4300 4500 4400 4500
+$Comp
+L mysyms:rxb U2
+U 1 1 5B92512B
+P 4950 6050
+F 0 "U2" H 4950 6200 50  0000 C CNN
+F 1 "rxb" H 4950 6100 50  0000 C CNN
+F 2 "meteo:rxb" H 4950 6050 50  0001 C CNN
+F 3 "" H 4950 6050 50  0001 C CNN
+	1    4950 6050
+	-1   0    0    1   
+$EndComp
+$Comp
+L power:GND #PWR02
+U 1 1 5B925ED5
+P 4500 5750
+F 0 "#PWR02" H 4500 5500 50  0001 C CNN
+F 1 "GND" H 4450 5600 50  0000 C CNN
+F 2 "" H 4500 5750 50  0001 C CNN
+F 3 "" H 4500 5750 50  0001 C CNN
+	1    4500 5750
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	4500 5750 4500 5900
+Wire Wire Line
+	3650 4400 4400 4400
+Wire Wire Line
+	5450 5900 5450 4800
+Wire Wire Line
+	5450 4800 5400 4800
+$Comp
+L power:GND #PWR03
+U 1 1 5B925F36
+P 4650 5750
+F 0 "#PWR03" H 4650 5500 50  0001 C CNN
+F 1 "GND" H 4650 5550 50  0001 C CNN
+F 2 "" H 4650 5750 50  0001 C CNN
+F 3 "" H 4650 5750 50  0001 C CNN
+	1    4650 5750
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	4650 5900 4600 5900
+Wire Wire Line
+	4650 5750 4650 5900
+Wire Wire Line
+	5550 5800 5550 5900
+Wire Wire Line
+	4700 5900 4700 5800
+Wire Wire Line
+	4700 5800 3650 5800
+Wire Wire Line
+	3650 4400 3650 5800
+Wire Wire Line
+	4700 5900 5250 5900
+Connection ~ 4700 5900
+$Comp
+L power:GND #PWR05
+U 1 1 5B925F16
+P 5550 5800
+F 0 "#PWR05" H 5550 5550 50  0001 C CNN
+F 1 "GND" H 5550 5650 50  0000 C CNN
+F 2 "" H 5550 5800 50  0001 C CNN
+F 3 "" H 5550 5800 50  0001 C CNN
+	1    5550 5800
+	-1   0    0    1   
+$EndComp
+$Comp
+L Device:Antenna AE1
+U 1 1 5B937B35
+P 3850 5400
+F 0 "AE1" H 3930 5391 50  0000 L CNN
+F 1 "Antenna" H 3930 5300 50  0000 L CNN
+F 2 "meteo:antenna" H 3850 5400 50  0001 C CNN
+F 3 "~" H 3850 5400 50  0001 C CNN
+	1    3850 5400
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4400 5900 4400 5600
+Wire Wire Line
+	4400 5600 3850 5600
+$EndSCHEMATC

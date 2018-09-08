@@ -1,0 +1,3 @@
+(sym_lib_table
+  (lib (name mysyms)(type Legacy)(uri mysyms.lib)(options "")(descr ""))
+)

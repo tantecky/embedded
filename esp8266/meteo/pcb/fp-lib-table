@@ -1,0 +1,3 @@
+(fp_lib_table
+  (lib (name meteo)(type KiCad)(uri pcb)(options "")(descr ""))
+)
