@@ -22,7 +22,7 @@
 #include <SensorReceiver.h>
 
 /* in minutes */
-#define REPORT_INTERVAL (5)
+#define REPORT_INTERVAL (30)
 #define MAX_RETRIES (3)
 
 Ticker flipper;
@@ -100,6 +100,9 @@ void setup()
 
 void readBme()
 {
+  if (!bme.begin()) {
+    return;
+  }
 
   BME280::TempUnit tempUnit(BME280::TempUnit_Celsius);
   BME280::PresUnit presUnit(BME280::PresUnit_Pa);
@@ -120,9 +123,9 @@ void loop()
 
   readBme();
 
-  IPAddress ip(192, 168, 168, 4); 
-  IPAddress gw(192, 168, 168, 1); 
-  IPAddress subnet(255, 255, 255, 224); 
+  IPAddress ip(192, 168, 168, 4);
+  IPAddress gw(192, 168, 168, 1);
+  IPAddress subnet(255, 255, 255, 224);
 
   WiFi.mode(WIFI_STA);
   WiFi.config(ip, gw, subnet);
@@ -152,13 +155,13 @@ void loop()
     }
   }
 
-  if (!data.length() < 6) {
-    data += ",";
-  } else {
-    data += " ";
-  }
-
   if (!isnan(tempOut)) {
+    if (data.length() > 6) {
+      data += ",";
+    } else {
+      data += " ";
+    }
+
     data += "tOut=";
     data += tempOut;
     data += ",humOut=";
@@ -186,6 +189,7 @@ void loop()
         blink();
         break;
       } else {
+        Serial.println("Unable to send data, retrying in 5s...");
         delay(5000);
       }
     }
@@ -193,6 +197,12 @@ void loop()
 
   initVars();
   WiFi.disconnect();
+  Serial.print("Disconnecting");
+  do {
+    delay(500);
+    Serial.print(".");
+  } while (WiFi.status() == WL_CONNECTED);
+
   enable433();
 }
 
