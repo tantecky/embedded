@@ -1,8 +1,8 @@
-(kicad_pcb (version 20171130) (host pcbnew "(5.0.2)-1")
+(kicad_pcb (version 20171130) (host pcbnew 5.0.2-bee76a0~70~ubuntu18.04.1)
 
   (general
     (thickness 1.6)
-    (drawings 0)
+    (drawings 4)
     (tracks 16)
     (zones 0)
     (modules 5)
@@ -30,7 +30,7 @@
     (46 B.CrtYd user)
     (47 F.CrtYd user)
     (48 B.Fab user)
-    (49 F.Fab user)
+    (49 F.Fab user hide)
   )
 
   (setup
@@ -155,8 +155,8 @@
     (add_net "Net-(U2-Pad9)")
   )
 
-  (module myfoots:antenna (layer F.Cu) (tedit 5C250E01) (tstamp 5C251008)
-    (at 115.243 127)
+  (module myfoots:antenna (layer F.Cu) (tedit 5C250E01) (tstamp 5C262E51)
+    (at 115.24 126.94)
     (path /5C24F6CE)
     (fp_text reference AE1 (at -3.683 0) (layer F.SilkS)
       (effects (font (size 1 1) (thickness 0.15)))
@@ -299,6 +299,11 @@
     (pad 1 thru_hole rect (at 2.54 0 180) (size 2 2) (drill 1) (layers *.Cu *.Mask)
       (net 5 "Net-(U1-Pad2)"))
   )
+
+  (gr_line (start 105 78.9) (end 105 128.9) (layer Edge.Cuts) (width 0.15))
+  (gr_line (start 136.7 78.9) (end 105 78.9) (layer Edge.Cuts) (width 0.15))
+  (gr_line (start 136.7 128.9) (end 136.7 78.9) (layer Edge.Cuts) (width 0.15))
+  (gr_line (start 105 128.9) (end 136.7 128.9) (layer Edge.Cuts) (width 0.15))
 
   (segment (start 115.443 127) (end 115.443 119.507) (width 0.381) (layer B.Cu) (net 1))
   (segment (start 113.03 84.185) (end 113.03 97.79) (width 0.762) (layer B.Cu) (net 2))
