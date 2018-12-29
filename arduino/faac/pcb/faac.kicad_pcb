@@ -2,7 +2,7 @@
 
   (general
     (thickness 1.6)
-    (drawings 22)
+    (drawings 23)
     (tracks 16)
     (zones 0)
     (modules 6)
@@ -11,11 +11,11 @@
 
   (page A4)
   (layers
-    (0 F.Cu signal hide)
-    (31 B.Cu signal hide)
+    (0 F.Cu signal)
+    (31 B.Cu signal)
     (32 B.Adhes user)
     (33 F.Adhes user)
-    (34 B.Paste user)
+    (34 B.Paste user hide)
     (35 F.Paste user)
     (36 B.SilkS user hide)
     (37 F.SilkS user)
@@ -30,7 +30,7 @@
     (46 B.CrtYd user)
     (47 F.CrtYd user)
     (48 B.Fab user)
-    (49 F.Fab user)
+    (49 F.Fab user hide)
   )
 
   (setup
@@ -64,7 +64,7 @@
     (aux_axis_origin 0 0)
     (visible_elements 7FFFFFFF)
     (pcbplotparams
-      (layerselection 0x010fc_ffffffff)
+      (layerselection 0x010f0_ffffffff)
       (usegerberextensions false)
       (usegerberattributes false)
       (usegerberadvancedattributes false)
@@ -87,9 +87,9 @@
       (subtractmaskfromsilk false)
       (outputformat 1)
       (mirror false)
-      (drillshape 1)
+      (drillshape 0)
       (scaleselection 1)
-      (outputdirectory ""))
+      (outputdirectory "gerbs/"))
   )
 
   (net 0 "")
@@ -301,7 +301,7 @@
   )
 
   (module myfoots:logo (layer F.Cu) (tedit 0) (tstamp 5C26FD37)
-    (at 108.839 92.583 90)
+    (at 109.093 92.583 90)
     (fp_text reference "" (at 0 0 90) (layer F.SilkS)
       (effects (font (size 1.27 1.27) (thickness 0.15)))
     )
@@ -485,10 +485,13 @@
       (xy -1.188747 -1.325353) (xy -1.178099 -1.327368) (xy -1.151258 -1.328552) (xy -1.124183 -1.3238)) (layer F.SilkS) (width 0.01))
   )
 
+  (gr_text 0V9-6V (at 110.236 95.377) (layer B.SilkS) (tstamp 5C27180E)
+    (effects (font (size 1.2 1.2) (thickness 0.2)) (justify mirror))
+  )
   (gr_text github.com/tantecky/embedded (at 106.045 88.646 90) (layer F.SilkS) (tstamp 5C26F7D2)
     (effects (font (size 0.76 0.76) (thickness 0.15)))
   )
-  (gr_text "FAAC v1.0" (at 108.966 84.963 90) (layer F.SilkS) (tstamp 5C26F751)
+  (gr_text "FAAC v1.0" (at 109.22 84.963 90) (layer F.SilkS) (tstamp 5C26F751)
     (effects (font (size 1.5 1.5) (thickness 0.3)))
   )
   (gr_text GND (at 108.839 102.743) (layer B.SilkS) (tstamp 5C26F63E)
@@ -561,7 +564,7 @@
   (segment (start 122.047 81.026) (end 122.047 82.788) (width 0.762) (layer B.Cu) (net 5))
   (segment (start 110.49 117.618) (end 110.49 119.38) (width 0.762) (layer B.Cu) (net 5))
 
-  (zone (net 3) (net_name GND) (layer F.Cu) (tstamp 0) (hatch edge 0.508)
+  (zone (net 3) (net_name GND) (layer F.Cu) (tstamp 5C274B44) (hatch edge 0.508)
     (connect_pads (clearance 0.508))
     (min_thickness 0.254)
     (fill yes (arc_segments 16) (thermal_gap 0.508) (thermal_bridge_width 0.508))
@@ -666,7 +669,7 @@
       )
     )
   )
-  (zone (net 3) (net_name GND) (layer B.Cu) (tstamp 0) (hatch edge 0.508)
+  (zone (net 3) (net_name GND) (layer B.Cu) (tstamp 5C274B41) (hatch edge 0.508)
     (connect_pads (clearance 0.508))
     (min_thickness 0.254)
     (fill yes (arc_segments 16) (thermal_gap 0.508) (thermal_bridge_width 0.508))
