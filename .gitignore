@@ -29,3 +29,9 @@ _autosave-*
 # Autorouter files (exported from Pcbnew)
 *.dsn
 *.ses
+
+# stm32cudeide
+Debug/
+.settings/
+.mxproject
+.cproject
