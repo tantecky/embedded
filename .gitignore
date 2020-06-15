@@ -9,6 +9,7 @@ NetAlarm/tests/tests
 googletest-master
 cfg.json
 secret.hpp
+.vscode
 
 # kicad
 # Temporary files
