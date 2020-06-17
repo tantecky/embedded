@@ -1,6 +1,7 @@
 tags
 build/
 .depend
+*.FCStd1
 *.o
 *.raw
 main
