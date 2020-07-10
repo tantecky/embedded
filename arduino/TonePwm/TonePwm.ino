@@ -9,11 +9,13 @@ volatile bool shouldSleep = true;
 
 ISR(PCINT0_vect)
 {
+  // HIGH == connected to Vcc
   if (digitalRead(WAKE) == HIGH)
   {
     shouldSleep = false;
   }
 
+  // LOW == connected to GND
   if (digitalRead(BTN) == LOW)
   {
     shouldSleep = true;
