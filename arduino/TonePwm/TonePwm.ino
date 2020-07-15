@@ -52,10 +52,13 @@ void setup()
   wdt_disable();
 
   // to save power
-  pinMode(0, INPUT_PULLUP);
-  pinMode(5, INPUT_PULLUP);
+  pinMode(0, OUTPUT);
+  pinMode(5, OUTPUT);
+  digitalWrite(0, LOW);
+  digitalWrite(5, LOW);
 
   pinMode(PIEZO, OUTPUT);
+
   pinMode(WAKE, INPUT);
   pinMode(BTN, INPUT_PULLUP);
 
@@ -74,21 +77,24 @@ void setup()
   delay(250 * SCALER);
   tone(PIEZO, 4000 / SCALER, 50 * SCALER);
   delay(250 * SCALER);
+
+  digitalWrite(PIEZO, LOW);
 }
 
 void loop()
 {
   // RX enabled
   digitalWrite(RX, HIGH);
-  enterSleep(WDTO_60MS);
+  enterSleep(WDTO_120MS);
   // RX disabled
   digitalWrite(RX, LOW);
 
   while (signalArrived)
   {
     tone(PIEZO, 4000 / SCALER, 50 * SCALER);
+    digitalWrite(PIEZO, LOW);
     delay(1000 * SCALER);
   }
 
-  enterSleep(WDTO_500MS);
+  enterSleep(WDTO_1S);
 }
