@@ -4,7 +4,7 @@
 #include "secret.hpp"
 #include "html.hpp"
 
-const int PIN_RELAY = 4;
+const int PIN_RELAY = 4; // D2 Wemos D1 mini
 bool isRelayOn = false;
 ESP8266WebServer server(80);
 
