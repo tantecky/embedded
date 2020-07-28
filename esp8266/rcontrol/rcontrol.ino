@@ -6,6 +6,8 @@
 
 const int PIN_RELAY = 4; // D2 Wemos D1 mini
 bool isRelayOn = false;
+unsigned long lastChange = 0;
+
 ESP8266WebServer server(80);
 
 void blink(int n = 1)
@@ -60,12 +62,24 @@ void redirectToRoot()
 
 void handleRoot()
 {
-  server.send(200, "text/html", render(isRelayOn));
+  if (!server.authenticate(LOGIN, PASS))
+  {
+    return server.requestAuthentication(BASIC_AUTH, "rcontrol", "Auth failed");
+  }
+
+  server.send(200, "text/html", render(isRelayOn, lastChange));
 }
 
 void handlePulse()
 {
+  if (!server.authenticate(LOGIN, PASS))
+  {
+    return server.requestAuthentication(BASIC_AUTH, "rcontrol", "Auth failed");
+  }
+
   pulse();
+  lastChange = millis();
+  blink();
   redirectToRoot();
 }
 
@@ -76,15 +90,29 @@ void handleNotFound()
 
 void handleOn()
 {
+  if (!server.authenticate(LOGIN, PASS))
+  {
+    return server.requestAuthentication(BASIC_AUTH, "rcontrol", "Auth failed");
+  }
+
   digitalWrite(PIN_RELAY, HIGH);
   isRelayOn = true;
+  lastChange = millis();
+  blink();
   redirectToRoot();
 }
 
 void handleOff()
 {
+  if (!server.authenticate(LOGIN, PASS))
+  {
+    return server.requestAuthentication(BASIC_AUTH, "rcontrol", "Auth failed");
+  }
+
   digitalWrite(PIN_RELAY, LOW);
   isRelayOn = false;
+  lastChange = millis();
+  blink();
   redirectToRoot();
 }
 

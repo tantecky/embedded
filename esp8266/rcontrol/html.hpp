@@ -4,7 +4,7 @@ static const char HEADER[] = R"rawliteral(
 
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Relay control</title>
+    <title>rcontrol</title>
     <meta http-equiv="refresh" content="60">
     <style>
       html,
@@ -104,12 +104,11 @@ static const char FOOTER[] = R"rawliteral(
 </html>
 )rawliteral";
 
-static String uptime()
+static String timeInfo(unsigned long time)
 {
   char buf[15];
 
-  unsigned long nowMillis = millis();
-  unsigned long seconds = nowMillis / 1000;
+  unsigned long seconds = time / 1000;
   int days = seconds / 86400;
   seconds %= 86400;
   byte hours = seconds / 3600;
@@ -121,7 +120,7 @@ static String uptime()
   return String(buf);
 }
 
-String render(bool isRelayOn)
+String render(bool isRelayOn, unsigned long lastChanged)
 {
   String ret = "";
 
@@ -135,8 +134,14 @@ String render(bool isRelayOn)
     ret += R"rawliteral(<p>Status: <strong class="red">Off</strong></p>)rawliteral";
   }
 
+  unsigned long now = millis();
+
   ret += "<p>Uptime: ";
-  ret += uptime();
+  ret += timeInfo(now);
+  ret += "</p>";
+
+  ret += "<p>Last change: ";
+  ret += timeInfo(lastChanged > 0 && now > lastChanged ? now - lastChanged : 0);
   ret += "</p>";
 
   ret += "<p>Free heap: ";
