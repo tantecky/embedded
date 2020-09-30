@@ -1,0 +1,9 @@
+constexpr uint16_t BEEP_EACH_X_SECOND = 2;
+constexpr uint16_t MSG_EACH_X_MIN = 15;
+
+constexpr char SSID[] = "your-wifi-ap";
+constexpr char PASS[] = "password1234";
+
+constexpr char MQTT[] = "some-mqtt-server.com";
+constexpr char TOPIC[] = "leak/kitchen";
+constexpr uint16_t PORT = 1883;
