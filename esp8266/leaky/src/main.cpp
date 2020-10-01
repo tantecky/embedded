@@ -1,12 +1,21 @@
 #include <Arduino.h>
 #include <PubSubClient.h>
 #include <ESP8266WiFi.h>
+#include <TaskScheduler.h>
 
 #include "config.hpp"
 
-constexpr int FPM_SLEEP_MAX_TIME = 0xFFFFFFF;
+Scheduler runner;
 
-uint16_t beeps = 0;
+void beep();
+void beginMqtt();
+void finishMqtt();
+
+Task taskBeep(BEEP_EACH_X_SECOND * 1000, TASK_FOREVER, beep, &runner, true);
+Task taskBeginMqtt(MSG_EACH_X_MIN * 60 * 1000, TASK_FOREVER, beginMqtt, &runner, true);
+Task taskFinishMqtt(500, TASK_FOREVER, finishMqtt, &runner, false);
+
+constexpr int FPM_SLEEP_MAX_TIME = 0xFFFFFFF;
 
 void blink()
 {
@@ -18,8 +27,6 @@ void blink()
 void beep()
 {
   tone(5, 3000, 100);
-  delay(BEEP_EACH_X_SECOND * 1000);
-  beeps++;
 }
 
 inline bool isConnected()
@@ -53,11 +60,6 @@ void wifiConnect()
   wifi_station_connect();
 
   WiFi.begin(SSID, PASS);
-
-  while (!isConnected())
-  {
-    beep();
-  }
 }
 
 void wifiOff()
@@ -69,9 +71,12 @@ void wifiOff()
   wifi_fpm_do_sleep(FPM_SLEEP_MAX_TIME);
 }
 
-void sendMqtt()
+void finishMqtt()
 {
-  wifiConnect();
+  if (!isConnected())
+  {
+    return;
+  }
 
   WiFiClient wifiClient;
   PubSubClient client(MQTT, PORT, wifiClient);
@@ -90,12 +95,21 @@ void sendMqtt()
     if (client.publish(TOPIC, msg.c_str(), msg.length()))
     {
       blink();
+      client.disconnect();
+      wifiOff();
+      taskFinishMqtt.disable();
     }
-
-    client.disconnect();
+    else
+    {
+      client.disconnect();
+    }
   }
+}
 
-  wifiOff();
+void beginMqtt()
+{
+  wifiConnect();
+  taskFinishMqtt.enable();
 }
 
 void setup()
@@ -106,18 +120,12 @@ void setup()
   digitalWrite(2, HIGH);
   pinMode(5, OUTPUT);
 
-  sendMqtt();
+  runner.startNow();
+  taskBeep.forceNextIteration();
+  taskBeginMqtt.forceNextIteration();
 }
 
 void loop()
 {
-  if (beeps * BEEP_EACH_X_SECOND >= MSG_EACH_X_MIN * 60)
-  {
-    beeps = 0;
-    sendMqtt();
-  }
-  else
-  {
-    beep();
-  }
+  runner.execute();
 }
