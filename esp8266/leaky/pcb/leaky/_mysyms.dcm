@@ -1,0 +1,9 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP DD0405MA
+D 0.7-5V to 3.3V DC DC Boost Converter
+K Boost Converter 600mA
+F https://datasheet.lcsc.com/szlcsc/Nanjing-Micro-One-Elec-ME2108A33M3G_C236804.pdf
+$ENDCMP
+#
+#End Doc Library
