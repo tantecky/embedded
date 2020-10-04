@@ -6,4 +6,10 @@ K Boost Converter 600mA
 F https://datasheet.lcsc.com/szlcsc/Nanjing-Micro-One-Elec-ME2108A33M3G_C236804.pdf
 $ENDCMP
 #
+$CMP UART
+D Generic connector, single row, 01x04, script generated (kicad-library-utils/schlib/autogen/connector/)
+K connector
+F ~
+$ENDCMP
+#
 #End Doc Library
