@@ -1,4 +1,4 @@
-18913140493292538
+18914741627147892
 Battery
 BatteryHolder_Bulgin_BX0036_1xC
 Bulgin Battery Holder, BX0036, Battery Type C (https://www.bulgin.com/products/pub/media/bulgin/data/Battery_holders.pdf)
@@ -82690,6 +82690,13 @@ varistor SIOV
 0
 2
 2
+_my
+DD0405MA
+
+
+0
+3
+3
 _my
 PinHeader_1x05_P2.54mm_Vertical
 Through hole straight pin header, 1x05, 2.54mm pitch, single row

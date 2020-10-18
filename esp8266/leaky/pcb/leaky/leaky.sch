@@ -19,7 +19,7 @@ U 1 1 5F780761
 P 1300 1200
 F 0 "BT1" H 1000 1300 50  0000 L CNN
 F 1 "2xAA" H 950 1200 50  0000 L CNN
-F 2 "" V 1300 1260 50  0001 C CNN
+F 2 "Battery:BatteryHolder_Keystone_2462_2xAA" V 1300 1260 50  0001 C CNN
 F 3 "~" V 1300 1260 50  0001 C CNN
 	1    1300 1200
 	1    0    0    -1  
@@ -41,7 +41,7 @@ U 1 1 5F780BB7
 P 2550 1000
 F 0 "U1" H 2550 1242 50  0000 C CNN
 F 1 "DD0405MA" H 2550 1151 50  0000 C CNN
-F 2 "" H 2550 1225 50  0001 C CIN
+F 2 "_my:DD0405MA" H 2550 1225 50  0001 C CIN
 F 3 "https://datasheet.lcsc.com/szlcsc/Nanjing-Micro-One-Elec-ME2108A33M3G_C236804.pdf" H 2550 950 50  0001 C CNN
 	1    2550 1000
 	1    0    0    -1  
@@ -185,7 +185,7 @@ U 1 1 5F792B65
 P 1100 2350
 F 0 "SW1" H 950 2450 50  0000 C CNN
 F 1 "sensing top" H 1150 2250 50  0000 C CNN
-F 2 "" H 1100 2350 50  0001 C CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical" H 1100 2350 50  0001 C CNN
 F 3 "~" H 1100 2350 50  0001 C CNN
 	1    1100 2350
 	1    0    0    -1  
@@ -272,7 +272,7 @@ U 1 1 5F79B9DC
 P 1100 2700
 F 0 "SW2" H 950 2800 50  0000 C CNN
 F 1 "sensing bot" H 1150 2600 50  0000 C CNN
-F 2 "" H 1100 2700 50  0001 C CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical" H 1100 2700 50  0001 C CNN
 F 3 "~" H 1100 2700 50  0001 C CNN
 	1    1100 2700
 	1    0    0    -1  
@@ -718,27 +718,54 @@ Text GLabel 8170 5130 0    50   Input ~ 0
 IO12
 Text GLabel 8170 5230 0    50   Input ~ 0
 IO13
-$Comp
-L Connector_Generic:Conn_01x02 J3
-U 1 1 5F8C3AD5
-P 1450 3150
-F 0 "J3" V 1322 3230 50  0000 L CNN
-F 1 "custom sensing" V 1550 2840 50  0000 L CNN
-F 2 "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical" H 1450 3150 50  0001 C CNN
-F 3 "~" H 1450 3150 50  0001 C CNN
-	1    1450 3150
-	0    1    1    0   
-$EndComp
 Wire Wire Line
 	1450 2350 1450 2700
-Connection ~ 1450 2700
+$Comp
+L Mechanical:MountingHole H1
+U 1 1 5F8C0139
+P 840 4380
+F 0 "H1" H 940 4380 50  0000 L CNN
+F 1 "MountingHole" H 940 4335 50  0001 L CNN
+F 2 "MountingHole:MountingHole_3.2mm_M3" H 840 4380 50  0001 C CNN
+F 3 "~" H 840 4380 50  0001 C CNN
+	1    840  4380
+	1    0    0    -1  
+$EndComp
+$Comp
+L Mechanical:MountingHole H2
+U 1 1 5F8C0FC6
+P 840 4630
+F 0 "H2" H 940 4630 50  0000 L CNN
+F 1 "MountingHole" H 940 4585 50  0001 L CNN
+F 2 "MountingHole:MountingHole_3.2mm_M3" H 840 4630 50  0001 C CNN
+F 3 "~" H 840 4630 50  0001 C CNN
+	1    840  4630
+	1    0    0    -1  
+$EndComp
+$Comp
+L Mechanical:MountingHole H3
+U 1 1 5F8C125F
+P 1200 4390
+F 0 "H3" H 1300 4390 50  0000 L CNN
+F 1 "MountingHole" H 1300 4345 50  0001 L CNN
+F 2 "MountingHole:MountingHole_3.2mm_M3" H 1200 4390 50  0001 C CNN
+F 3 "~" H 1200 4390 50  0001 C CNN
+	1    1200 4390
+	1    0    0    -1  
+$EndComp
+$Comp
+L Mechanical:MountingHole H4
+U 1 1 5F8C1794
+P 1200 4640
+F 0 "H4" H 1300 4640 50  0000 L CNN
+F 1 "MountingHole" H 1300 4595 50  0001 L CNN
+F 2 "MountingHole:MountingHole_3.2mm_M3" H 1200 4640 50  0001 C CNN
+F 3 "~" H 1200 4640 50  0001 C CNN
+	1    1200 4640
+	1    0    0    -1  
+$EndComp
+Text Notes 780  4080 0    50   ~ 0
+Mounting holes
 Wire Wire Line
-	1450 2700 1450 2950
-Wire Wire Line
-	800  2700 800  2950
-Wire Wire Line
-	1350 2950 800  2950
-Connection ~ 800  2950
-Wire Wire Line
-	800  2950 800  3080
+	800  2700 800  3080
 $EndSCHEMATC
