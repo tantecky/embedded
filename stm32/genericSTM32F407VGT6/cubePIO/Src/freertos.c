@@ -51,10 +51,9 @@
 /* Definitions for defaultTask */
 osThreadId_t defaultTaskHandle;
 const osThreadAttr_t defaultTask_attributes = {
-  .name = "defaultTask",
-  .priority = (osPriority_t) osPriorityNormal,
-  .stack_size = 128 * 4
-};
+    .name = "defaultTask",
+    .priority = (osPriority_t)osPriorityNormal,
+    .stack_size = 128 * 4};
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
@@ -71,7 +70,8 @@ void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
   * @param  None
   * @retval None
   */
-void MX_FREERTOS_Init(void) {
+void MX_FREERTOS_Init(void)
+{
   /* USER CODE BEGIN Init */
 
   /* USER CODE END Init */
@@ -99,7 +99,6 @@ void MX_FREERTOS_Init(void) {
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
   /* USER CODE END RTOS_THREADS */
-
 }
 
 /* USER CODE BEGIN Header_StartDefaultTask */
@@ -109,15 +108,23 @@ void MX_FREERTOS_Init(void) {
   * @retval None
   */
 /* USER CODE END Header_StartDefaultTask */
+
+extern uint8_t CDC_Transmit_FS(const uint8_t *Buf, uint16_t Len);
+
 void StartDefaultTask(void *argument)
 {
   /* init code for USB_DEVICE */
   MX_USB_DEVICE_Init();
   /* USER CODE BEGIN StartDefaultTask */
   /* Infinite loop */
-  for(;;)
+  for (;;)
   {
-    osDelay(1);
+
+    const uint8_t Text[] = "Hello Bro!!!\n";
+    CDC_Transmit_FS(Text, sizeof(Text)); /*when commented the port is recognized*/
+
+    HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
+    osDelay(pdMS_TO_TICKS(250));
   }
   /* USER CODE END StartDefaultTask */
 }
