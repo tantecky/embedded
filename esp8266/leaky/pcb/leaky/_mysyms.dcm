@@ -6,6 +6,12 @@ K Boost Converter 600mA
 F https://datasheet.lcsc.com/szlcsc/Nanjing-Micro-One-Elec-ME2108A33M3G_C236804.pdf
 $ENDCMP
 #
+$CMP ESP-12E
+D ESP8266 ESP-12E module, 22 pins, 2mm, PCB antenna
+K MODULE ESP8266 ESP-8266
+F http://l0l.org.uk/2014/12/esp8266-modules-hardware-guide-gotta-catch-em-all/
+$ENDCMP
+#
 $CMP UART
 D Generic connector, single row, 01x04, script generated (kicad-library-utils/schlib/autogen/connector/)
 K connector
