@@ -21,7 +21,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "FreeRTOS.h"
 #include "task.h"
-#include "main.h"
+#include "main.hpp"
 #include "cmsis_os.h"
 
 /* Private includes ----------------------------------------------------------*/
@@ -123,7 +123,7 @@ void StartDefaultTask(void *argument)
     const uint8_t Text[] = "Hello Bro!!!\n";
     CDC_Transmit_FS(Text, sizeof(Text)); /*when commented the port is recognized*/
 
-    HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
+    HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_1);
     osDelay(pdMS_TO_TICKS(250));
   }
   /* USER CODE END StartDefaultTask */
