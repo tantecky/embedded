@@ -1,8 +1,11 @@
 #include <main.hpp>
+#include <usb.hpp>
 #include <cmsis_os.h>
 #include <usb_device.h>
 #include <usbd_cdc_if.h>
 #include <gpio.h>
+
+Usb Usb;
 
 /**
   * @brief System Clock Configuration
@@ -48,7 +51,6 @@ void SystemClock_Config(void)
 
 void init()
 {
-
     /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
     HAL_Init();
     /* Configure the system clock */
@@ -57,6 +59,8 @@ void init()
     MX_GPIO_Init();
     MX_USB_DEVICE_Init();
 
+    Usb.init();
+
     osKernelInitialize();
 }
 
@@ -64,16 +68,11 @@ void taskUsb(void *)
 {
     while (true)
     {
-
-        uint8_t Text[] = "Hello Bro!!!\n";
-        CDC_Transmit_FS(Text, sizeof(Text));
-
-        HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_1);
-        osDelay(pdMS_TO_TICKS(250));
+        Usb.process();
     }
 }
 
-void run()
+void loop()
 {
     xTaskCreate(taskUsb, "taskUsb", 512, nullptr, osPriorityNormal, nullptr);
 
@@ -88,7 +87,7 @@ void run()
 int main()
 {
     init();
-    run();
+    loop();
 
     return 0;
 }
