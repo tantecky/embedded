@@ -1,6 +1,7 @@
 #include <main.hpp>
 #include <cmsis_os.h>
 #include <usb_device.h>
+#include <usbd_cdc_if.h>
 #include <gpio.h>
 
 /**
@@ -54,16 +55,31 @@ void init()
     SystemClock_Config();
     /* Initialize all configured peripherals */
     MX_GPIO_Init();
+    // MX_USB_DEVICE_Init();
 
-    /* Init scheduler */
-    // osKernelInitialize(); /* Call init function for freertos objects (in freertos.c) */
-    // MX_FREERTOS_Init();
-    /* Start scheduler */
-    // osKernelStart();
+    osKernelInitialize();
+}
+
+void taskUsb(void *)
+{
+    while (true)
+    {
+
+        // uint8_t Text[] = "Hello Bro!!!\n";
+        // CDC_Transmit_FS(Text, sizeof(Text));
+
+        HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_1);
+        osDelay(pdMS_TO_TICKS(250));
+    }
 }
 
 void run()
 {
+    xTaskCreate(taskUsb, "taskUsb", 512, nullptr, osPriorityNormal, nullptr);
+
+    osKernelStart();
+
+    // not reached
     while (true)
     {
     }
@@ -95,8 +111,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 
 void Error_Handler()
 {
-    __builtin_trap();
-    // vTaskSuspendAll();
     while (true)
     {
     }
