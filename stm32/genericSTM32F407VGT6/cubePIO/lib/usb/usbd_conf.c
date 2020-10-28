@@ -202,6 +202,12 @@ void HAL_PCD_ResetCallback(PCD_HandleTypeDef *hpcd)
   {
     speed = USBD_SPEED_FULL;
   }
+  // BUGFIX
+  // https://community.st.com/s/question/0D50X0000AyCTUaSQO/in-cubemx-generated-usb-code-halpcdresetcallback-always-calls-errorhandler
+  else if (hpcd->Init.speed == 3)
+  {
+    speed = USBD_SPEED_FULL;
+  }
   else
   {
     Error_Handler();

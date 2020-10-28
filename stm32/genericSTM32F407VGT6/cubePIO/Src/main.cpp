@@ -55,7 +55,7 @@ void init()
     SystemClock_Config();
     /* Initialize all configured peripherals */
     MX_GPIO_Init();
-    // MX_USB_DEVICE_Init();
+    MX_USB_DEVICE_Init();
 
     osKernelInitialize();
 }
@@ -65,8 +65,8 @@ void taskUsb(void *)
     while (true)
     {
 
-        // uint8_t Text[] = "Hello Bro!!!\n";
-        // CDC_Transmit_FS(Text, sizeof(Text));
+        uint8_t Text[] = "Hello Bro!!!\n";
+        CDC_Transmit_FS(Text, sizeof(Text));
 
         HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_1);
         osDelay(pdMS_TO_TICKS(250));
@@ -111,6 +111,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 
 void Error_Handler()
 {
+    vTaskSuspendAll();
     while (true)
     {
     }
