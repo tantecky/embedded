@@ -1,6 +1,11 @@
 #include <usb.hpp>
 #include <usbd_cdc_if.h>
 #include <cmsis_os.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <unistd.h>
+#include <stdarg.h>
 
 void Usb::init()
 {
@@ -38,9 +43,41 @@ void Usb::processRx()
 
     write(rxBuffer_, bytesReceived_);
     write("Done\n", 5);
+    printf("tick %d\n", HAL_GetTick());
 }
 
-void Usb::write(const char *text, uint16_t len)
+void Usb::write(uint8_t *text, uint16_t len)
 {
-    write((uint8_t *)(text), len);
+    if (len > TxCapacity)
+    {
+        len = TxCapacity;
+    }
+
+    CDC_Transmit_FS(text, len);
+    osDelay(1);
+}
+
+int Usb::printf(const char *format, ...)
+{
+    va_list ap;
+    va_start(ap, format);
+    return vdprintf((int)this, format, ap);
+}
+
+extern "C"
+{
+    __attribute__((weak)) int _write(int file, char *ptr, int len)
+    {
+        switch (file)
+        {
+        case STDIN_FILENO:
+            break;
+        case STDOUT_FILENO:
+        case STDERR_FILENO:
+        default:
+            ((class Usb *)file)->write((uint8_t *)ptr, len);
+            break;
+        }
+        return len;
+    }
 }

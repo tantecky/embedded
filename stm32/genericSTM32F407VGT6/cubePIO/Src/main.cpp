@@ -74,7 +74,7 @@ void taskUsbRx(void *)
 
 void loop()
 {
-    xTaskCreate(taskUsbRx, "taskUsbRx", 512, nullptr, osPriorityNormal, nullptr);
+    xTaskCreate(taskUsbRx, "taskUsbRx", 1024, nullptr, osPriorityNormal, nullptr);
 
     osKernelStart();
 
@@ -87,6 +87,7 @@ void loop()
 int main()
 {
     init();
+
     loop();
 
     return 0;

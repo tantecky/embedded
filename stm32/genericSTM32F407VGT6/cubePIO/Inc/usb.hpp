@@ -23,12 +23,12 @@ public:
 
     void init();
     void processRx();
-    void write(const char *text, uint16_t len);
-    inline void write(uint8_t *text, uint16_t len)
+    inline void write(const char *text, uint16_t len)
     {
-        CDC_Transmit_FS(text, len);
-        osDelay(1);
+        write((uint8_t *)(text), len);
     }
+    void write(uint8_t *text, uint16_t len);
+    int printf(const char *format, ...);
 };
 
 #endif /* E6BB1AAD_FCC5_49C4_80BD_AFCFF4472F34 */
