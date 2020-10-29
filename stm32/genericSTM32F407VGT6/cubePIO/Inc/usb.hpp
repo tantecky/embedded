@@ -31,4 +31,6 @@ public:
     int printf(const char *format, ...);
 };
 
+extern Usb Serial;
+
 #endif /* E6BB1AAD_FCC5_49C4_80BD_AFCFF4472F34 */

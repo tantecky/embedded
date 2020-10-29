@@ -4,8 +4,11 @@
 #include <usb_device.h>
 #include <usbd_cdc_if.h>
 #include <gpio.h>
+#include <i2c.h>
+#include <INA219.hpp>
 
 Usb Usb;
+INA219 Ina219;
 
 /**
   * @brief System Clock Configuration
@@ -57,6 +60,7 @@ void init()
     SystemClock_Config();
     /* Initialize all configured peripherals */
     MX_GPIO_Init();
+    MX_I2C1_Init();
     MX_USB_DEVICE_Init();
 
     Usb.init();
@@ -72,9 +76,25 @@ void taskUsbRx(void *)
     }
 }
 
+void taskReadSensors(void *)
+{
+    Ina219.init();
+    float voltage;
+
+    while (true)
+    {
+        voltage = Ina219.getBusVoltage_V();
+        Usb.printf("Voltage %f\n", voltage);
+
+        HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_1);
+        osDelay(pdMS_TO_TICKS(1000));
+    }
+}
+
 void loop()
 {
-    xTaskCreate(taskUsbRx, "taskUsbRx", 1024, nullptr, osPriorityNormal, nullptr);
+    xTaskCreate(taskUsbRx, "taskUsbRx", 1024, nullptr, osPriorityNormal1, nullptr);
+    xTaskCreate(taskReadSensors, "taskReadSensors", 1024, nullptr, osPriorityNormal, nullptr);
 
     osKernelStart();
 
