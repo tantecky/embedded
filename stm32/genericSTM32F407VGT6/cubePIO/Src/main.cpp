@@ -64,17 +64,17 @@ void init()
     osKernelInitialize();
 }
 
-void taskUsb(void *)
+void taskUsbRx(void *)
 {
     while (true)
     {
-        Usb.process();
+        Usb.processRx();
     }
 }
 
 void loop()
 {
-    xTaskCreate(taskUsb, "taskUsb", 512, nullptr, osPriorityNormal, nullptr);
+    xTaskCreate(taskUsbRx, "taskUsbRx", 512, nullptr, osPriorityNormal, nullptr);
 
     osKernelStart();
 
