@@ -83,8 +83,9 @@ void taskReadSensors(void *)
 
     while (true)
     {
-        voltage = Ina219.getBusVoltage_V();
-        Usb.printf("Voltage %f\n", voltage);
+        // Usb.printf("tick %d\n", HAL_GetTick());
+        // voltage = Ina219.getBusVoltage_V();
+        // Usb.printf("Voltage %.3f\n", voltage);
 
         HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_1);
         osDelay(pdMS_TO_TICKS(1000));
@@ -93,7 +94,7 @@ void taskReadSensors(void *)
 
 void loop()
 {
-    xTaskCreate(taskUsbRx, "taskUsbRx", 1024, nullptr, osPriorityNormal1, nullptr);
+    xTaskCreate(taskUsbRx, "taskUsbRx", 1024, nullptr, osPriorityNormal, nullptr);
     xTaskCreate(taskReadSensors, "taskReadSensors", 1024, nullptr, osPriorityNormal, nullptr);
 
     osKernelStart();

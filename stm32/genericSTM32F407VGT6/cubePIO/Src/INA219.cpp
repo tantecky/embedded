@@ -56,8 +56,7 @@ INA219::INA219()
 /**************************************************************************/
 void INA219::init()
 {
-  // Set chip to large range config values to start
-  setCalibration_16V_6A();
+  // setCalibratio_32V_1A();
 }
 
 /**************************************************************************/
@@ -618,7 +617,7 @@ float INA219::getPower_mW()
 
 bool INA219::write(uint8_t reg, uint8_t *buffer, uint8_t len)
 {
-  HAL_StatusTypeDef ret = HAL_I2C_Master_Transmit(&hi2c1, I2C_ADDRESS1 << 1, buffer, len, 1000);
+  HAL_StatusTypeDef ret = HAL_I2C_Master_Transmit(&hi2c1, I2C_ADDRESS1 << 1, buffer, len, 100);
 
   if (ret == HAL_OK)
   {
@@ -632,7 +631,7 @@ bool INA219::write(uint8_t reg, uint8_t *buffer, uint8_t len)
 }
 bool INA219::read(uint8_t reg, uint8_t *buffer, uint8_t len)
 {
-  HAL_StatusTypeDef ret = HAL_I2C_Master_Receive(&hi2c1, I2C_ADDRESS1 << 1, buffer, len, 1000);
+  HAL_StatusTypeDef ret = HAL_I2C_Master_Receive(&hi2c1, I2C_ADDRESS1 << 1, buffer, len, 100);
 
   if (ret == HAL_OK)
   {
