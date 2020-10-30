@@ -229,6 +229,9 @@ static int8_t CDC_Control_FS(uint8_t cmd, uint8_t *pbuf, uint16_t length)
     /* 6      | bDataBits  |   1   | Number Data bits (5, 6, 7, 8 or 16).          */
     /*******************************************************************************/
   case CDC_SET_LINE_CODING:
+    break;
+
+  case CDC_GET_LINE_CODING:
     pbuf[0] = (uint8_t)(LineCoding.bitrate);
     pbuf[1] = (uint8_t)(LineCoding.bitrate >> 8);
     pbuf[2] = (uint8_t)(LineCoding.bitrate >> 16);
@@ -236,11 +239,6 @@ static int8_t CDC_Control_FS(uint8_t cmd, uint8_t *pbuf, uint16_t length)
     pbuf[4] = LineCoding.format;
     pbuf[5] = LineCoding.paritytype;
     pbuf[6] = LineCoding.datatype;
-
-    break;
-
-  case CDC_GET_LINE_CODING:
-
     break;
 
   case CDC_SET_CONTROL_LINE_STATE:

@@ -1,9 +1,9 @@
 #ifndef E6BB1AAD_FCC5_49C4_80BD_AFCFF4472F34
 #define E6BB1AAD_FCC5_49C4_80BD_AFCFF4472F34
-#include <FreeRTOS.h>
-#include <queue.h>
-#include <usbd_cdc_if.h>
-#include <cmsis_os.h>
+#include "FreeRTOS.h"
+#include "queue.h"
+#include "usbd_cdc_if.h"
+#include "cmsis_os.h"
 
 constexpr uint16_t RxCapacity = APP_RX_DATA_SIZE;
 constexpr uint16_t TxCapacity = APP_TX_DATA_SIZE;

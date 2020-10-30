@@ -1,9 +1,11 @@
 #include "main.h"
 #include "usb.hpp"
+#include "INA219.hpp"
 #include "cmsis_os.h"
 #include "usb_device.h"
 
 Usb Usb;
+INA219 Ina219;
 
 I2C_HandleTypeDef hi2c1;
 
@@ -16,9 +18,23 @@ void taskUsbRx(void *)
   while (true)
   {
     Usb.processRx();
+  }
+}
 
-    // HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_1);
-    // osDelay(1000);
+void taskReadSensors(void *)
+{
+
+  Ina219.init();
+  float voltage;
+
+  while (true)
+  {
+    voltage = Ina219.getBusVoltage_V();
+    Usb.printf("vol %f\n", voltage);
+    Usb.printf("shunt %f\n", Ina219.getShuntVoltage_mV());
+
+    HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_1);
+    osDelay(1000);
   }
 }
 
@@ -36,6 +52,7 @@ int main(void)
   Usb.init();
 
   xTaskCreate(taskUsbRx, "taskUsbRx", 1024, nullptr, osPriorityNormal, nullptr);
+  xTaskCreate(taskReadSensors, "taskReadSensors", 1024, nullptr, osPriorityNormal, nullptr);
 
   osKernelStart();
 
