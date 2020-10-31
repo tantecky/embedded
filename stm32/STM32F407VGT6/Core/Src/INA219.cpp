@@ -200,13 +200,13 @@ void INA219::setCalibration_32V_1A(void)
 
     // 3. Calculate possible range of LSBs (Min = 15-bit, Max = 12-bit)
     // MinimumLSB = MaxExpected_I/32767
-    // MinimumLSB = 0.0000305             (30.5�A per bit)
+    // MinimumLSB = 0.0000305             (30.5 uA per bit)
     // MaximumLSB = MaxExpected_I/4096
-    // MaximumLSB = 0.000244              (244�A per bit)
+    // MaximumLSB = 0.000244              (244 uA per bit)
 
     // 4. Choose an LSB between the min and max values
     //    (Preferrably a roundish number close to MinLSB)
-    // CurrentLSB = 0.0000400 (40�A per bit)
+    // CurrentLSB = 0.0000400 (40 uA per bit)
 
     // 5. Compute the calibration register
     // Cal = trunc (0.04096 / (Current_LSB * RSHUNT))
@@ -216,7 +216,7 @@ void INA219::setCalibration_32V_1A(void)
 
     // 6. Calculate the power LSB
     // PowerLSB = 20 * CurrentLSB
-    // PowerLSB = 0.0008 (800�W per bit)
+    // PowerLSB = 0.0008 (800 uW per bit)
 
     // 7. Compute the maximum current and shunt voltage values before overflow
     //
@@ -288,9 +288,9 @@ void INA219::setCalibration_16V_400mA(void)
 
     // 3. Calculate possible range of LSBs (Min = 15-bit, Max = 12-bit)
     // MinimumLSB = MaxExpected_I/32767
-    // MinimumLSB = 0.0000122              (12uA per bit)
+    // MinimumLSB = 0.0000122              (12 uA per bit)
     // MaximumLSB = MaxExpected_I/4096
-    // MaximumLSB = 0.0000977              (98uA per bit)
+    // MaximumLSB = 0.0000977              (98 uA per bit)
 
     // 4. Choose an LSB between the min and max values
     //    (Preferrably a roundish number close to MinLSB)

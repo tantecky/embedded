@@ -5,6 +5,8 @@
 #include "usb_device.h"
 
 I2C_HandleTypeDef hi2c1;
+TIM_HandleTypeDef htim2;
+TIM_OC_InitTypeDef sConfigOC = {0};
 
 Usb Usb;
 INA219 Ina219(&hi2c1);
@@ -12,6 +14,7 @@ INA219 Ina219(&hi2c1);
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_I2C1_Init(void);
+static void MX_TIM2_Init(void);
 
 void taskUsbRx(void *)
 {
@@ -25,17 +28,59 @@ void taskReadSensors(void *)
 {
   while (true)
   {
-    Ina219.setCalibration_32V_1A();
+    Ina219.setCalibration_16V_400mA();
 
     float voltage = Ina219.getBusVoltage_V();
 
     if (!Ina219.gotError())
     {
-      Usb.printf("Bus %.3f v\n", voltage);
+      Usb.printf("Bus %.3f V\n", voltage);
     }
 
     HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_1);
     osDelay(1000);
+  }
+}
+
+void taskPwm(void *)
+{
+
+  sConfigOC.Pulse = 100;
+  HAL_TIM_PWM_ConfigChannel(&htim2, &sConfigOC, TIM_CHANNEL_3);
+  HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_3);
+
+  while (true)
+  {
+    Serial.printf("PWM 100\n");
+
+    osDelay(10000);
+    sConfigOC.Pulse = 75;
+    HAL_TIM_PWM_ConfigChannel(&htim2, &sConfigOC, TIM_CHANNEL_3);
+    HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_3);
+    Serial.printf("PWM 75\n");
+
+    osDelay(10000);
+    sConfigOC.Pulse = 50;
+    HAL_TIM_PWM_ConfigChannel(&htim2, &sConfigOC, TIM_CHANNEL_3);
+    HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_3);
+    Serial.printf("PWM 50\n");
+
+    osDelay(10000);
+    sConfigOC.Pulse = 25;
+    HAL_TIM_PWM_ConfigChannel(&htim2, &sConfigOC, TIM_CHANNEL_3);
+    HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_3);
+    Serial.printf("PWM 25\n");
+
+    osDelay(10000);
+    sConfigOC.Pulse = 0;
+    HAL_TIM_PWM_ConfigChannel(&htim2, &sConfigOC, TIM_CHANNEL_3);
+    HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_3);
+    Serial.printf("PWM 0\n");
+
+    osDelay(10000);
+    sConfigOC.Pulse = 100;
+    HAL_TIM_PWM_ConfigChannel(&htim2, &sConfigOC, TIM_CHANNEL_3);
+    HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_3);
   }
 }
 
@@ -46,6 +91,7 @@ int main(void)
   SystemClock_Config();
   MX_GPIO_Init();
   MX_I2C1_Init();
+  MX_TIM2_Init();
   MX_USB_DEVICE_Init();
 
   osKernelInitialize();
@@ -54,6 +100,7 @@ int main(void)
 
   xTaskCreate(taskUsbRx, "taskUsbRx", 1024, nullptr, osPriorityNormal, nullptr);
   xTaskCreate(taskReadSensors, "taskReadSensors", 1024, nullptr, osPriorityNormal, nullptr);
+  xTaskCreate(taskPwm, "taskPwm", 1024, nullptr, osPriorityNormal, nullptr);
 
   osKernelStart();
 
@@ -103,6 +150,53 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
+}
+
+/**
+  * @brief TIM2 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM2_Init(void)
+{
+
+  /* USER CODE BEGIN TIM2_Init 0 */
+
+  /* USER CODE END TIM2_Init 0 */
+
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+
+  /* USER CODE BEGIN TIM2_Init 1 */
+
+  /* USER CODE END TIM2_Init 1 */
+  htim2.Instance = TIM2;
+  htim2.Init.Prescaler = 84 - 1;
+  htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim2.Init.Period = 100 - 1;
+  htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_PWM_Init(&htim2) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim2, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sConfigOC.OCMode = TIM_OCMODE_PWM1;
+  sConfigOC.Pulse = 50;
+  sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
+  sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
+  if (HAL_TIM_PWM_ConfigChannel(&htim2, &sConfigOC, TIM_CHANNEL_3) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM2_Init 2 */
+
+  /* USER CODE END TIM2_Init 2 */
+  HAL_TIM_MspPostInit(&htim2);
 }
 
 /**
