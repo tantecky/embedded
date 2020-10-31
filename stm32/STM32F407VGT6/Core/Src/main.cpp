@@ -1,14 +1,13 @@
 #include "main.h"
 #include "usb.hpp"
 #include "INA219.hpp"
-#include "Adafruit_INA219.h"
 #include "cmsis_os.h"
 #include "usb_device.h"
 
-Usb Usb;
-// INA219 Ina219;
-
 I2C_HandleTypeDef hi2c1;
+
+Usb Usb;
+INA219 Ina219(&hi2c1);
 
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
@@ -24,17 +23,16 @@ void taskUsbRx(void *)
 
 void taskReadSensors(void *)
 {
-
-  // Ina219.init();
-  float voltage;
-
   while (true)
   {
-    // voltage = Ina219.getBusVoltage_V();
-    setCalibration_32V_1A();
+    Ina219.setCalibration_32V_1A();
 
-    voltage = getBusVoltage_V();
-    Usb.printf("Bus %.3f v\n", voltage);
+    float voltage = Ina219.getBusVoltage_V();
+
+    if (!Ina219.gotError())
+    {
+      Usb.printf("Bus %.3f v\n", voltage);
+    }
 
     HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_1);
     osDelay(1000);
