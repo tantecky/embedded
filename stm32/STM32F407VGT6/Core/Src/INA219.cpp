@@ -50,7 +50,7 @@ void INA219::wireWriteRegister(uint8_t reg, uint16_t value)
     else
     {
         gotError_ = true;
-        Serial.printf("INA219::wireWriteRegister failed with: %d\n", ret);
+        Serial.printf("INA219::wireWriteRegister failed with: %d\r\n", ret);
     }
 }
 
@@ -73,7 +73,7 @@ void INA219::wireReadRegister(uint8_t reg, uint16_t *value)
     else
     {
         gotError_ = true;
-        Serial.printf("INA219::wireReadRegister failed with %d\n", ret);
+        Serial.printf("INA219::wireReadRegister failed with %d\r\n", ret);
     }
 }
 

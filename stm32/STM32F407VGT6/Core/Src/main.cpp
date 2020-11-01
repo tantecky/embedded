@@ -34,7 +34,7 @@ void taskReadSensors(void *)
 
     if (!Ina219.gotError())
     {
-      Usb.printf("Bus %.3f V\n", voltage);
+      Serial.printf("Bus %.3f V\r\n", voltage);
     }
 
     HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_1);
@@ -51,31 +51,31 @@ void taskPwm(void *)
 
   while (true)
   {
-    Serial.printf("PWM 100\n");
+    Serial.printf("PWM 100\r\n");
 
     osDelay(10000);
     sConfigOC.Pulse = 75;
     HAL_TIM_PWM_ConfigChannel(&htim2, &sConfigOC, TIM_CHANNEL_3);
     HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_3);
-    Serial.printf("PWM 75\n");
+    Serial.printf("PWM 75\r\n");
 
     osDelay(10000);
     sConfigOC.Pulse = 50;
     HAL_TIM_PWM_ConfigChannel(&htim2, &sConfigOC, TIM_CHANNEL_3);
     HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_3);
-    Serial.printf("PWM 50\n");
+    Serial.printf("PWM 50\r\n");
 
     osDelay(10000);
     sConfigOC.Pulse = 25;
     HAL_TIM_PWM_ConfigChannel(&htim2, &sConfigOC, TIM_CHANNEL_3);
     HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_3);
-    Serial.printf("PWM 25\n");
+    Serial.printf("PWM 25\r\n");
 
     osDelay(10000);
     sConfigOC.Pulse = 0;
     HAL_TIM_PWM_ConfigChannel(&htim2, &sConfigOC, TIM_CHANNEL_3);
     HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_3);
-    Serial.printf("PWM 0\n");
+    Serial.printf("PWM 0\r\n");
 
     osDelay(10000);
     sConfigOC.Pulse = 100;
