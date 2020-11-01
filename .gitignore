@@ -34,6 +34,6 @@ _autosave-*
 
 # stm32cudeide
 Debug/
+Release/
 .settings/
 .mxproject
-.cproject

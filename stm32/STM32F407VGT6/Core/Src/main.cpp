@@ -28,7 +28,7 @@ void taskReadSensors(void *)
 {
   while (true)
   {
-    Ina219.setCalibration_16V_400mA();
+    Ina219.setCustomCalibration();
 
     float voltage = Ina219.getBusVoltage_V();
 

@@ -224,14 +224,6 @@ private:
 
     uint32_t ina219_calValue;
 
-#define BUFFERLEN 32
-    int16_t contBuffer[BUFFERLEN];
-    unsigned int bufferPos;
-
-    /* Holds currently type of continuous measurement (voltage, power, current).
-     * Used to avoid floating point numbers prolification */
-    int measureType;
-
     bool gotError_;
 
 public:
@@ -246,6 +238,8 @@ public:
     void setCalibration_32V_2A(void);
     void setCalibration_32V_1A(void);
     void setCalibration_16V_400mA(void);
+    void setCustomCalibration(void);
+
     float getBusVoltage_V(void);
     float getShuntVoltage_mV(void);
     float getCurrent_mA(void);
@@ -257,10 +251,6 @@ public:
     int16_t getShuntVoltage_raw(void);
     int16_t getCurrent_raw(void);
     int16_t getPower_raw(void);
-    int contMeasureInit(uint8_t reg);
-    float convertMeasure(int rawValue);
-    int contMeasureUpdate(void);
-    int getNSamples(void);
 
     inline bool gotError() const { return gotError_; }
 };

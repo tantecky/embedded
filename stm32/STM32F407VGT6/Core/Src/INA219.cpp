@@ -353,6 +353,27 @@ void INA219::setCalibration_16V_400mA(void)
     wireWriteRegister(INA219_REG_CONFIG, config);
 }
 
+// only VBUS measurement
+void INA219::setCustomCalibration(void)
+{
+    ina219_calValue = 8192;
+
+    // Set multipliers to convert raw current/power values
+    ina219_currentDivider_mA = 20; // Current LSB = 50uA per bit (1000/50 = 20)
+    ina219_powerMultiplier_mW = 1; // Power LSB = 1mW per bit
+
+    // Set Calibration register to 'Cal' calculated above
+    wireWriteRegister(INA219_REG_CALIBRATION, ina219_calValue);
+
+    // Set Config register to take into account the settings above
+    uint16_t config = INA219_CONFIG_BVOLTAGERANGE_16V |
+                      INA219_CONFIG_GAIN_1_40MV |
+                      INA219_CONFIG_BADCRES_12BIT |
+                      INA219_CONFIG_SADCRES_12BIT_128S_69MS |
+                      INA219_CONFIG_MODE_BVOLT_CONTINUOUS;
+    wireWriteRegister(INA219_REG_CONFIG, config);
+}
+
 /**************************************************************************/
 /*!
     @brief  Gets the raw bus voltage (16-bit signed integer, so +-32767)
@@ -500,86 +521,4 @@ float INA219::getPower_mW()
 
     valueDec *= ina219_powerMultiplier_mW;
     return valueDec;
-}
-
-/* Initialize continuous measurement.
- * Sets register pointer to desired measurement type (current, bus voltage, shunt voltage, power).
- * @param reg Device register
- */
-int INA219::contMeasureInit(uint8_t reg)
-{
-    HAL_StatusTypeDef status;
-    measureType = reg;
-
-    /* Set register pointer to desired register */
-    status = HAL_I2C_Master_Transmit(hi2c1, address << 1, &reg, 1, 0xffffffff);
-    if (status != HAL_OK)
-        while (1)
-            ;
-
-    bufferPos = 0;
-    memset(contBuffer, 0, sizeof(contBuffer));
-
-    return 0;
-}
-
-/* Updates measurement buffers. To be called periodically by application.
- * @retval Current buffer position
- */
-int INA219::contMeasureUpdate(void)
-{
-    HAL_StatusTypeDef status;
-    uint8_t measure[2];
-
-    status = HAL_I2C_Master_Receive(hi2c1, address << 1, (uint8_t *)&measure, 2, 0xffffffff);
-    if (status != HAL_OK)
-        while (1)
-            ;
-
-    /* Change endinanness */
-    if (bufferPos < BUFFERLEN)
-        contBuffer[bufferPos++] = ina219_powerMultiplier_mW * (((uint16_t)measure[0] << 8) | (uint16_t)measure[1]);
-
-    return bufferPos;
-}
-
-/** Converts a given integer raw measure in actual floating point one
- * @param rawValue Raw value as obtained from continuous measurement buffer
- * @retval Actual floating point value of given raw measurement
- */
-float INA219::convertMeasure(int rawValue)
-{
-    float val = rawValue;
-
-    switch (measureType)
-    {
-    case INA219_REG_SHUNTVOLTAGE:
-        val *= 0.01f;
-        break;
-
-    case INA219_REG_BUSVOLTAGE:
-        val *= 0.001f;
-        break;
-
-    case INA219_REG_POWER:
-        val *= ina219_powerMultiplier_mW;
-        break;
-
-    case INA219_REG_CURRENT:
-        val /= ina219_currentDivider_mA;
-        break;
-
-    default:
-        val = -1;
-    }
-
-    return val;
-}
-
-/** Returns the number of samples that have been acquired during continous measurement
- * @retval Numner of samples acquired
- */
-int INA219::getNSamples(void)
-{
-    return bufferPos;
 }
