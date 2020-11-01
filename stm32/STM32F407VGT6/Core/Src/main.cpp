@@ -4,6 +4,7 @@
 #include "cmsis_os.h"
 #include "usb_device.h"
 
+DAC_HandleTypeDef hdac;
 I2C_HandleTypeDef hi2c1;
 TIM_HandleTypeDef htim2;
 TIM_OC_InitTypeDef sConfigOC = {0};
@@ -15,6 +16,7 @@ void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_I2C1_Init(void);
 static void MX_TIM2_Init(void);
+static void MX_DAC_Init();
 
 void taskUsbRx(void *)
 {
@@ -34,7 +36,9 @@ void taskReadSensors(void *)
 
     if (!Ina219.gotError())
     {
+#pragma GCC diagnostic ignored "-Wdouble-promotion"
       Serial.printf("Bus %.3f V\r\n", voltage);
+#pragma GCC diagnostic pop
     }
 
     HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_1);
@@ -84,6 +88,37 @@ void taskPwm(void *)
   }
 }
 
+void taskDac(void *)
+{
+
+  HAL_DAC_Init(&hdac);
+  HAL_DAC_Start(&hdac, DAC_CHANNEL_1);
+
+  while (true)
+  {
+    // 4095 is max
+    Serial.printf("DAC 100\r\n");
+    HAL_DAC_SetValue(&hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_R, 4095);
+    osDelay(10000);
+
+    Serial.printf("DAC 75\r\n");
+    HAL_DAC_SetValue(&hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_R, 4095 * 0.75f);
+    osDelay(10000);
+
+    Serial.printf("DAC 50\r\n");
+    HAL_DAC_SetValue(&hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_R, 4095 * 0.5f);
+    osDelay(10000);
+
+    Serial.printf("DAC 25\r\n");
+    HAL_DAC_SetValue(&hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_R, 4095 * 0.25f);
+    osDelay(10000);
+
+    Serial.printf("DAC 0\r\n");
+    HAL_DAC_SetValue(&hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_R, 0);
+    osDelay(10000);
+  }
+}
+
 int main(void)
 {
 
@@ -92,15 +127,17 @@ int main(void)
   MX_GPIO_Init();
   MX_I2C1_Init();
   MX_TIM2_Init();
+  MX_DAC_Init();
   MX_USB_DEVICE_Init();
 
   osKernelInitialize();
 
   Usb.init();
 
-  xTaskCreate(taskUsbRx, "taskUsbRx", 1024, nullptr, osPriorityNormal, nullptr);
-  xTaskCreate(taskReadSensors, "taskReadSensors", 1024, nullptr, osPriorityNormal, nullptr);
-  xTaskCreate(taskPwm, "taskPwm", 1024, nullptr, osPriorityNormal, nullptr);
+  xTaskCreate(taskUsbRx, "taskUsbRx", 256, nullptr, osPriorityNormal, nullptr);
+  xTaskCreate(taskReadSensors, "taskReadSensors", 256, nullptr, osPriorityNormal, nullptr);
+  xTaskCreate(taskDac, "taskDac", 256, nullptr, osPriorityNormal, nullptr);
+  //xTaskCreate(taskPwm, "taskPwm", 256, nullptr, osPriorityNormal, nullptr);
 
   osKernelStart();
 
@@ -150,6 +187,38 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
+}
+
+static void MX_DAC_Init(void)
+{
+
+  /* USER CODE BEGIN DAC_Init 0 */
+
+  /* USER CODE END DAC_Init 0 */
+
+  DAC_ChannelConfTypeDef sConfig = {0};
+
+  /* USER CODE BEGIN DAC_Init 1 */
+
+  /* USER CODE END DAC_Init 1 */
+  /** DAC Initialization
+  */
+  hdac.Instance = DAC;
+  if (HAL_DAC_Init(&hdac) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /** DAC channel OUT1 config
+  */
+  sConfig.DAC_Trigger = DAC_TRIGGER_NONE;
+  sConfig.DAC_OutputBuffer = DAC_OUTPUTBUFFER_ENABLE;
+  if (HAL_DAC_ConfigChannel(&hdac, &sConfig, DAC_CHANNEL_1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN DAC_Init 2 */
+
+  /* USER CODE END DAC_Init 2 */
 }
 
 /**
