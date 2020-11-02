@@ -38,8 +38,8 @@ void taskReadSensors(void *)
     {
       const float pressure = (voltage - 1.f) * 0.125f * 1000 * 100;
 #pragma GCC diagnostic ignored "-Wdouble-promotion"
-      // Serial.printf("Bus %.3f V p: %.3f Pa\r\n", voltage, pressure);
-      Serial.printf("%.3f\r\n", pressure);
+      Serial.printf("Bus %.3f V p: %.3f Pa\r\n", voltage, pressure);
+      // Serial.printf("%.3f\r\n", pressure);
 #pragma GCC diagnostic pop
     }
 
@@ -52,14 +52,8 @@ void taskPwm(void *)
 {
 
   sConfigOC.Pulse = 100;
-  sConfigOC.Pulse = 50;
   HAL_TIM_PWM_ConfigChannel(&htim2, &sConfigOC, TIM_CHANNEL_3);
   HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_3);
-
-  while (true)
-  {
-    /* code */
-  }
 
   while (true)
   {
@@ -145,7 +139,7 @@ int main(void)
   xTaskCreate(taskUsbRx, "taskUsbRx", 256, nullptr, osPriorityNormal, nullptr);
   xTaskCreate(taskReadSensors, "taskReadSensors", 256, nullptr, osPriorityNormal, nullptr);
   xTaskCreate(taskDac, "taskDac", 256, nullptr, osPriorityNormal, nullptr);
-  xTaskCreate(taskPwm, "taskPwm", 256, nullptr, osPriorityNormal, nullptr);
+  // xTaskCreate(taskPwm, "taskPwm", 256, nullptr, osPriorityNormal, nullptr);
 
   osKernelStart();
 
