@@ -32,12 +32,14 @@ void taskReadSensors(void *)
   {
     Ina219.setCustomCalibration();
 
-    float voltage = Ina219.getBusVoltage_V();
+    const float voltage = Ina219.getBusVoltage_V();
 
     if (!Ina219.gotError())
     {
+      const float pressure = (voltage - 1.f) * 0.125f * 1000 * 100;
 #pragma GCC diagnostic ignored "-Wdouble-promotion"
-      Serial.printf("Bus %.3f V\r\n", voltage);
+      // Serial.printf("Bus %.3f V p: %.3f Pa\r\n", voltage, pressure);
+      Serial.printf("%.3f\r\n", pressure);
 #pragma GCC diagnostic pop
     }
 
@@ -50,36 +52,42 @@ void taskPwm(void *)
 {
 
   sConfigOC.Pulse = 100;
+  sConfigOC.Pulse = 50;
   HAL_TIM_PWM_ConfigChannel(&htim2, &sConfigOC, TIM_CHANNEL_3);
   HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_3);
 
   while (true)
   {
-    Serial.printf("PWM 100\r\n");
+    /* code */
+  }
+
+  while (true)
+  {
+    // Serial.printf("PWM 100\r\n");
 
     osDelay(10000);
     sConfigOC.Pulse = 75;
     HAL_TIM_PWM_ConfigChannel(&htim2, &sConfigOC, TIM_CHANNEL_3);
     HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_3);
-    Serial.printf("PWM 75\r\n");
+    // Serial.printf("PWM 75\r\n");
 
     osDelay(10000);
     sConfigOC.Pulse = 50;
     HAL_TIM_PWM_ConfigChannel(&htim2, &sConfigOC, TIM_CHANNEL_3);
     HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_3);
-    Serial.printf("PWM 50\r\n");
+    // Serial.printf("PWM 50\r\n");
 
     osDelay(10000);
     sConfigOC.Pulse = 25;
     HAL_TIM_PWM_ConfigChannel(&htim2, &sConfigOC, TIM_CHANNEL_3);
     HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_3);
-    Serial.printf("PWM 25\r\n");
+    // Serial.printf("PWM 25\r\n");
 
     osDelay(10000);
     sConfigOC.Pulse = 0;
     HAL_TIM_PWM_ConfigChannel(&htim2, &sConfigOC, TIM_CHANNEL_3);
     HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_3);
-    Serial.printf("PWM 0\r\n");
+    // Serial.printf("PWM 0\r\n");
 
     osDelay(10000);
     sConfigOC.Pulse = 100;
@@ -97,23 +105,23 @@ void taskDac(void *)
   while (true)
   {
     // 4095 is max
-    Serial.printf("DAC 100\r\n");
+    // Serial.printf("DAC 100\r\n");
     HAL_DAC_SetValue(&hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_R, 4095);
     osDelay(10000);
 
-    Serial.printf("DAC 75\r\n");
+    // Serial.printf("DAC 75\r\n");
     HAL_DAC_SetValue(&hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_R, 4095 * 0.75f);
     osDelay(10000);
 
-    Serial.printf("DAC 50\r\n");
+    // Serial.printf("DAC 50\r\n");
     HAL_DAC_SetValue(&hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_R, 4095 * 0.5f);
     osDelay(10000);
 
-    Serial.printf("DAC 25\r\n");
+    // Serial.printf("DAC 25\r\n");
     HAL_DAC_SetValue(&hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_R, 4095 * 0.25f);
     osDelay(10000);
 
-    Serial.printf("DAC 0\r\n");
+    // Serial.printf("DAC 0\r\n");
     HAL_DAC_SetValue(&hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_R, 0);
     osDelay(10000);
   }
@@ -137,7 +145,7 @@ int main(void)
   xTaskCreate(taskUsbRx, "taskUsbRx", 256, nullptr, osPriorityNormal, nullptr);
   xTaskCreate(taskReadSensors, "taskReadSensors", 256, nullptr, osPriorityNormal, nullptr);
   xTaskCreate(taskDac, "taskDac", 256, nullptr, osPriorityNormal, nullptr);
-  //xTaskCreate(taskPwm, "taskPwm", 256, nullptr, osPriorityNormal, nullptr);
+  xTaskCreate(taskPwm, "taskPwm", 256, nullptr, osPriorityNormal, nullptr);
 
   osKernelStart();
 
