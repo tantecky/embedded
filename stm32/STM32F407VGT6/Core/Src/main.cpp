@@ -6,7 +6,6 @@
 
 DAC_HandleTypeDef hdac;
 I2C_HandleTypeDef hi2c1;
-TIM_HandleTypeDef htim2;
 
 Usb Usb;
 INA219 Ina219(&hi2c1);
@@ -28,16 +27,12 @@ void taskReadSensors(void *)
 {
   while (true)
   {
-    Ina219.setCustomCalibration();
-
-    const float voltage = Ina219.getBusVoltage_V();
+    const float voltage = Ina219.getVoltage();
 
     if (!Ina219.gotError())
     {
-      const float pressure = (voltage - 1.f) * 0.125f * 1000 * 100;
 #pragma GCC diagnostic ignored "-Wdouble-promotion"
-      Serial.printf("Bus %.3f V p: %.3f Pa\r\n", voltage, pressure);
-      // Serial.printf("%.3f\r\n", pressure);
+      Serial.printf("Bus %.3f V p: %.3f Pa\r\n", voltage, Ina219.getPressure());
 #pragma GCC diagnostic pop
     }
 

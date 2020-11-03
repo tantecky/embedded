@@ -24,6 +24,7 @@
 #define B4AB539B_22EB_4BE7_9339_7E4290481024
 
 #include "main.h"
+#include "pressure_sensor.hpp"
 
 /**************************************************************************/
 /*!
@@ -208,7 +209,7 @@ enum
 #define INA219_REG_CALIBRATION (0x05)
 /*=========================================================================*/
 
-class INA219
+class INA219 : public PressureSensor
 {
 
 private:
@@ -227,7 +228,7 @@ private:
     bool gotError_;
 
 public:
-    INA219(I2C_HandleTypeDef *handle, uint16_t addr) : hi2c1(handle), address(addr)
+    INA219(I2C_HandleTypeDef *handle, uint16_t addr) : hi2c1(handle), address(addr), gotError_(false)
     {
     }
 
@@ -240,19 +241,20 @@ public:
     void setCalibration_16V_400mA(void);
     void setCustomCalibration(void);
 
-    float getBusVoltage_V(void);
+    const float getBusVoltage_V(void);
     float getShuntVoltage_mV(void);
     float getCurrent_mA(void);
     float getPower_mW(void);
 
     void wireWriteRegister(uint8_t reg, uint16_t value);
     void wireReadRegister(uint8_t reg, uint16_t *value);
-    int16_t getBusVoltage_raw(void);
+    const int16_t getBusVoltage_raw(void);
     int16_t getShuntVoltage_raw(void);
     int16_t getCurrent_raw(void);
     int16_t getPower_raw(void);
 
-    inline bool gotError() const { return gotError_; }
+    const float getVoltage() override;
+    inline const bool gotError() const override { return gotError_; }
 };
 
 #endif /* B4AB539B_22EB_4BE7_9339_7E4290481024 */

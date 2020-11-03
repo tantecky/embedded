@@ -380,7 +380,7 @@ void INA219::setCustomCalibration(void)
     @return the raw bus voltage reading
 */
 /**************************************************************************/
-int16_t INA219::getBusVoltage_raw()
+const int16_t INA219::getBusVoltage_raw()
 {
     uint16_t value;
     wireReadRegister(INA219_REG_BUSVOLTAGE, &value);
@@ -454,8 +454,7 @@ int16_t INA219::getPower_raw()
 /**************************************************************************/
 float INA219::getShuntVoltage_mV()
 {
-    int16_t value;
-    value = getShuntVoltage_raw();
+    const int16_t value = getShuntVoltage_raw();
 
     if (gotError_)
     {
@@ -471,9 +470,9 @@ float INA219::getShuntVoltage_mV()
     @return the bus voltage converted to volts
 */
 /**************************************************************************/
-float INA219::getBusVoltage_V()
+const float INA219::getBusVoltage_V()
 {
-    int16_t value = getBusVoltage_raw();
+    const int16_t value = getBusVoltage_raw();
 
     if (gotError_)
     {
@@ -521,4 +520,10 @@ float INA219::getPower_mW()
 
     valueDec *= ina219_powerMultiplier_mW;
     return valueDec;
+}
+
+const float INA219::getVoltage()
+{
+    setCustomCalibration();
+    return getBusVoltage_V();
 }
