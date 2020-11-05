@@ -27,7 +27,7 @@ public:
                                                                   ki_(ki),
                                                                   kd_(kd),
                                                                   prevError_(0),
-                                                                  prevTicks_(0),
+                                                                  prevTicks_(),
                                                                   iError_(0)
     {
     }
@@ -35,7 +35,7 @@ public:
     inline void reset()
     {
         prevError_ = 0;
-        prevTicks_ = 0;
+        prevTicks_ = HAL_GetTick();
         iError_ = 0;
     }
 

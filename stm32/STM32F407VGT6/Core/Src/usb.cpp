@@ -42,7 +42,7 @@ void Usb::processRx()
     }
 
     write(rxBuffer_, bytesReceived_);
-    printf("Ticks %d\r\n", HAL_GetTick());
+    // printf("Ticks %d\r\n", HAL_GetTick());
 }
 
 void Usb::write(uint8_t *text, uint16_t len)
