@@ -1,7 +1,7 @@
 #include "main.h"
 #include "usb.hpp"
 #include "dac.hpp"
-#include "INA219.hpp"
+#include "ina219.hpp"
 #include "pid.hpp"
 #include "cmsis_os.h"
 #include "usb_device.h"

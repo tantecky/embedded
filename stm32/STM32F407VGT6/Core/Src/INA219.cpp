@@ -22,7 +22,7 @@
 
 #include <stdint.h>
 #include <string.h>
-#include "INA219.hpp"
+#include "ina219.hpp"
 #include "cmsis_os.h"
 #include "main.h"
 #include "usb.hpp"
