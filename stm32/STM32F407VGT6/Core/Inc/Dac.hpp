@@ -2,8 +2,9 @@
 #define C8C4C8E5_C4BB_4FD6_8D73_2DA7EEBA7082
 
 #include "main.h"
+#include "actor.hpp"
 
-class Dac
+class Dac : public Actor<uint16_t>
 {
 private:
     DAC_HandleTypeDef *handle_;
@@ -23,7 +24,9 @@ public:
     }
 
     void init(const uint16_t initValue = 0);
-    void setValue(const uint16_t value);
+    void setValue(const uint16_t value) override;
+    const uint16_t getMinValue() const override { return minValue_; }
+    const uint16_t getMaxValue() const override { return maxValue_; }
 };
 
 #endif /* C8C4C8E5_C4BB_4FD6_8D73_2DA7EEBA7082 */

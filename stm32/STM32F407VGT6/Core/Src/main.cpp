@@ -2,6 +2,7 @@
 #include "usb.hpp"
 #include "dac.hpp"
 #include "INA219.hpp"
+#include "pid.hpp"
 #include "cmsis_os.h"
 #include "usb_device.h"
 
@@ -11,6 +12,7 @@ I2C_HandleTypeDef hi2c1;
 Usb Usb;
 Dac Dac(&hdac, DAC_CHANNEL_1, 0, 4095);
 INA219 Ina219(&hi2c1);
+Pid<uint16_t> PidDac(Dac, Ina219, 2, 0.2f);
 
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
