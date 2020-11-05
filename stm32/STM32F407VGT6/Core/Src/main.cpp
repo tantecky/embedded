@@ -12,7 +12,7 @@ I2C_HandleTypeDef hi2c1;
 Usb Usb;
 Dac Dac(&hdac, DAC_CHANNEL_1, 0, 4095);
 INA219 Ina219(&hi2c1);
-Pid<uint16_t> PidDac(Dac, Ina219, 1, 0.1f);
+Pid<uint16_t> PidDac(Dac, Ina219, 1, 0.5f);
 
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
@@ -82,7 +82,7 @@ void taskPid(void *)
   while (true)
   {
     PidDac.update(2);
-    osDelay(pdMS_TO_TICKS(1000));
+    osDelay(pdMS_TO_TICKS(100));
   }
 }
 
@@ -104,7 +104,7 @@ int main(void)
   xTaskCreate(taskUsbRx, "taskUsbRx", 256, nullptr, osPriorityNormal, nullptr);
   xTaskCreate(taskReadSensors, "taskReadSensors", 256, nullptr, osPriorityNormal, nullptr);
   // xTaskCreate(taskDac, "taskDac", 256, nullptr, osPriorityNormal, nullptr);
-  xTaskCreate(taskPid, "taskPid", 256, nullptr, osPriorityNormal, nullptr);
+  xTaskCreate(taskPid, "taskPid", 512, nullptr, osPriorityNormal, nullptr);
 
   osKernelStart();
 

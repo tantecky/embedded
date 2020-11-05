@@ -48,7 +48,6 @@ public:
 
 #pragma GCC diagnostic ignored "-Wdouble-promotion"
         // Serial.printf("ERR: %.3f\r\n", error);
-        Serial.printf("XXX\r\n");
 #pragma GCC diagnostic pop
 
         float output = kp_ * error;
