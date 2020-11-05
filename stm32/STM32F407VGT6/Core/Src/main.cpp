@@ -12,7 +12,7 @@ I2C_HandleTypeDef hi2c1;
 Usb Usb;
 Dac Dac(&hdac, DAC_CHANNEL_1, 0, 4095);
 INA219 Ina219(&hi2c1);
-Pid<uint16_t> PidDac(Dac, Ina219, 2, 0.2f);
+Pid<uint16_t> PidDac(Dac, Ina219, 1, 0.1f);
 
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
@@ -36,12 +36,13 @@ void taskReadSensors(void *)
     if (!Ina219.gotError())
     {
 #pragma GCC diagnostic ignored "-Wdouble-promotion"
-      Serial.printf("Bus %.3f V p: %.3f Pa\r\n", voltage, Ina219.getPressure());
+      // Serial.printf("Bus %.3f V p: %.3f Pa\r\n", voltage, Ina219.getPressure());
+      Serial.printf("%.3f\r\n", voltage);
 #pragma GCC diagnostic pop
     }
 
     HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_1);
-    osDelay(1000);
+    osDelay(pdMS_TO_TICKS(1000));
   }
 }
 
@@ -73,6 +74,18 @@ void taskDac(void *)
   }
 }
 
+void taskPid(void *)
+{
+
+  osDelay(pdMS_TO_TICKS(5000));
+
+  while (true)
+  {
+    PidDac.update(2);
+    osDelay(pdMS_TO_TICKS(1000));
+  }
+}
+
 int main(void)
 {
 
@@ -90,7 +103,8 @@ int main(void)
 
   xTaskCreate(taskUsbRx, "taskUsbRx", 256, nullptr, osPriorityNormal, nullptr);
   xTaskCreate(taskReadSensors, "taskReadSensors", 256, nullptr, osPriorityNormal, nullptr);
-  xTaskCreate(taskDac, "taskDac", 256, nullptr, osPriorityNormal, nullptr);
+  // xTaskCreate(taskDac, "taskDac", 256, nullptr, osPriorityNormal, nullptr);
+  xTaskCreate(taskPid, "taskPid", 256, nullptr, osPriorityNormal, nullptr);
 
   osKernelStart();
 

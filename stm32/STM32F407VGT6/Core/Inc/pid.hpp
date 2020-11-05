@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include "actor.hpp"
 #include "sensor.hpp"
+#include "usb.hpp"
 
 template <typename T>
 class Pid
@@ -41,7 +42,40 @@ public:
     inline const T getMinValue() const { return actor_.getMinValue(); }
     inline const T getMaxValue() const { return actor_.getMaxValue(); }
 
-    void update(const float target);
+    void update(const float target)
+    {
+        const float error = target - sensor_.getValue();
+
+#pragma GCC diagnostic ignored "-Wdouble-promotion"
+        // Serial.printf("ERR: %.3f\r\n", error);
+        Serial.printf("XXX\r\n");
+#pragma GCC diagnostic pop
+
+        float output = kp_ * error;
+
+        const uint32_t dt = HAL_GetTick() - prevTicks_;
+
+        if (dt > 0)
+        {
+            iError_ += error * dt;
+            output += ki_ * iError_;
+            output += kd_ * (error - prevError_) / dt;
+        }
+
+        if (output > getMaxValue())
+        {
+            output = getMaxValue();
+        }
+        else if (output < getMinValue())
+        {
+            output = getMinValue();
+        }
+
+        prevError_ = error;
+        prevTicks_ = HAL_GetTick();
+
+        actor_.setValue(static_cast<T>(output));
+    };
 };
 
 #endif /* DB5DAA6B_E806_4EBE_ACAA_CB06436A6D81 */
