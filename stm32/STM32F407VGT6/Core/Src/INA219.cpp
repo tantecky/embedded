@@ -40,7 +40,7 @@ void INA219::wireWriteRegister(uint8_t reg, uint16_t value)
     i2c_temp[0] = value >> 8;
     i2c_temp[1] = value;
 
-    const HAL_StatusTypeDef ret = HAL_I2C_Mem_Write(hi2c1, address << 1, (uint16_t)reg, 1, i2c_temp, 2, Timeout);
+    const HAL_StatusTypeDef ret = HAL_I2C_Mem_Write(handle_, address_ << 1, (uint16_t)reg, 1, i2c_temp, 2, Timeout);
 
     if (ret == HAL_OK)
     {
@@ -62,7 +62,7 @@ void INA219::wireWriteRegister(uint8_t reg, uint16_t value)
 void INA219::wireReadRegister(uint8_t reg, uint16_t *value)
 {
     uint8_t i2c_temp[2];
-    const HAL_StatusTypeDef ret = HAL_I2C_Mem_Read(hi2c1, address << 1, (uint16_t)reg, 1, i2c_temp, 2, Timeout);
+    const HAL_StatusTypeDef ret = HAL_I2C_Mem_Read(handle_, address_ << 1, (uint16_t)reg, 1, i2c_temp, 2, Timeout);
 
     if (ret == HAL_OK)
     {

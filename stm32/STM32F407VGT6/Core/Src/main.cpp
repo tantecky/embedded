@@ -1,5 +1,6 @@
 #include "main.h"
 #include "usb.hpp"
+#include "dac.hpp"
 #include "INA219.hpp"
 #include "cmsis_os.h"
 #include "usb_device.h"
@@ -8,6 +9,7 @@ DAC_HandleTypeDef hdac;
 I2C_HandleTypeDef hi2c1;
 
 Usb Usb;
+Dac Dac(&hdac, DAC_CHANNEL_1, 0, 4095);
 INA219 Ina219(&hi2c1);
 
 void SystemClock_Config(void);
@@ -44,30 +46,27 @@ void taskReadSensors(void *)
 void taskDac(void *)
 {
 
-  HAL_DAC_Init(&hdac);
-  HAL_DAC_Start(&hdac, DAC_CHANNEL_1);
-
   while (true)
   {
     // 4095 is max
     // Serial.printf("DAC 100\r\n");
-    HAL_DAC_SetValue(&hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_R, 4095);
+    Dac.setValue(4095);
     osDelay(10000);
 
     // Serial.printf("DAC 75\r\n");
-    HAL_DAC_SetValue(&hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_R, 4095 * 0.75f);
+    Dac.setValue(4095 * 0.75f);
     osDelay(10000);
 
     // Serial.printf("DAC 50\r\n");
-    HAL_DAC_SetValue(&hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_R, 4095 * 0.5f);
+    Dac.setValue(4095 * 0.5f);
     osDelay(10000);
 
     // Serial.printf("DAC 25\r\n");
-    HAL_DAC_SetValue(&hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_R, 4095 * 0.25f);
+    Dac.setValue(4095 * 0.25f);
     osDelay(10000);
 
     // Serial.printf("DAC 0\r\n");
-    HAL_DAC_SetValue(&hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_R, 0);
+    Dac.setValue(0);
     osDelay(10000);
   }
 }
@@ -85,6 +84,7 @@ int main(void)
   osKernelInitialize();
 
   Usb.init();
+  Dac.init();
 
   xTaskCreate(taskUsbRx, "taskUsbRx", 256, nullptr, osPriorityNormal, nullptr);
   xTaskCreate(taskReadSensors, "taskReadSensors", 256, nullptr, osPriorityNormal, nullptr);

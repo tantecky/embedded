@@ -215,8 +215,8 @@ class INA219 : public PressureSensor
 private:
     static constexpr uint32_t Timeout = 1000;
 
-    I2C_HandleTypeDef *hi2c1;
-    const uint16_t address;
+    I2C_HandleTypeDef *handle_;
+    const uint16_t address_;
 
     // The following multipliers are used to convert raw current and power
     // values to mA and mW, taking into account the current config settings
@@ -228,7 +228,7 @@ private:
     bool gotError_;
 
 public:
-    INA219(I2C_HandleTypeDef *handle, uint16_t addr) : hi2c1(handle), address(addr), gotError_(false)
+    INA219(I2C_HandleTypeDef *handle, uint16_t addr) : handle_(handle), address_(addr), gotError_(false)
     {
     }
 

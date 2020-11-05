@@ -1,7 +1,9 @@
 #ifndef F4525278_08F3_4EBC_B615_3BC3A700EB07
 #define F4525278_08F3_4EBC_B615_3BC3A700EB07
 
-class PressureSensor
+#include "sensor.hpp"
+
+class PressureSensor : public Sensor
 {
 public:
     virtual ~PressureSensor()
@@ -9,7 +11,11 @@ public:
     }
 
     virtual const float getVoltage() = 0;
-    virtual const bool gotError() const = 0;
+    const inline float getValue() override
+    {
+        // TODO: change to getPressure
+        return getVoltage();
+    }
     const inline float getPressure()
     {
 
