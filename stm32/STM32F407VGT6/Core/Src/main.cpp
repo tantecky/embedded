@@ -32,16 +32,13 @@ void taskReadSensors(void *)
   osDelay(1000);
   while (true)
   {
-    //  const float voltage = Ina219.getVoltage();
+    const float voltage = Ina219.getVoltage();
 
     if (!Ina219.gotError())
     {
 #pragma GCC diagnostic ignored "-Wdouble-promotion"
       // Serial.printf("Bus %.3f V p: %.3f Pa\r\n", voltage, Ina219.getPressure());
-      // Serial.printf("%.3f\r\n", voltage);
-      Serial.printf("Toccks %d\r\n", HAL_GetTick());
-      // Serial.printf("Toccks %.3f\r\n", 1.0f);
-      // Serial.write("LOL\r\n", 5);
+      Serial.printf("%.3f\r\n", voltage);
 #pragma GCC diagnostic pop
     }
 
@@ -86,7 +83,7 @@ void taskPid(void *)
 
   while (true)
   {
-    PidDac.update(6.3);
+    PidDac.update(6.5);
     osDelay(pdMS_TO_TICKS(100));
   }
 }
@@ -106,10 +103,11 @@ int main(void)
   Usb.init();
   Dac.init();
 
+  // 256 is too low
   xTaskCreate(taskUsbRx, "taskUsbRx", 512, nullptr, osPriorityNormal, nullptr);
-  xTaskCreate(taskReadSensors, "taskReadSensors", 256, nullptr, osPriorityNormal, nullptr);
+  xTaskCreate(taskReadSensors, "taskReadSensors", 512, nullptr, osPriorityNormal, nullptr);
   // xTaskCreate(taskDac, "taskDac", 256, nullptr, osPriorityNormal, nullptr);
-  // xTaskCreate(taskPid, "taskPid", 512, nullptr, osPriorityNormal, nullptr);
+  xTaskCreate(taskPid, "taskPid", 512, nullptr, osPriorityNormal, nullptr);
 
   osKernelStart();
 

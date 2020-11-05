@@ -42,7 +42,9 @@ void Usb::processRx()
     }
 
     write(rxBuffer_, bytesReceived_);
-    // printf("Ticks %d\r\n", HAL_GetTick());
+#pragma GCC diagnostic ignored "-Wdouble-promotion"
+    printf("Ticks %f\r\n", 1214.0f);
+#pragma GCC diagnostic pop
 }
 
 void Usb::write(uint8_t *text, uint16_t len)
