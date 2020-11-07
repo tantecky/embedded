@@ -676,7 +676,7 @@ U 1 1 5F8BE4F7
 P 8370 5030
 F 0 "J2" H 8450 5026 50  0000 L CNN
 F 1 "extra pins" H 8450 4981 50  0001 L CNN
-F 2 "Connector_PinHeader_2.54mm:PinHeader_1x05_P2.54mm_Vertical" H 8370 5030 50  0001 C CNN
+F 2 "_my:PinHeader_1x05_P2.54mm_Vertical" H 8370 5030 50  0001 C CNN
 F 3 "~" H 8370 5030 50  0001 C CNN
 	1    8370 5030
 	1    0    0    -1  
