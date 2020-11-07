@@ -658,7 +658,7 @@ Wire Wire Line
 	10170 3150 10280 3150
 Text Notes 750  610  0    50   ~ 0
 Power rail
-Text Notes 5360 1980 0    50   ~ 0
+Text Notes 5160 1980 0    50   ~ 0
 ESP-12F
 Text Notes 650  2100 0    50   ~ 0
 Water sensing circuit\n
@@ -762,4 +762,6 @@ F 3 "" H 6250 2900 50  0001 C CNN
 	1    6250 2900
 	1    0    0    -1  
 $EndComp
+Text Notes 5120 4400 0    50   ~ 0
+VBUS voltage has to be 3V3, not 5V!\nIf you provide power through VBUS, remove batteries first.\nTo flash program: \n  1. Short jumper PROG\n  2. Connect UART\n  3. Short jumper TURN_ON\n
 $EndSCHEMATC
