@@ -149,137 +149,123 @@ Connection ~ 1300 1000
 $Comp
 L Transistor_BJT:BC327 Q1
 U 1 1 5F78C4AB
-P 2050 2350
-F 0 "Q1" H 2241 2304 50  0000 L CNN
-F 1 "BC327" H 2241 2395 50  0000 L CNN
-F 2 "Package_TO_SOT_THT:TO-92_Inline" H 2250 2275 50  0001 L CIN
-F 3 "http://www.onsemi.com/pub_link/Collateral/BC327-D.PDF" H 2050 2350 50  0001 L CNN
-	1    2050 2350
+P 1910 2640
+F 0 "Q1" H 2101 2594 50  0000 L CNN
+F 1 "BC327" H 2101 2685 50  0000 L CNN
+F 2 "Package_TO_SOT_THT:TO-92_Inline" H 2110 2565 50  0001 L CIN
+F 3 "http://www.onsemi.com/pub_link/Collateral/BC327-D.PDF" H 1910 2640 50  0001 L CNN
+	1    1910 2640
 	1    0    0    1   
 $EndComp
 $Comp
 L power:+3V3 #PWR0105
 U 1 1 5F78E830
-P 2150 2150
-F 0 "#PWR0105" H 2150 2000 50  0001 C CNN
-F 1 "+3V3" H 2165 2323 50  0000 C CNN
-F 2 "" H 2150 2150 50  0001 C CNN
-F 3 "" H 2150 2150 50  0001 C CNN
-	1    2150 2150
+P 2010 2440
+F 0 "#PWR0105" H 2010 2290 50  0001 C CNN
+F 1 "+3V3" H 2025 2613 50  0000 C CNN
+F 2 "" H 2010 2440 50  0001 C CNN
+F 3 "" H 2010 2440 50  0001 C CNN
+	1    2010 2440
 	1    0    0    -1  
 $EndComp
 $Comp
 L Device:R_Small R1
 U 1 1 5F78FD80
-P 1750 2350
-F 0 "R1" V 1650 2350 50  0000 C CNN
-F 1 "1k" V 1850 2350 50  0000 C CNN
-F 2 "Resistor_SMD:R_0805_2012Metric_Pad1.15x1.40mm_HandSolder" H 1750 2350 50  0001 C CNN
-F 3 "~" H 1750 2350 50  0001 C CNN
-	1    1750 2350
+P 1610 2640
+F 0 "R1" V 1510 2640 50  0000 C CNN
+F 1 "1k" V 1710 2640 50  0000 C CNN
+F 2 "Resistor_SMD:R_0805_2012Metric_Pad1.15x1.40mm_HandSolder" H 1610 2640 50  0001 C CNN
+F 3 "~" H 1610 2640 50  0001 C CNN
+	1    1610 2640
 	0    1    1    0   
 $EndComp
 $Comp
 L Switch:SW_SPST SW1
 U 1 1 5F792B65
-P 1100 2350
-F 0 "SW1" H 950 2450 50  0000 C CNN
-F 1 "sensing top" H 1150 2250 50  0000 C CNN
-F 2 "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical" H 1100 2350 50  0001 C CNN
-F 3 "~" H 1100 2350 50  0001 C CNN
-	1    1100 2350
+P 1180 2640
+F 0 "SW1" H 1030 2740 50  0000 C CNN
+F 1 "sensing loop" H 1140 2540 50  0000 C CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical" H 1180 2640 50  0001 C CNN
+F 3 "~" H 1180 2640 50  0001 C CNN
+	1    1180 2640
 	-1   0    0    -1  
 $EndComp
 $Comp
 L power:GND #PWR01
 U 1 1 5F793765
-P 800 3080
-F 0 "#PWR01" H 800 2830 50  0001 C CNN
-F 1 "GND" H 805 2907 50  0000 C CNN
-F 2 "" H 800 3080 50  0001 C CNN
-F 3 "" H 800 3080 50  0001 C CNN
-	1    800  3080
+P 860 2820
+F 0 "#PWR01" H 860 2570 50  0001 C CNN
+F 1 "GND" H 865 2647 50  0000 C CNN
+F 2 "" H 860 2820 50  0001 C CNN
+F 3 "" H 860 2820 50  0001 C CNN
+	1    860  2820
 	1    0    0    -1  
 $EndComp
 $Comp
 L Device:R_Small R2
 U 1 1 5F7959A8
-P 2150 3000
-F 0 "R2" H 1950 3050 50  0000 L CNN
-F 1 "1k" H 1950 2950 50  0000 L CNN
-F 2 "Resistor_SMD:R_0805_2012Metric_Pad1.15x1.40mm_HandSolder" H 2150 3000 50  0001 C CNN
-F 3 "~" H 2150 3000 50  0001 C CNN
-	1    2150 3000
+P 2010 3290
+F 0 "R2" H 1810 3340 50  0000 L CNN
+F 1 "1k" H 1810 3240 50  0000 L CNN
+F 2 "Resistor_SMD:R_0805_2012Metric_Pad1.15x1.40mm_HandSolder" H 2010 3290 50  0001 C CNN
+F 3 "~" H 2010 3290 50  0001 C CNN
+	1    2010 3290
 	1    0    0    -1  
 $EndComp
 $Comp
 L power:GND #PWR02
 U 1 1 5F7965D3
-P 2150 3200
-F 0 "#PWR02" H 2150 2950 50  0001 C CNN
-F 1 "GND" H 2155 3027 50  0000 C CNN
-F 2 "" H 2150 3200 50  0001 C CNN
-F 3 "" H 2150 3200 50  0001 C CNN
-	1    2150 3200
+P 2010 3490
+F 0 "#PWR02" H 2010 3240 50  0001 C CNN
+F 1 "GND" H 2015 3317 50  0000 C CNN
+F 2 "" H 2010 3490 50  0001 C CNN
+F 3 "" H 2010 3490 50  0001 C CNN
+	1    2010 3490
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	2150 3200 2150 3150
+	2010 3490 2010 3440
 $Comp
 L Device:R_Small R3
 U 1 1 5F796B46
-P 2450 2850
-F 0 "R3" V 2350 2800 50  0000 L CNN
-F 1 "10k" V 2550 2800 50  0000 L CNN
-F 2 "Resistor_SMD:R_0805_2012Metric_Pad1.15x1.40mm_HandSolder" H 2450 2850 50  0001 C CNN
-F 3 "~" H 2450 2850 50  0001 C CNN
-	1    2450 2850
+P 2310 3140
+F 0 "R3" V 2210 3090 50  0000 L CNN
+F 1 "10k" V 2410 3090 50  0000 L CNN
+F 2 "Resistor_SMD:R_0805_2012Metric_Pad1.15x1.40mm_HandSolder" H 2310 3140 50  0001 C CNN
+F 3 "~" H 2310 3140 50  0001 C CNN
+	1    2310 3140
 	0    1    1    0   
 $EndComp
 Wire Wire Line
-	2350 2850 2150 2850
-Connection ~ 2150 2850
+	2210 3140 2010 3140
+Connection ~ 2010 3140
 Wire Wire Line
-	2150 2850 2150 2900
+	2010 3140 2010 3190
 $Comp
 L Device:C_Small C3
 U 1 1 5F797694
-P 2700 2950
-F 0 "C3" H 2850 2950 50  0000 C CNN
-F 1 "10uF" H 2850 2850 50  0000 C CNN
-F 2 "Capacitor_SMD:C_0805_2012Metric_Pad1.18x1.45mm_HandSolder" H 2700 2950 50  0001 C CNN
-F 3 "~" H 2700 2950 50  0001 C CNN
-	1    2700 2950
+P 2560 3240
+F 0 "C3" H 2710 3240 50  0000 C CNN
+F 1 "10uF" H 2710 3140 50  0000 C CNN
+F 2 "Capacitor_SMD:C_0805_2012Metric_Pad1.18x1.45mm_HandSolder" H 2560 3240 50  0001 C CNN
+F 3 "~" H 2560 3240 50  0001 C CNN
+	1    2560 3240
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	2550 2850 2700 2850
-Connection ~ 2150 3150
+	2410 3140 2560 3140
+Connection ~ 2010 3440
 Wire Wire Line
-	2150 3150 2150 3100
-Text GLabel 3050 2850 2    50   Input ~ 0
+	2010 3440 2010 3390
+Text GLabel 2910 3140 2    50   Input ~ 0
 EN
-Connection ~ 2700 2850
+Connection ~ 2560 3140
 Wire Wire Line
-	2700 3050 2700 3150
+	2560 3340 2560 3440
 Wire Wire Line
-	2700 2850 2900 2850
+	2560 3140 2760 3140
 Wire Wire Line
-	2700 3150 2150 3150
-Wire Wire Line
-	1300 2350 1450 2350
-Wire Wire Line
-	1450 2700 1300 2700
-Connection ~ 1450 2350
-Wire Wire Line
-	1450 2350 1650 2350
-Wire Wire Line
-	900  2350 800  2350
-Wire Wire Line
-	800  2350 800  2700
-Wire Wire Line
-	800  2700 900  2700
-Connection ~ 800  2700
+	2560 3440 2010 3440
 $Comp
 L power:+3V3 #PWR07
 U 1 1 5F7AD6B8
@@ -508,12 +494,12 @@ Wire Wire Line
 $Comp
 L Device:Jumper_NO_Small JP2
 U 1 1 5F7E84A9
-P 2700 2550
-F 0 "JP2" V 2700 2350 50  0000 L CNN
-F 1 "TURN_ON" V 2700 2600 50  0000 L CNN
-F 2 "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical" H 2700 2550 50  0001 C CNN
-F 3 "~" H 2700 2550 50  0001 C CNN
-	1    2700 2550
+P 2560 2840
+F 0 "JP2" V 2560 2640 50  0000 L CNN
+F 1 "TURN_ON" V 2560 2890 50  0000 L CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical" H 2560 2840 50  0001 C CNN
+F 3 "~" H 2560 2840 50  0001 C CNN
+	1    2560 2840
 	0    1    1    0   
 $EndComp
 $Comp
@@ -528,23 +514,23 @@ F 3 "" H 1800 950 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	2700 2650 2150 2650
+	2560 2940 2010 2940
 Wire Wire Line
-	2150 2650 2150 2550
+	2010 2940 2010 2840
 Wire Wire Line
-	2150 2650 2150 2750
-Connection ~ 2150 2650
+	2010 2940 2010 3040
+Connection ~ 2010 2940
 Wire Wire Line
-	2700 2150 2700 2450
+	2560 2440 2560 2740
 $Comp
 L power:+3V3 #PWR011
 U 1 1 5F7EE7D8
-P 2700 2150
-F 0 "#PWR011" H 2700 2000 50  0001 C CNN
-F 1 "+3V3" H 2715 2323 50  0000 C CNN
-F 2 "" H 2700 2150 50  0001 C CNN
-F 3 "" H 2700 2150 50  0001 C CNN
-	1    2700 2150
+P 2560 2440
+F 0 "#PWR011" H 2560 2290 50  0001 C CNN
+F 1 "+3V3" H 2575 2613 50  0000 C CNN
+F 2 "" H 2560 2440 50  0001 C CNN
+F 3 "" H 2560 2440 50  0001 C CNN
+	1    2560 2440
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -594,31 +580,31 @@ $EndComp
 $Comp
 L Connector:TestPoint TP4
 U 1 1 5F7F5357
-P 2900 2850
-F 0 "TP4" H 2950 3000 50  0000 L CNN
-F 1 "TestPoint" H 2958 2877 50  0001 L CNN
-F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 3100 2850 50  0001 C CNN
-F 3 "~" H 3100 2850 50  0001 C CNN
-	1    2900 2850
+P 2760 3140
+F 0 "TP4" H 2810 3290 50  0000 L CNN
+F 1 "TestPoint" H 2818 3167 50  0001 L CNN
+F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 2960 3140 50  0001 C CNN
+F 3 "~" H 2960 3140 50  0001 C CNN
+	1    2760 3140
 	1    0    0    -1  
 $EndComp
-Connection ~ 2900 2850
+Connection ~ 2760 3140
 Wire Wire Line
-	2900 2850 3050 2850
+	2760 3140 2910 3140
 $Comp
 L Connector:TestPoint TP3
 U 1 1 5F7F5A10
-P 2150 2750
-F 0 "TP3" V 2150 2950 50  0000 L CNN
-F 1 "TestPoint" H 2208 2777 50  0001 L CNN
-F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 2350 2750 50  0001 C CNN
-F 3 "~" H 2350 2750 50  0001 C CNN
-	1    2150 2750
+P 2010 3040
+F 0 "TP3" V 2010 3240 50  0000 L CNN
+F 1 "TestPoint" H 2068 3067 50  0001 L CNN
+F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 2210 3040 50  0001 C CNN
+F 3 "~" H 2210 3040 50  0001 C CNN
+	1    2010 3040
 	0    -1   -1   0   
 $EndComp
-Connection ~ 2150 2750
+Connection ~ 2010 3040
 Wire Wire Line
-	2150 2750 2150 2850
+	2010 3040 2010 3140
 Wire Wire Line
 	1800 950  1800 1000
 $Comp
@@ -649,7 +635,7 @@ Text Notes 750  610  0    50   ~ 0
 Power rail
 Text Notes 5160 1980 0    50   ~ 0
 ESP-12F
-Text Notes 650  2100 0    50   ~ 0
+Text Notes 720  2310 0    50   ~ 0
 Water sensing circuit\n
 Text Notes 3370 3340 0    50   ~ 0
 Programming header
@@ -690,8 +676,6 @@ Text GLabel 8170 5130 0    50   Input ~ 0
 IO12
 Text GLabel 8170 5230 0    50   Input ~ 0
 IO13
-Wire Wire Line
-	1450 2350 1450 2700
 $Comp
 L Mechanical:MountingHole H1
 U 1 1 5F8C0139
@@ -738,8 +722,6 @@ F 3 "~" H 1200 4640 50  0001 C CNN
 $EndComp
 Text Notes 780  4080 0    50   ~ 0
 Mounting holes
-Wire Wire Line
-	800  2700 800  3080
 $Comp
 L _mysyms:ESP-12F U2
 U 1 1 5F7A8628
@@ -753,15 +735,10 @@ F 3 "" H 6250 2900 50  0001 C CNN
 $EndComp
 Text Notes 5120 4400 0    50   ~ 0
 VBUS voltage has to be 3V3, not 5V!\nIf you provide power through VBUS, remove batteries first.\nTo flash program: \n  1. Short jumper PROG\n  2. Connect UART\n  3. Short jumper TURN_ON\n
-$Comp
-L Switch:SW_SPST SW2
-U 1 1 5F79B9DC
-P 1100 2700
-F 0 "SW2" H 950 2800 50  0000 C CNN
-F 1 "sensing bot" H 1150 2600 50  0000 C CNN
-F 2 "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical" H 1100 2700 50  0001 C CNN
-F 3 "~" H 1100 2700 50  0001 C CNN
-	1    1100 2700
-	-1   0    0    -1  
-$EndComp
+Wire Wire Line
+	1510 2640 1380 2640
+Wire Wire Line
+	980  2640 860  2640
+Wire Wire Line
+	860  2640 860  2820
 $EndSCHEMATC

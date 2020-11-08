@@ -188,7 +188,7 @@ F 1 "sensing top" H 1150 2250 50  0000 C CNN
 F 2 "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical" H 1100 2350 50  0001 C CNN
 F 3 "~" H 1100 2350 50  0001 C CNN
 	1    1100 2350
-	1    0    0    -1  
+	-1   0    0    -1  
 $EndComp
 $Comp
 L power:GND #PWR01
@@ -266,17 +266,6 @@ Wire Wire Line
 	2700 2850 2900 2850
 Wire Wire Line
 	2700 3150 2150 3150
-$Comp
-L Switch:SW_SPST SW2
-U 1 1 5F79B9DC
-P 1100 2700
-F 0 "SW2" H 950 2800 50  0000 C CNN
-F 1 "sensing bot" H 1150 2600 50  0000 C CNN
-F 2 "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical" H 1100 2700 50  0001 C CNN
-F 3 "~" H 1100 2700 50  0001 C CNN
-	1    1100 2700
-	1    0    0    -1  
-$EndComp
 Wire Wire Line
 	1300 2350 1450 2350
 Wire Wire Line
@@ -764,4 +753,15 @@ F 3 "" H 6250 2900 50  0001 C CNN
 $EndComp
 Text Notes 5120 4400 0    50   ~ 0
 VBUS voltage has to be 3V3, not 5V!\nIf you provide power through VBUS, remove batteries first.\nTo flash program: \n  1. Short jumper PROG\n  2. Connect UART\n  3. Short jumper TURN_ON\n
+$Comp
+L Switch:SW_SPST SW2
+U 1 1 5F79B9DC
+P 1100 2700
+F 0 "SW2" H 950 2800 50  0000 C CNN
+F 1 "sensing bot" H 1150 2600 50  0000 C CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical" H 1100 2700 50  0001 C CNN
+F 3 "~" H 1100 2700 50  0001 C CNN
+	1    1100 2700
+	-1   0    0    -1  
+$EndComp
 $EndSCHEMATC
