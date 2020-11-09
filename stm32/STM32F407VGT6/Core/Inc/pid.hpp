@@ -58,17 +58,21 @@ public:
         }
 
 #pragma GCC diagnostic ignored "-Wdouble-promotion"
-        Serial.printf("ERR: %.3f DT: %u OUT: %.3f\r\n", error, dt, output);
+        // Serial.printf("ERR: %.3f DT: %u OUT: %.3f\r\n", error, dt, output);
         // Serial.printf("Stack3 %u\r\n", uxTaskGetStackHighWaterMark(nullptr));
 #pragma GCC diagnostic pop
 
         if (output > getMaxValue())
         {
             output = getMaxValue();
+            // integral error wind up protection
+            iError_ -= error * dt;
         }
         else if (output < getMinValue())
         {
             output = getMinValue();
+            // integral error wind up protection
+            iError_ -= error * dt;
         }
 
         prevError_ = error;

@@ -81,10 +81,23 @@ void taskPid(void *)
   osDelay(pdMS_TO_TICKS(5000));
   PidDac.reset();
 
+  constexpr float vals[] = {1, 2.5f, 3.33, 5, 6, 7.5f};
+
   while (true)
   {
-    PidDac.update(6.5);
-    osDelay(pdMS_TO_TICKS(100));
+
+    for (size_t j = 0; j < (sizeof(vals) / sizeof(float)); j++)
+    {
+      const float val = vals[j];
+#pragma GCC diagnostic ignored "-Wdouble-promotion"
+      Serial.printf("Target: %.3f\r\n", val);
+#pragma GCC diagnostic pop
+      for (size_t i = 0; i < 10 * 10; i++)
+      {
+        PidDac.update(val);
+        osDelay(pdMS_TO_TICKS(100));
+      }
+    }
   }
 }
 
