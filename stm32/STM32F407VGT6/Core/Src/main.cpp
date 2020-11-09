@@ -9,7 +9,6 @@
 DAC_HandleTypeDef hdac;
 I2C_HandleTypeDef hi2c1;
 
-Usb Usb;
 Dac Dac(&hdac, DAC_CHANNEL_1, 0, 4095);
 INA219 Ina219(&hi2c1);
 Pid<uint16_t> PidDac(Dac, Ina219, 1, 0.5f);
@@ -23,7 +22,7 @@ void taskUsbRx(void *)
 {
   while (true)
   {
-    Usb.processRx();
+    Serial.processRx();
   }
 }
 
@@ -39,6 +38,7 @@ void taskReadSensors(void *)
 #pragma GCC diagnostic ignored "-Wdouble-promotion"
       // Serial.printf("Bus %.3f V p: %.3f Pa\r\n", voltage, Ina219.getPressure());
       Serial.printf("%.3f\r\n", voltage);
+      // Serial.printf("Stack2 %u\r\n", uxTaskGetStackHighWaterMark(nullptr));
 #pragma GCC diagnostic pop
     }
 
@@ -100,7 +100,7 @@ int main(void)
 
   osKernelInitialize();
 
-  Usb.init();
+  Serial.init();
   Dac.init();
 
   // 256 is too low

@@ -46,10 +46,6 @@ public:
     {
         const float error = target - sensor_.getValue();
 
-#pragma GCC diagnostic ignored "-Wdouble-promotion"
-        // Serial.printf("ERR: %.3f\r\n", error);
-#pragma GCC diagnostic pop
-
         float output = kp_ * error;
 
         const uint32_t dt = HAL_GetTick() - prevTicks_;
@@ -60,6 +56,11 @@ public:
             output += ki_ * iError_;
             output += kd_ * (error - prevError_) / dt;
         }
+
+#pragma GCC diagnostic ignored "-Wdouble-promotion"
+        Serial.printf("ERR: %.3f DT: %u OUT: %.3f\r\n", error, dt, output);
+        // Serial.printf("Stack3 %u\r\n", uxTaskGetStackHighWaterMark(nullptr));
+#pragma GCC diagnostic pop
 
         if (output > getMaxValue())
         {

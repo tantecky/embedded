@@ -11,6 +11,8 @@ void Usb::init()
 {
     rxQueue_ = xQueueCreate(RxCapacity, sizeof(uint8_t));
     rxQueue = &rxQueue_;
+
+    txMutex_ = xSemaphoreCreateMutex();
 }
 
 void Usb::processRx()
@@ -44,6 +46,7 @@ void Usb::processRx()
     write(rxBuffer_, bytesReceived_);
 #pragma GCC diagnostic ignored "-Wdouble-promotion"
     printf("Ticks %f\r\n", 1214.0f);
+    printf("Stack1 %u\r\n", uxTaskGetStackHighWaterMark(nullptr));
 #pragma GCC diagnostic pop
 }
 
@@ -54,7 +57,10 @@ void Usb::write(uint8_t *text, uint16_t len)
         len = TxCapacity;
     }
 
+    xSemaphoreTake(txMutex_, portMAX_DELAY);
     CDC_Transmit_FS(text, len);
+    xSemaphoreGive(txMutex_);
+
     osDelay(1);
 }
 
