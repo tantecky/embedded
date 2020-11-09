@@ -8,6 +8,7 @@
 
 DAC_HandleTypeDef hdac;
 I2C_HandleTypeDef hi2c1;
+RNG_HandleTypeDef hrng;
 
 Dac Dac(&hdac, DAC_CHANNEL_1, 0, 4095);
 INA219 Ina219(&hi2c1);
@@ -17,6 +18,17 @@ void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_I2C1_Init(void);
 static void MX_DAC_Init();
+static void MX_RNG_Init(void);
+
+uint32_t RNG_Get(void)
+{
+  /* Wait until one RNG number is ready */
+  while (!(RNG->SR & (RNG_SR_DRDY)))
+    ;
+
+  /* Get a 32-bit Random number */
+  return RNG->DR;
+}
 
 void taskUsbRx(void *)
 {
@@ -81,22 +93,19 @@ void taskPid(void *)
   osDelay(pdMS_TO_TICKS(5000));
   PidDac.reset();
 
-  constexpr float vals[] = {1, 2.5f, 3.33, 5, 6, 7.5f};
+  // constexpr float vals[] = {1, 2.5f, 3.33, 5, 6, 7.5f};
 
   while (true)
   {
 
-    for (size_t j = 0; j < (sizeof(vals) / sizeof(float)); j++)
-    {
-      const float val = vals[j];
+    const float val = (RNG_Get() % 7501) / 1000.0f + 0.25f;
 #pragma GCC diagnostic ignored "-Wdouble-promotion"
-      Serial.printf("Target: %.3f\r\n", val);
+    Serial.printf("Target: %.3f\r\n", val);
 #pragma GCC diagnostic pop
-      for (size_t i = 0; i < 10 * 10; i++)
-      {
-        PidDac.update(val);
-        osDelay(pdMS_TO_TICKS(100));
-      }
+    for (size_t i = 0; i < 10 * 10; i++)
+    {
+      PidDac.update(val);
+      osDelay(pdMS_TO_TICKS(100));
     }
   }
 }
@@ -109,6 +118,7 @@ int main(void)
   MX_GPIO_Init();
   MX_I2C1_Init();
   MX_DAC_Init();
+  MX_RNG_Init();
   MX_USB_DEVICE_Init();
 
   osKernelInitialize();
@@ -251,6 +261,31 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+}
+
+/**
+  * @brief RNG Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_RNG_Init(void)
+{
+
+  /* USER CODE BEGIN RNG_Init 0 */
+
+  /* USER CODE END RNG_Init 0 */
+
+  /* USER CODE BEGIN RNG_Init 1 */
+
+  /* USER CODE END RNG_Init 1 */
+  hrng.Instance = RNG;
+  if (HAL_RNG_Init(&hrng) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN RNG_Init 2 */
+
+  /* USER CODE END RNG_Init 2 */
 }
 
 /**
