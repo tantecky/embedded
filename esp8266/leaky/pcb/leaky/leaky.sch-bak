@@ -629,7 +629,7 @@ Water sensing circuit\n
 Text Notes 3370 3340 0    50   ~ 0
 Programming header
 Text Notes 7730 4700 0    50   ~ 0
-Extra unused pins
+Extra pins
 Text GLabel 7150 2800 2    50   Input ~ 0
 BUZZER
 Text GLabel 10170 2950 2    50   Input ~ 0

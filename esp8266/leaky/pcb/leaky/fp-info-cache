@@ -1,4 +1,4 @@
-18919558947729152
+18921164405218596
 Battery
 BatteryHolder_Bulgin_BX0036_1xC
 Bulgin Battery Holder, BX0036, Battery Type C (https://www.bulgin.com/products/pub/media/bulgin/data/Battery_holders.pdf)
@@ -82696,6 +82696,13 @@ BatteryHolder_Keystone_2462_2xAA
 AA battery cell holder
 0
 4
+2
+_my
+CP_Radial_D10.0mm_P5.00mm
+CP, Radial series, Radial, pin pitch=5.00mm, , diameter=10mm, Electrolytic Capacitor
+CP Radial series Radial pin pitch 5.00mm  diameter 10mm Electrolytic Capacitor
+0
+2
 2
 _my
 DD0405MA
