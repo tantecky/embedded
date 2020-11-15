@@ -19,7 +19,7 @@ U 1 1 5F780761
 P 1300 1200
 F 0 "BT1" H 1000 1300 50  0000 L CNN
 F 1 "2xAA" H 950 1200 50  0000 L CNN
-F 2 "Battery:BatteryHolder_Keystone_2462_2xAA" V 1300 1260 50  0001 C CNN
+F 2 "_my:BatteryHolder_Keystone_2462_2xAA" V 1300 1260 50  0001 C CNN
 F 3 "~" V 1300 1260 50  0001 C CNN
 	1    1300 1200
 	1    0    0    -1  
