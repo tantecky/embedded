@@ -14,17 +14,6 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 $Comp
-L Device:Battery BT1
-U 1 1 5F780761
-P 1300 1200
-F 0 "BT1" H 1000 1300 50  0000 L CNN
-F 1 "2xAA" H 950 1200 50  0000 L CNN
-F 2 "_my:BatteryHolder_Keystone_2462_2xAA" V 1300 1260 50  0001 C CNN
-F 3 "~" V 1300 1260 50  0001 C CNN
-	1    1300 1200
-	1    0    0    -1  
-$EndComp
-$Comp
 L power:GND #PWR0101
 U 1 1 5F7824C1
 P 1300 1650
@@ -682,7 +671,7 @@ U 1 1 5F8C0139
 P 840 4380
 F 0 "H1" H 940 4380 50  0000 L CNN
 F 1 "MountingHole" H 940 4335 50  0001 L CNN
-F 2 "MountingHole:MountingHole_3.2mm_M3" H 840 4380 50  0001 C CNN
+F 2 "_my:MountingHole_3.2mm_M3" H 840 4380 50  0001 C CNN
 F 3 "~" H 840 4380 50  0001 C CNN
 	1    840  4380
 	1    0    0    -1  
@@ -693,7 +682,7 @@ U 1 1 5F8C0FC6
 P 840 4630
 F 0 "H2" H 940 4630 50  0000 L CNN
 F 1 "MountingHole" H 940 4585 50  0001 L CNN
-F 2 "MountingHole:MountingHole_3.2mm_M3" H 840 4630 50  0001 C CNN
+F 2 "_my:MountingHole_3.2mm_M3" H 840 4630 50  0001 C CNN
 F 3 "~" H 840 4630 50  0001 C CNN
 	1    840  4630
 	1    0    0    -1  
@@ -704,7 +693,7 @@ U 1 1 5F8C125F
 P 1200 4390
 F 0 "H3" H 1300 4390 50  0000 L CNN
 F 1 "MountingHole" H 1300 4345 50  0001 L CNN
-F 2 "MountingHole:MountingHole_3.2mm_M3" H 1200 4390 50  0001 C CNN
+F 2 "_my:MountingHole_3.2mm_M3" H 1200 4390 50  0001 C CNN
 F 3 "~" H 1200 4390 50  0001 C CNN
 	1    1200 4390
 	1    0    0    -1  
@@ -715,7 +704,7 @@ U 1 1 5F8C1794
 P 1200 4640
 F 0 "H4" H 1300 4640 50  0000 L CNN
 F 1 "MountingHole" H 1300 4595 50  0001 L CNN
-F 2 "MountingHole:MountingHole_3.2mm_M3" H 1200 4640 50  0001 C CNN
+F 2 "_my:MountingHole_3.2mm_M3" H 1200 4640 50  0001 C CNN
 F 3 "~" H 1200 4640 50  0001 C CNN
 	1    1200 4640
 	1    0    0    -1  
@@ -741,4 +730,15 @@ Wire Wire Line
 	980  2640 860  2640
 Wire Wire Line
 	860  2640 860  2820
+$Comp
+L Device:Battery BT1
+U 1 1 5F780761
+P 1300 1200
+F 0 "BT1" H 1000 1300 50  0000 L CNN
+F 1 "2xAA" H 950 1200 50  0000 L CNN
+F 2 "_my:BatteryHolder_Keystone_2462_2xAA" V 1300 1260 50  0001 C CNN
+F 3 "~" V 1300 1260 50  0001 C CNN
+	1    1300 1200
+	1    0    0    -1  
+$EndComp
 $EndSCHEMATC
