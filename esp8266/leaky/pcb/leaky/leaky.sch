@@ -504,7 +504,7 @@ $EndComp
 Text Notes 7780 2880 0    50   ~ 0
 Mounting holes
 Text Notes 4770 4450 0    50   ~ 0
-VBUS voltage has to be 3V3, not 5V!\nIf you provide power through VBUS, remove batteries first.\nTo flash program: \n  1. Short jumper PROG\n  2. Connect UART\n  3. Short jumper TURN_ON\n
+VBUS voltage has to be 3V3, not 5V!\nIf you provide power through VBUS, remove batteries first.\n\nTo flash program: \n  1. Short jumper PROG\n  2. Connect UART (RXD->TX, TXD->RX)\n  3. Short jumper TURN_ON\n
 Wire Wire Line
 	1510 3190 1380 3190
 Wire Wire Line
