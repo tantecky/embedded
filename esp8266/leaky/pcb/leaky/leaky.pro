@@ -1,4 +1,4 @@
-update=20.11.2020 18:45:58
+update=20.11.2020 19:51:42
 version=1
 last_client=kicad
 [general]
@@ -277,9 +277,9 @@ dPairViaGap=0.25
 [pcbnew/Netclasses/3]
 Name=Signal
 Clearance=0.2
-TrackWidth=0.4
-ViaDiameter=0.8
-ViaDrill=0.4
+TrackWidth=0.8
+ViaDiameter=1
+ViaDrill=0.8
 uViaDiameter=0.3
 uViaDrill=0.1
 dPairWidth=0.2
