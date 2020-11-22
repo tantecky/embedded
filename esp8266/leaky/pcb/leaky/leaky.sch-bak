@@ -294,9 +294,9 @@ F 3 "" H 4900 3250 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	5100 3250 4900 3250
-Text GLabel 5200 3250 1    50   Input ~ 0
-RX
 Text GLabel 5300 3250 1    50   Input ~ 0
+RX
+Text GLabel 5200 3250 1    50   Input ~ 0
 TX
 $Comp
 L power:VBUS #PWR05

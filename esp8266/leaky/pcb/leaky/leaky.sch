@@ -771,4 +771,6 @@ Wire Wire Line
 Connection ~ 2950 1000
 Wire Wire Line
 	2950 1000 3200 1000
+Text Notes 1810 1860 0    50   ~ 0
+Current consumption in standby mode is about 30-40 uA
 $EndSCHEMATC
