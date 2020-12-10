@@ -19,9 +19,9 @@ constexpr int FPM_SLEEP_MAX_TIME = 0xFFFFFFF;
 
 void blink()
 {
-  digitalWrite(LED_BUILTIN, LOW);
+  digitalWrite(2, LOW);
   delay(50);
-  digitalWrite(LED_BUILTIN, HIGH);
+  digitalWrite(2, HIGH);
 }
 
 void beep()
