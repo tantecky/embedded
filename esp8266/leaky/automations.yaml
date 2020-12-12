@@ -1,0 +1,12 @@
+- id: 'Leaky'
+  alias: Leak
+  description: ''
+  trigger:
+  - platform: mqtt
+    topic: leak/#
+  condition: []
+  action:
+  - data_template:
+      message: '{{ trigger.payload }}'
+    service: notify.mobile_app_mi_a2_lite
+  mode: single
