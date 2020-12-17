@@ -1,6 +1,7 @@
 #include "main.hpp"
 #include "config.hpp"
 #include "clock.hpp"
+#include "sensor.hpp"
 
 #include <Arduino.h>
 #include <U8g2lib.h>
@@ -12,7 +13,14 @@ Scheduler runner;
 U8G2_SSD1306_128X32_UNIVISION_F_HW_I2C Oled(U8G2_R0);
 WiFiUDP Udp;
 
+Sensor sensor;
+
 Task taskClock(100, TASK_FOREVER, Clock::tick, &runner, true);
+Task taskSensor(
+    20000, TASK_FOREVER, [&]() {
+      sensor.tick();
+    },
+    &runner, true);
 
 // #define LCDWidth                        u8g2.getDisplayWidth()
 // #define ALIGN_CENTER(t)                 ((LCDWidth - (u8g2.getUTF8Width(t))) / 2)
@@ -77,6 +85,7 @@ void setup()
 
   Wire.begin(D2, D1);
   Oled.begin();
+  sensor.setup();
 
   connect();
 

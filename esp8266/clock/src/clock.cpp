@@ -8,7 +8,6 @@ time_t Clock::prevDisplay = 0;             // when the digital clock was display
 
 void Clock::setup()
 {
-
     setSyncProvider(Clock::getNtpTime);
     setSyncInterval(300);
 }
