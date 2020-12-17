@@ -10,6 +10,7 @@ NetAlarm/tests/tests
 googletest-master
 cfg.json
 secret.hpp
+config.hpp
 .vscode
 
 # kicad
