@@ -1,9 +1,9 @@
 #include "main.hpp"
 #include "sensor.hpp"
+#include "remote.hpp"
 
 void Sensor::setup()
 {
-
     while (!bme_.begin())
     {
         Serial.println("Could not find BME280I2C sensor!");
@@ -23,13 +23,20 @@ void Sensor::tick()
     Oled.clearBuffer();                    // clear the internal memory
     Oled.setFont(u8g2_font_logisoso16_tr); // choose a suitable font at https://github.com/olikraus/u8g2/wiki/fntlistall
 
-    String text = "IN:";
+    String text = "in:";
     text += String(tempIn_, '\x001');
-    text += " ";
+    text += "  ";
     text += String(humIn_, '\x000');
     text += "%";
 
-    Oled.drawStr(0, 16, text.c_str());
+    Oled.drawStr(centerOffset(text), 16, text.c_str());
+
+    if (!isnan(Remote::temperature))
+    {
+        String text2 = "out:";
+        text2 += String(Remote::temperature, '\x001');
+        Oled.drawStr(centerOffset(text2), 32, text2.c_str());
+    }
 
     Oled.sendBuffer();
     delay(5000);

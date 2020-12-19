@@ -2,6 +2,7 @@
 #include "config.hpp"
 #include "clock.hpp"
 #include "sensor.hpp"
+#include "remote.hpp"
 
 #include <Arduino.h>
 #include <U8g2lib.h>
@@ -67,6 +68,9 @@ void connect()
       break;
     }
   }
+
+  ESP.wdtDisable();
+  Remote::setup(D5, 3);
 }
 
 void disconnect()
@@ -94,5 +98,6 @@ void setup()
 
 void loop()
 {
+  ESP.wdtFeed();
   runner.execute();
 }
