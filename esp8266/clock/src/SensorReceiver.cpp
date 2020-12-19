@@ -71,7 +71,6 @@ void SensorReceiver::interruptHandler()
 		// Some sanity checking, very short (<200us) or very long (>1000us) signals are ignored.
 		if (clockTime < 200 || clockTime > 1000)
 		{
-			ESP.wdtFeed();
 			return;
 		}
 		isOne = true;
@@ -153,7 +152,6 @@ void SensorReceiver::interruptHandler()
 			{
 				if (halfBit == halfBitCounter)
 				{
-					ESP.wdtFeed();
 					// Yes! Decrypt and call the callback
 					if (decryptAndCheck())
 					{
@@ -183,7 +181,6 @@ void SensorReceiver::interruptHandler()
 
 void SensorReceiver::reset()
 {
-	ESP.wdtFeed();
 	halfBit = 1;
 	clockTime = duration >> 1;
 	isOne = true;

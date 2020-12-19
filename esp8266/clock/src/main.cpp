@@ -60,7 +60,6 @@ void connect()
     }
   }
 
-  ESP.wdtDisable();
   Remote::setup(D5, 3);
 }
 
@@ -89,7 +88,6 @@ void setup()
 
 void loop()
 {
-  ESP.wdtFeed();
   Clock::tick();
   sensor.tick();
 }
