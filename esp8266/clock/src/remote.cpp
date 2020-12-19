@@ -13,7 +13,6 @@ void Remote::setup(const int8_t pin, const byte channel)
 
 void Remote::read433(byte *data)
 {
-    return;
     // is data a ThermoHygro-device?
     //  if ((data[3] & 0x1f) == 0x1e) {
     // Yes!

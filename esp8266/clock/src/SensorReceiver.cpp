@@ -179,7 +179,6 @@ void SensorReceiver::interruptHandler()
 	}
 
 	halfBit++;
-	return;
 }
 
 void SensorReceiver::reset()

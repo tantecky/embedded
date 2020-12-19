@@ -13,6 +13,8 @@ private:
     float tempIn_;
     float humIn_;
 
+    unsigned long lastDrawn_;
+
 public:
     Sensor() : settings_(
                    BME280::OSR_X16,

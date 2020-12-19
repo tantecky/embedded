@@ -9,10 +9,17 @@ void Sensor::setup()
         Serial.println("Could not find BME280I2C sensor!");
         delay(1000);
     }
+
+    lastDrawn_ = millis();
 }
 
 void Sensor::tick()
 {
+    if ((millis() - lastDrawn_) < 20000)
+    {
+        return;
+    }
+
     bme_.read(presIn_, tempIn_, humIn_,
               BME280::TempUnit(BME280::TempUnit_Celsius),
               BME280::PresUnit(BME280::PresUnit_Pa));
@@ -39,5 +46,11 @@ void Sensor::tick()
     }
 
     Oled.sendBuffer();
-    delay(5000);
+
+    lastDrawn_ = millis();
+
+    do
+    {
+        yield();
+    } while ((millis() - lastDrawn_) < 5000);
 }
