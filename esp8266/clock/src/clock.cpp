@@ -5,6 +5,7 @@
 const char Clock::ntpServerName[] = "cz.pool.ntp.org";
 byte Clock::packetBuffer[NTP_PACKET_SIZE]; //buffer to hold incoming & outgoing packets
 time_t Clock::prevDisplay = 0;             // when the digital clock was displayed
+int Clock::hour = 0;
 
 void Clock::setup()
 {
@@ -31,6 +32,7 @@ time_t Clock::getNtpTime()
     Serial.println(ntpServerIP);
     sendNTPpacket(ntpServerIP);
     uint32_t beginWait = millis();
+
     while (millis() - beginWait < 1500)
     {
         int size = Udp.parsePacket();
@@ -78,8 +80,10 @@ void Clock::draw()
 {
     Oled.clearBuffer();                    // clear the internal memory
     Oled.setFont(u8g2_font_logisoso32_tr); // choose a suitable font at https://github.com/olikraus/u8g2/wiki/fntlistall
+    setContrast();
 
-    String text = String(hour());
+    Clock::hour = ::hour();
+    String text = String(hour);
     text += ":";
 
     const int min = minute();

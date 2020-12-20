@@ -25,6 +25,18 @@ const uint centerOffset(const String &text)
   return ((width - (Oled.getUTF8Width(text.c_str()))) / 2);
 }
 
+void setContrast()
+{
+  if (Clock::hour > 20 || Clock::hour < 6)
+  {
+    Oled.setContrast(0);
+  }
+  else
+  {
+    Oled.setContrast(0xFF);
+  }
+}
+
 void connect()
 {
   if (isConnected())

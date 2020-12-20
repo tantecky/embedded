@@ -19,5 +19,6 @@ inline bool isConnected()
 void connect();
 void disconnect();
 const uint centerOffset(const String &text);
+void setContrast();
 
 #endif /* C62B6AE7_FD38_4A0F_9EB2_4A3FB116DEAB */

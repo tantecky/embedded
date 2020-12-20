@@ -10,7 +10,7 @@ private:
     static const char ntpServerName[];
     static constexpr int timeZone = 1;         // Central European Time
     static constexpr int NTP_PACKET_SIZE = 48; // NTP time is in the first 48 bytes of message
-    static byte packetBuffer[]; //buffer to hold incoming & outgoing packets
+    static byte packetBuffer[];                //buffer to hold incoming & outgoing packets
 
     static time_t prevDisplay; // when the digital clock was displayed
 
@@ -20,6 +20,8 @@ private:
     static void draw();
 
 public:
+    static int hour;
+
     static void setup();
     static void tick();
 };

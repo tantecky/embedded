@@ -29,6 +29,7 @@ void Sensor::tick()
 
     Oled.clearBuffer();                    // clear the internal memory
     Oled.setFont(u8g2_font_logisoso16_tr); // choose a suitable font at https://github.com/olikraus/u8g2/wiki/fntlistall
+    setContrast();
 
     String text = "in:";
     text += String(tempIn_, '\x001');
