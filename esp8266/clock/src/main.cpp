@@ -12,8 +12,6 @@
 U8G2_SSD1306_128X32_UNIVISION_F_HW_I2C Oled(U8G2_R0);
 WiFiUDP Udp;
 
-Sensor sensor;
-
 // #define LCDWidth                        u8g2.getDisplayWidth()
 // #define ALIGN_CENTER(t)                 ((LCDWidth - (u8g2.getUTF8Width(t))) / 2)
 // #define ALIGN_RIGHT(t)                  (LCDWidth -  u8g2.getUTF8Width(t))
@@ -91,7 +89,7 @@ void setup()
 
   Wire.begin(D2, D1);
   Oled.begin();
-  sensor.setup();
+  Sensor.setup();
 
   connect();
 
@@ -101,5 +99,5 @@ void setup()
 void loop()
 {
   Clock::tick();
-  sensor.tick();
+  Sensor.tick();
 }

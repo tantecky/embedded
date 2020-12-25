@@ -2,7 +2,9 @@
 #include "sensor.hpp"
 #include "remote.hpp"
 
-void Sensor::setup()
+Sensor_ Sensor;
+
+void Sensor_::setup()
 {
     while (!bme_.begin())
     {
@@ -13,7 +15,7 @@ void Sensor::setup()
     lastDrawn_ = millis();
 }
 
-void Sensor::tick()
+void Sensor_::tick()
 {
     if ((millis() - lastDrawn_) < 20000)
     {
@@ -31,20 +33,26 @@ void Sensor::tick()
     Oled.setFont(u8g2_font_logisoso16_tr); // choose a suitable font at https://github.com/olikraus/u8g2/wiki/fntlistall
     setContrast();
 
-    String text = "in:";
+    String text = "";
     text += String(tempIn_, '\x001');
-    text += "  ";
+    text += " ";
     text += String(humIn_, '\x000');
     text += "%";
 
     Oled.drawStr(centerOffset(text), 16, text.c_str());
 
+    String text2 = "";
+
     if (!isnan(Remote::temperature))
     {
-        String text2 = "out:";
         text2 += String(Remote::temperature, '\x001');
-        Oled.drawStr(centerOffset(text2), 32, text2.c_str());
+        text2 += " ";
     }
+
+    text2 += String(presIn_ / 100.0f, '\x000');
+    text2 += "h";
+
+    Oled.drawStr(centerOffset(text2), 32, text2.c_str());
 
     Oled.sendBuffer();
 
@@ -53,5 +61,5 @@ void Sensor::tick()
     do
     {
         yield();
-    } while ((millis() - lastDrawn_) < 5000);
+    } while ((millis() - lastDrawn_) < 7000);
 }
