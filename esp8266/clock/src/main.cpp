@@ -104,4 +104,5 @@ void loop()
 {
   Clock::tick();
   Sensor.tick();
+  logger.tick();
 }
