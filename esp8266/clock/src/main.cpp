@@ -3,6 +3,7 @@
 #include "clock.hpp"
 #include "sensor.hpp"
 #include "remote.hpp"
+#include "logger.hpp"
 
 #include <Arduino.h>
 #include <U8g2lib.h>
@@ -11,6 +12,8 @@
 
 U8G2_SSD1306_128X32_UNIVISION_F_HW_I2C Oled(U8G2_R0);
 WiFiUDP Udp;
+
+Logger logger;
 
 // #define LCDWidth                        u8g2.getDisplayWidth()
 // #define ALIGN_CENTER(t)                 ((LCDWidth - (u8g2.getUTF8Width(t))) / 2)
@@ -69,8 +72,6 @@ void connect()
       break;
     }
   }
-
-  Remote::setup(D5, 3);
 }
 
 void disconnect()
@@ -94,6 +95,9 @@ void setup()
   connect();
 
   Clock::setup();
+  logger.setup();
+
+  Remote::setup(D5, 3);
 }
 
 void loop()
