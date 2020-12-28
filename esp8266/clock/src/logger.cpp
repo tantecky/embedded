@@ -17,7 +17,8 @@ void Logger::tick()
         connect();
     }
 
-    if (millis() - lastReport_ < 15 * 60 * 1000)
+    // report interval
+    if (millis() - lastReport_ < LOG_EACH_MIN)
     {
         return;
     }

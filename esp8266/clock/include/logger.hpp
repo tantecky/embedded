@@ -6,7 +6,8 @@ private:
     unsigned long lastReport_;
 
 public:
-    Logger() : lastReport_(0)
+
+    Logger() : lastReport_(FIRTS_LOG_AFTER)
     {
     }
 

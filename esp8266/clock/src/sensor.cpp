@@ -22,9 +22,13 @@ void Sensor_::tick()
         return;
     }
 
+    Remote::disable();
+
     bme_.read(presIn_, tempIn_, humIn_,
               BME280::TempUnit(BME280::TempUnit_Celsius),
               BME280::PresUnit(BME280::PresUnit_Pa));
+
+    Remote::enable();
 
     // calibration
     tempIn_ -= 0.7f;

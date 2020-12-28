@@ -1,5 +1,7 @@
 #include "main.hpp"
 #include "clock.hpp"
+#include "remote.hpp"
+
 #include <TimeLib.h>
 
 const char Clock::ntpServerName[] = "cz.pool.ntp.org";
@@ -19,6 +21,8 @@ time_t Clock::getNtpTime()
     {
         return 0;
     }
+
+    Remote::disable();
 
     IPAddress ntpServerIP; // NTP server's ip address
 
@@ -46,9 +50,15 @@ time_t Clock::getNtpTime()
             secsSince1900 |= (unsigned long)packetBuffer[41] << 16;
             secsSince1900 |= (unsigned long)packetBuffer[42] << 8;
             secsSince1900 |= (unsigned long)packetBuffer[43];
+
+            Remote::enable();
+
             return secsSince1900 - 2208988800UL + timeZone * SECS_PER_HOUR;
         }
     }
+
+    Remote::enable();
+
     Serial.println("No NTP Response :-(");
     return 0; // return 0 if unable to get the time
 }

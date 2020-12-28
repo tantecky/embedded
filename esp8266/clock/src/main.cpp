@@ -59,7 +59,13 @@ void connect()
 
   for (size_t i = 0; i < 10; i++)
   {
-    delay(500);
+    const unsigned long timestamp = millis();
+
+    do
+    {
+      yield();
+    } while ((millis() - timestamp) < 500);
+
     Serial.print(".");
 
     if (isConnected())

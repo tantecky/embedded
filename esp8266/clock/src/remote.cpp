@@ -1,14 +1,16 @@
 #include "remote.hpp"
 #include "SensorReceiver.h"
 
+int8_t Remote::pin = 0;
 byte Remote::channel = 0xFF;
 float Remote::temperature = NAN;
 
-void Remote::setup(const int8_t pin, const byte channel)
+void Remote::setup(const int8_t pin_, const byte channel)
 {
+    Remote::pin = pin_;
     Remote::channel = channel;
 
-    SensorReceiver::init(digitalPinToInterrupt(pin), Remote::read433);
+    SensorReceiver::enable();
 }
 
 void Remote::read433(byte *data)
