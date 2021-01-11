@@ -1,6 +1,6 @@
 #include <Arduino.h>
-#include <WiFi.h>
-#include <HTTPClient.h>
+#include <ESP8266WiFi.h>
+#include <ESP8266HTTPClient.h>
 #include <bsec.h>
 
 #include "main.hpp"
@@ -8,26 +8,34 @@
 #include "SensorReceiver.h"
 
 /* in minutes */
-#define REPORT_INTERVAL (30)
+#define REPORT_INTERVAL (10)
 #define MAX_RETRIES (3)
+constexpr char TABLE[] = "viva_test";
 
 Bsec bme;
 
 float tempOut;
 byte humOut;
+
 float tempIn;
 float humIn;
 float presIn;
 
+float iaq;
+float resistance;
+float co2;
+float voc;
+
 void wait(const unsigned long minutes)
 {
-  const unsigned long timestamp = millis();
   const unsigned long toWait = 60 * minutes * 1000;
+  delay(toWait);
+  // const unsigned long timestamp = millis();
 
-  do
-  {
-    yield();
-  } while ((millis() - timestamp) < toWait);
+  // do
+  // {
+  //   yield();
+  // } while ((millis() - timestamp) < toWait);
 }
 
 void blink()
@@ -43,9 +51,15 @@ void initVars()
 {
   tempOut = NAN;
   humOut = 0xFF;
+
   tempIn = NAN;
   humIn = NAN;
   presIn = NAN;
+
+  iaq = NAN;
+  resistance = NAN;
+  voc = NAN;
+  co2 = NAN;
 }
 
 void read433(byte *data)
@@ -79,6 +93,26 @@ void disable433()
 
 void readBme()
 {
+  while (true)
+  {
+    if (bme.run())
+    {
+      tempIn = bme.temperature;
+      humIn = bme.humidity;
+      presIn = bme.pressure;
+
+      iaq = bme.staticIaq;
+      resistance = bme.gasResistance;
+      voc = bme.breathVocEquivalent;
+      co2 = bme.co2Equivalent;
+
+      break;
+    }
+    else
+    {
+      checkBmeStatus();
+    }
+  }
 }
 
 void setup()
@@ -108,6 +142,10 @@ void setup()
 
   bme.updateSubscription(sensorList, 10, BSEC_SAMPLE_RATE_LP);
   checkBmeStatus();
+
+  enable433();
+  // send first data 5 minutes after startup
+  wait(5);
 }
 
 void loop()
@@ -135,7 +173,7 @@ void loop()
   Serial.print("Connected, IP address: ");
   Serial.println(WiFi.localIP());
 
-  String data = "viva";
+  String data(TABLE);
 
   if (!isnan(tempIn))
   {
@@ -144,11 +182,17 @@ void loop()
     data += ",pIn=";
     data += presIn;
 
-    if (humIn > 0)
-    {
-      data += ",humIn=";
-      data += humIn;
-    }
+    data += ",humIn=";
+    data += humIn;
+
+    data += ",iaq=";
+    data += iaq;
+    data += ",res=";
+    data += resistance;
+    data += ",co2=";
+    data += co2;
+    data += ",voc=";
+    data += voc;
   }
 
   if (!isnan(tempOut))
