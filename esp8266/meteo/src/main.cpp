@@ -8,9 +8,9 @@
 #include "SensorReceiver.h"
 
 /* in minutes */
-#define REPORT_INTERVAL (5)
+#define REPORT_INTERVAL (20)
 #define MAX_RETRIES (3)
-constexpr char TABLE[] = "viva_test";
+constexpr char TABLE[] = "viva";
 
 Bsec bme;
 unsigned long lastReport = 0;
@@ -85,6 +85,15 @@ void readBme()
 {
   if (bme.run())
   {
+    acc = bme.staticIaqAccuracy;
+    const unsigned long ms = millis();
+
+    if (acc == 0)
+    {
+      lastReport = ms;
+      return;
+    }
+
     tempIn = bme.temperature;
     humIn = bme.humidity;
     presIn = bme.pressure;
@@ -93,19 +102,8 @@ void readBme()
     resistance = bme.gasResistance;
     voc = bme.breathVocEquivalent;
     co2 = bme.co2Equivalent;
-    acc = bme.staticIaqAccuracy;
 
-    Serial.println(acc);
-    Serial.println(iaq);
-    Serial.println(humOut);
-
-    const unsigned long ms = millis();
-
-    if (acc == 0)
-    {
-      lastReport = ms;
-    }
-    else if (ms - lastReport >= REPORT_INTERVAL * 60 * 1000)
+    if (ms - lastReport >= REPORT_INTERVAL * 60 * 1000)
     {
       report();
     }
@@ -195,8 +193,6 @@ void report()
     data += co2;
     data += ",voc=";
     data += voc;
-    data += ",acc=";
-    data += acc;
   }
 
   if (!isnan(tempOut))
