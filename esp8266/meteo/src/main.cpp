@@ -8,11 +8,12 @@
 #include "SensorReceiver.h"
 
 /* in minutes */
-#define REPORT_INTERVAL (10)
+#define REPORT_INTERVAL (5)
 #define MAX_RETRIES (3)
 constexpr char TABLE[] = "viva_test";
 
 Bsec bme;
+unsigned long lastReport = 0;
 
 float tempOut;
 byte humOut;
@@ -25,18 +26,7 @@ float iaq;
 float resistance;
 float co2;
 float voc;
-
-void wait(const unsigned long minutes)
-{
-  const unsigned long toWait = 60 * minutes * 1000;
-  delay(toWait);
-  // const unsigned long timestamp = millis();
-
-  // do
-  // {
-  //   yield();
-  // } while ((millis() - timestamp) < toWait);
-}
+uint8_t acc;
 
 void blink()
 {
@@ -93,25 +83,36 @@ void disable433()
 
 void readBme()
 {
-  while (true)
+  if (bme.run())
   {
-    if (bme.run())
-    {
-      tempIn = bme.temperature;
-      humIn = bme.humidity;
-      presIn = bme.pressure;
+    tempIn = bme.temperature;
+    humIn = bme.humidity;
+    presIn = bme.pressure;
 
-      iaq = bme.staticIaq;
-      resistance = bme.gasResistance;
-      voc = bme.breathVocEquivalent;
-      co2 = bme.co2Equivalent;
+    iaq = bme.staticIaq;
+    resistance = bme.gasResistance;
+    voc = bme.breathVocEquivalent;
+    co2 = bme.co2Equivalent;
+    acc = bme.staticIaqAccuracy;
 
-      break;
-    }
-    else
+    Serial.println(acc);
+    Serial.println(iaq);
+    Serial.println(humOut);
+
+    const unsigned long ms = millis();
+
+    if (acc == 0)
     {
-      checkBmeStatus();
+      lastReport = ms;
     }
+    else if (ms - lastReport >= REPORT_INTERVAL * 60 * 1000)
+    {
+      report();
+    }
+  }
+  else
+  {
+    checkBmeStatus();
   }
 }
 
@@ -124,7 +125,7 @@ void setup()
   Serial.begin(115200);
   Wire.begin();
 
-  bme.begin(0x77, Wire);
+  bme.begin(BME680_I2C_ADDR_SECONDARY, Wire);
   checkBmeStatus();
 
   bsec_virtual_sensor_t sensorList[10] = {
@@ -144,15 +145,16 @@ void setup()
   checkBmeStatus();
 
   enable433();
-  // send first data 5 minutes after startup
-  wait(5);
 }
 
 void loop()
 {
-  disable433();
-
   readBme();
+}
+
+void report()
+{
+  disable433();
 
   IPAddress ip(192, 168, 168, 4);
   IPAddress gw(192, 168, 168, 1);
@@ -193,6 +195,8 @@ void loop()
     data += co2;
     data += ",voc=";
     data += voc;
+    data += ",acc=";
+    data += acc;
   }
 
   if (!isnan(tempOut))
@@ -234,6 +238,7 @@ void loop()
       if (httpCode == HTTP_CODE_NO_CONTENT)
       {
         blink();
+        lastReport = millis();
         break;
       }
       else
@@ -254,11 +259,8 @@ void loop()
   } while (WiFi.status() == WL_CONNECTED);
 
   enable433();
-
-  wait(REPORT_INTERVAL);
 }
 
-// Helper function definitions
 void checkBmeStatus()
 {
   String output;
