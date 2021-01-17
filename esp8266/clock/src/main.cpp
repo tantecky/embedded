@@ -94,6 +94,7 @@ void setup()
   Serial.begin(112500);
   disconnect();
 
+  //SDA + SCL
   Wire.begin(D2, D1);
   Oled.begin();
   Sensor.setup();

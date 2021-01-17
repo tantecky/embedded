@@ -23,7 +23,7 @@ void Logger::tick()
         return;
     }
 
-    String data = "vresina";
+    String data = TABLE;
 
     const double tempIn = Sensor.temperature();
     const double humIn = Sensor.humidity();
