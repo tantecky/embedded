@@ -12,7 +12,8 @@ int Clock::hour = 0;
 void Clock::setup()
 {
     setSyncProvider(Clock::getNtpTime);
-    setSyncInterval(300);
+    // 15 minutes
+    setSyncInterval(3 * 300);
 }
 
 time_t Clock::getNtpTime()
