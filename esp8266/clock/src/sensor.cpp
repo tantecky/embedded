@@ -3,6 +3,7 @@
 #include "remote.hpp"
 
 Sensor_ Sensor;
+static constexpr unsigned long RefreshInterval = 20000;
 
 void Sensor_::setup()
 {
@@ -12,12 +13,13 @@ void Sensor_::setup()
         delay(1000);
     }
 
-    lastDrawn_ = millis();
+    // draw now
+    lastDrawn_ = -2 * RefreshInterval;
 }
 
 void Sensor_::tick()
 {
-    if ((millis() - lastDrawn_) < 20000)
+    if ((millis() - lastDrawn_) < RefreshInterval)
     {
         return;
     }
@@ -61,9 +63,4 @@ void Sensor_::tick()
     Oled.sendBuffer();
 
     lastDrawn_ = millis();
-
-    do
-    {
-        yield();
-    } while ((millis() - lastDrawn_) < 7000);
 }

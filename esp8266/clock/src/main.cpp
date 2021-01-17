@@ -11,6 +11,9 @@
 #include <ESP8266WiFi.h>
 
 U8G2_SSD1306_128X32_UNIVISION_F_HW_I2C Oled(U8G2_R0);
+// CLK, DIO
+TM1637Display Led(D6, D7);
+
 WiFiUDP Udp;
 
 Logger logger;
@@ -31,10 +34,12 @@ void setContrast()
   if (Clock::hour > 20 || Clock::hour < 6)
   {
     Oled.setContrast(0);
+    Led.setBrightness(0);
   }
   else
   {
     Oled.setContrast(0xFF);
+    Led.setBrightness(7);
   }
 }
 

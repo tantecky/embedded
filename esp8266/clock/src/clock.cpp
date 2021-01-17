@@ -88,26 +88,19 @@ void Clock::sendNTPpacket(IPAddress &address)
 
 void Clock::draw()
 {
-    Oled.clearBuffer();                    // clear the internal memory
-    Oled.setFont(u8g2_font_logisoso32_tr); // choose a suitable font at https://github.com/olikraus/u8g2/wiki/fntlistall
-    setContrast();
-
     Clock::hour = ::hour();
-    String text = String(hour);
-    text += ":";
-
     const int min = minute();
 
-    if (min < 10)
+    //colon ON
+    constexpr uint8_t dots = 0b11100000;
+
+    for (size_t i = 0; i < 2; i++)
     {
-        text += "0";
+        Led.showNumberDecEx(Clock::hour * 100 + min, dots, false);
+        delay(1000);
+        Led.showNumberDecEx(Clock::hour * 100 + min, 0, false);
+        delay(1000);
     }
-
-    text += String(min);
-
-    Oled.drawStr(centerOffset(text), 32, text.c_str());
-
-    Oled.sendBuffer();
 }
 
 void Clock::tick()
