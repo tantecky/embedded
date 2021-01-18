@@ -65,12 +65,11 @@ void Logger::tick()
         http.begin(url);
         http.addHeader("Content-Type", "application/x-www-form-urlencoded");
 
-        int httpCode = http.POST(data);    //Send the request
-        String payload = http.getString(); //Get the response payload
-        http.end();                        //Close connection
+        int httpCode = http.POST(data); //Send the request
+        http.end();                     //Close connection
 
+        Serial.println("HTTP response:");
         Serial.println(httpCode); //Print HTTP return code
-        Serial.println(payload);  //Print request response payload
 
         if (httpCode == HTTP_CODE_NO_CONTENT)
         {
