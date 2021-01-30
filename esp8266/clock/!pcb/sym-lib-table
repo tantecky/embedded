@@ -1,0 +1,4 @@
+(sym_lib_table
+  (lib (name !mysyms)(type Legacy)(uri ${KIPRJMOD}/!mysyms.lib)(options "")(descr ""))
+  (lib (name wemos_mini)(type Legacy)(uri ${KIPRJMOD}/wemos_mini.lib)(options "")(descr ""))
+)
