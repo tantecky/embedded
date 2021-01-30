@@ -244,7 +244,94 @@ D8
 Wire Wire Line
 	2700 1100 2700 1400
 Wire Wire Line
-	2500 1100 2500 1400
+	2500 1100 2500 1200
+$Comp
+L Connector_Generic:Conn_01x05 J1
+U 1 1 60179DA7
+P 4000 1450
+F 0 "J1" H 4080 1492 50  0000 L CNN
+F 1 "Conn_01x05" H 4080 1401 50  0000 L CNN
+F 2 "" H 4000 1450 50  0001 C CNN
+F 3 "~" H 4000 1450 50  0001 C CNN
+	1    4000 1450
+	1    0    0    -1  
+$EndComp
+Text GLabel 3800 1250 0    50   Input ~ 0
+A0
+Text GLabel 3800 1350 0    50   Input ~ 0
+D0
+Text GLabel 3800 1450 0    50   Input ~ 0
+D3
+Text GLabel 3800 1550 0    50   Input ~ 0
+D4
+Text GLabel 3800 1650 0    50   Input ~ 0
+D8
+$Comp
+L Connector_Generic:Conn_01x01 J2
+U 1 1 6017C7BC
+P 4400 3350
+F 0 "J2" H 4480 3392 50  0000 L CNN
+F 1 "Conn_01x01" H 4480 3301 50  0000 L CNN
+F 2 "" H 4400 3350 50  0001 C CNN
+F 3 "~" H 4400 3350 50  0001 C CNN
+	1    4400 3350
+	1    0    0    -1  
+$EndComp
+Text GLabel 4200 3350 0    50   Input ~ 0
+ANT
+$Comp
+L power:PWR_FLAG #FLG0101
+U 1 1 6017DB92
+P 2500 1200
+F 0 "#FLG0101" H 2500 1275 50  0001 C CNN
+F 1 "PWR_FLAG" V 2500 1327 50  0000 L CNN
+F 2 "" H 2500 1200 50  0001 C CNN
+F 3 "~" H 2500 1200 50  0001 C CNN
+	1    2500 1200
+	0    -1   -1   0   
+$EndComp
+Connection ~ 2500 1200
+Wire Wire Line
+	2500 1200 2500 1400
+$Comp
+L !mysyms:oled U4
+U 1 1 6015EBC4
+P 7450 2050
+F 0 "U4" V 7075 1898 50  0000 C CNN
+F 1 "oled" V 7166 1898 50  0000 C CNN
+F 2 "" V 7400 2150 50  0001 C CNN
+F 3 "" V 7400 2150 50  0001 C CNN
+	1    7450 2050
+	0    1    1    0   
+$EndComp
+$Comp
+L power:+3V3 #PWR01
+U 1 1 6015F7B7
+P 7500 1900
+F 0 "#PWR01" H 7500 1750 50  0001 C CNN
+F 1 "+3V3" H 7515 2073 50  0000 C CNN
+F 2 "" H 7500 1900 50  0001 C CNN
+F 3 "" H 7500 1900 50  0001 C CNN
+	1    7500 1900
+	1    0    0    -1  
+$EndComp
+Text GLabel 7500 2100 2    50   Input ~ 0
+SCL
+Text GLabel 7500 2200 2    50   Input ~ 0
+SDA
+$Comp
+L power:GND #PWR02
+U 1 1 60160948
+P 7850 2000
+F 0 "#PWR02" H 7850 1750 50  0001 C CNN
+F 1 "GND" H 7855 1827 50  0000 C CNN
+F 2 "" H 7850 2000 50  0001 C CNN
+F 3 "" H 7850 2000 50  0001 C CNN
+	1    7850 2000
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	7850 2000 7500 2000
 Wire Wire Line
 	2600 3100 2600 3250
 $EndSCHEMATC
