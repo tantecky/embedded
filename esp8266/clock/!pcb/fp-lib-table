@@ -1,3 +1,4 @@
 (fp_lib_table
   (lib (name wemos-d1-mini)(type KiCad)(uri ${KIPRJMOD}/wemos-d1-mini.pretty)(options "")(descr ""))
+  (lib (name !myfoots)(type KiCad)(uri ${KIPRJMOD}/!myfoots.pretty)(options "")(descr ""))
 )
