@@ -62,8 +62,5 @@ void Sensor_::tick()
 
     Oled.sendBuffer();
 
-    Led.setBrightness(7);
-    Led.showNumberDecEx((int)(humIn_ * 100), 0b11100000);
-
     lastDrawn_ = millis();
 }
