@@ -248,23 +248,23 @@ Wire Wire Line
 $Comp
 L Connector_Generic:Conn_01x05 J1
 U 1 1 60179DA7
-P 1500 4300
-F 0 "J1" H 1580 4342 50  0000 L CNN
-F 1 "GPIO" H 1580 4251 50  0000 L CNN
-F 2 "Connector_PinHeader_2.54mm:PinHeader_1x05_P2.54mm_Vertical" H 1500 4300 50  0001 C CNN
-F 3 "~" H 1500 4300 50  0001 C CNN
-	1    1500 4300
+P 1450 4200
+F 0 "J1" H 1530 4242 50  0000 L CNN
+F 1 "GPIO" H 1530 4151 50  0000 L CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_1x05_P2.54mm_Vertical" H 1450 4200 50  0001 C CNN
+F 3 "~" H 1450 4200 50  0001 C CNN
+	1    1450 4200
 	1    0    0    -1  
 $EndComp
-Text GLabel 1300 4100 0    50   Input ~ 0
+Text GLabel 1250 4000 0    50   Input ~ 0
 A0
-Text GLabel 1300 4200 0    50   Input ~ 0
+Text GLabel 1250 4100 0    50   Input ~ 0
 D0
-Text GLabel 1300 4300 0    50   Input ~ 0
+Text GLabel 1250 4200 0    50   Input ~ 0
 D3
-Text GLabel 1300 4400 0    50   Input ~ 0
+Text GLabel 1250 4300 0    50   Input ~ 0
 D4
-Text GLabel 1300 4500 0    50   Input ~ 0
+Text GLabel 1250 4400 0    50   Input ~ 0
 D8
 $Comp
 L Connector_Generic:Conn_01x01 J2
@@ -376,23 +376,23 @@ DIO
 $Comp
 L Connector_Generic:Conn_01x02 J3
 U 1 1 6016876C
-P 2650 4200
-F 0 "J3" H 2730 4242 50  0000 L CNN
-F 1 "Conn_01x01" H 2730 4151 50  0000 L CNN
-F 2 "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical" H 2650 4200 50  0001 C CNN
-F 3 "~" H 2650 4200 50  0001 C CNN
-	1    2650 4200
+P 3100 4200
+F 0 "J3" H 3180 4242 50  0000 L CNN
+F 1 "Conn_01x01" H 3180 4151 50  0000 L CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical" H 3100 4200 50  0001 C CNN
+F 3 "~" H 3100 4200 50  0001 C CNN
+	1    3100 4200
 	1    0    0    -1  
 $EndComp
 $Comp
 L power:+5V #PWR03
 U 1 1 6016910D
-P 2450 4200
-F 0 "#PWR03" H 2450 4050 50  0001 C CNN
-F 1 "+5V" H 2465 4373 50  0000 C CNN
-F 2 "" H 2450 4200 50  0001 C CNN
-F 3 "" H 2450 4200 50  0001 C CNN
-	1    2450 4200
+P 2900 4200
+F 0 "#PWR03" H 2900 4050 50  0001 C CNN
+F 1 "+5V" H 2915 4373 50  0000 C CNN
+F 2 "" H 2900 4200 50  0001 C CNN
+F 3 "" H 2900 4200 50  0001 C CNN
+	1    2900 4200
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -516,6 +516,45 @@ Wire Wire Line
 Text GLabel 7650 1350 2    50   Input ~ 0
 SDA
 Wire Wire Line
-	2450 4300 2450 4200
-Connection ~ 2450 4200
+	2900 4300 2900 4200
+Connection ~ 2900 4200
+$Comp
+L !mysyms:bme280pbc U7
+U 1 1 60193573
+P 8750 1200
+F 0 "U7" V 8400 900 50  0000 L CNN
+F 1 "SPARE2" V 9150 1400 50  0000 L CNN
+F 2 "!myfoots:4pinI2C" V 8700 1300 50  0001 C CNN
+F 3 "" V 8700 1300 50  0001 C CNN
+	1    8750 1200
+	0    1    1    0   
+$EndComp
+$Comp
+L power:+3V3 #PWR09
+U 1 1 601937DF
+P 8800 1050
+F 0 "#PWR09" H 8800 900 50  0001 C CNN
+F 1 "+3V3" H 8815 1223 50  0000 C CNN
+F 2 "" H 8800 1050 50  0001 C CNN
+F 3 "" H 8800 1050 50  0001 C CNN
+	1    8800 1050
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR010
+U 1 1 601937E9
+P 9150 1150
+F 0 "#PWR010" H 9150 900 50  0001 C CNN
+F 1 "GND" H 9155 977 50  0000 C CNN
+F 2 "" H 9150 1150 50  0001 C CNN
+F 3 "" H 9150 1150 50  0001 C CNN
+	1    9150 1150
+	1    0    0    -1  
+$EndComp
+Text GLabel 8800 1250 2    50   Input ~ 0
+SCL
+Wire Wire Line
+	8800 1150 9150 1150
+Text GLabel 8800 1350 2    50   Input ~ 0
+SDA
 $EndSCHEMATC
