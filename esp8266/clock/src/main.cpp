@@ -31,16 +31,16 @@ const uint centerOffset(const String &text)
 
 void setContrast()
 {
-  if (Clock::hour > 20 || Clock::hour < 6)
-  {
-    Oled.setContrast(0);
-    Led.setBrightness(0);
-  }
-  else
-  {
-    Oled.setContrast(0xFF);
-    Led.setBrightness(7);
-  }
+  // if (Clock::hour > 20 || Clock::hour < 6)
+  // {
+  //   Oled.setContrast(0);
+  //   Led.setBrightness(0);
+  // }
+  // else
+  // {
+  //   Oled.setContrast(0xFF);
+  //   Led.setBrightness(7);
+  // }
 }
 
 void connect()
@@ -106,7 +106,7 @@ void setup()
 
   connect();
 
-  Clock::setup();
+  // Clock::setup();
   logger.setup();
 
   Remote::setup(D5, 3);
@@ -114,7 +114,7 @@ void setup()
 
 void loop()
 {
-  Clock::tick();
+  // Clock::tick();
   Sensor.tick();
   logger.tick();
 }
