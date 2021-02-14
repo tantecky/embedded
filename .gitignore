@@ -38,3 +38,7 @@ Debug/
 Release/
 .settings/
 .mxproject
+
+#nrf5
+nRF5_SDK_17
+_build
