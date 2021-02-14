@@ -6,7 +6,10 @@
   ],
   "settings": {
     "files.associations": {
-      "nrf_delay.h": "c"
+      "nrf_delay.h": "c",
+      "nrf_dfu_trigger_usb.h": "c",
+      "pca10059.h": "c",
+      "boards.h": "c"
     }
   }
 }

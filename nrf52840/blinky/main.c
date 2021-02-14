@@ -54,6 +54,8 @@
 #include "boards.h"
 #include "boards/pca10059.h"
 
+#include "nrf_dfu_trigger_usb.h"
+
 /**
  * @brief Function for application main entry.
  */
@@ -68,7 +70,7 @@ int main(void)
         for (int i = 0; i < LEDS_NUMBER; i++)
         {
             bsp_board_led_invert(i);
-            nrf_delay_ms(100);
+            nrf_delay_ms(500);
         }
     }
 }
