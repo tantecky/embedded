@@ -30,13 +30,10 @@
         "${nrfSDK}/components/libraries/uart",
         "${nrfSDK}/integration/nrfx/legacy",
         "${nrfSDK}/components/libraries/delay",
-        "${nrfSDK}/modules/nrfx/drivers/include"
+        "${nrfSDK}/modules/nrfx/drivers/include",
+        "E:/Programy/GNU Arm Embedded Toolchain/10 2020-q4-major/arm-none-eabi/include"
       ],
-      // "defines": [
-      //     "_DEBUG",
-      //     "UNICODE",
-      //     "_UNICODE"
-      // ],
+      "defines": ["S140", "BOARD_PCA10059", "SOFTDEVICE_PRESENT"],
       "compilerPath": "E:/Program Files (x86)/Microsoft Visual Studio/2017/Enterprise/VC/Tools/MSVC/14.16.27023/bin/Hostx64/x64/cl.exe",
       "cStandard": "c17",
       "cppStandard": "c++17",
