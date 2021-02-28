@@ -1,0 +1,23 @@
+{
+  "env": {
+    "ZEPHYR_BASE": "e:/Programy/ncs/v1.5.0"
+  },
+
+  "configurations": [
+    {
+      "name": "ncs",
+      "includePath": [
+        "${workspaceFolder}/**",
+        "${ZEPHYR_BASE}/zephyr",
+        "${ZEPHYR_BASE}/zephyr/include",
+        "${ZEPHYR_BASE}/toolchain/opt/arm-none-eabi/include"
+      ]
+      // "defines": [
+      //     "_DEBUG",
+      //     "UNICODE",
+      //     "_UNICODE"
+      // ],
+    }
+  ],
+  "version": 4
+}
