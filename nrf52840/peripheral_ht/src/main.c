@@ -23,7 +23,7 @@
 
 #include <dk_buttons_and_leds.h>
 
-#include "hts.h"
+// #include "hts.h"
 
 #define LED_GREEN (2)
 #define LED_RED (1)
@@ -34,8 +34,8 @@ struct bt_conn *default_conn;
 static const struct bt_data ad[] = {
 	BT_DATA_BYTES(BT_DATA_FLAGS, (BT_LE_AD_GENERAL | BT_LE_AD_NO_BREDR)),
 	BT_DATA_BYTES(BT_DATA_UUID16_ALL,
-				  BT_UUID_16_ENCODE(BT_UUID_HTS_VAL),
-				  BT_UUID_16_ENCODE(BT_UUID_DIS_VAL),
+				  //   BT_UUID_16_ENCODE(BT_UUID_HTS_VAL),
+				  //   BT_UUID_16_ENCODE(BT_UUID_DIS_VAL),
 				  BT_UUID_16_ENCODE(BT_UUID_BAS_VAL)),
 };
 
@@ -50,7 +50,7 @@ static void connected(struct bt_conn *conn, uint8_t err)
 		default_conn = bt_conn_ref(conn);
 		printk("Connected\n");
 
-		dk_set_led_on(LED_RED);
+		// dk_set_led_on(LED_RED);
 		dk_set_led_off(LED_GREEN);
 	}
 }
@@ -66,7 +66,7 @@ static void disconnected(struct bt_conn *conn, uint8_t reason)
 	}
 
 	dk_set_led_on(LED_GREEN);
-	dk_set_led_off(LED_RED);
+	// dk_set_led_off(LED_RED);
 }
 
 static struct bt_conn_cb conn_callbacks = {
@@ -80,7 +80,7 @@ static void bt_ready(void)
 
 	printk("Bluetooth initialized\n");
 
-	hts_init();
+	// hts_init();
 
 	err = bt_le_adv_start(BT_LE_ADV_CONN_NAME, ad, ARRAY_SIZE(ad), NULL, 0);
 	if (err)
@@ -143,7 +143,7 @@ void main(void)
 	 */
 
 	dk_set_led_on(LED_GREEN);
-	dk_set_led_off(LED_RED);
+	// dk_set_led_off(LED_RED);
 
 	while (1)
 	{
@@ -152,7 +152,7 @@ void main(void)
 		if (default_conn)
 		{
 			/* Temperature measurements simulation */
-			hts_indicate();
+			// hts_indicate();
 
 			/* Battery level simulation */
 			bas_notify();
