@@ -10,6 +10,9 @@
         "${workspaceFolder}/**",
         "${ZEPHYR_BASE}/zephyr",
         "${ZEPHYR_BASE}/zephyr/include",
+        "${ZEPHYR_BASE}/nrf/include",
+        "${ZEPHYR_BASE}/nrf/lib/**",
+        "${ZEPHYR_BASE}/modules/hal/nordic/**",
         "${ZEPHYR_BASE}/toolchain/opt/arm-none-eabi/include"
       ]
       // "defines": [

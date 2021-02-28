@@ -21,25 +21,37 @@
 #include <bluetooth/gatt.h>
 #include <bluetooth/services/bas.h>
 
+#include <dk_buttons_and_leds.h>
+
 #include "hts.h"
+
+#define LED_GREEN (2)
+#define LED_RED (1)
+#define LED_BLUE (3)
 
 struct bt_conn *default_conn;
 
 static const struct bt_data ad[] = {
 	BT_DATA_BYTES(BT_DATA_FLAGS, (BT_LE_AD_GENERAL | BT_LE_AD_NO_BREDR)),
 	BT_DATA_BYTES(BT_DATA_UUID16_ALL,
-		      BT_UUID_16_ENCODE(BT_UUID_HTS_VAL),
-		      BT_UUID_16_ENCODE(BT_UUID_DIS_VAL),
-		      BT_UUID_16_ENCODE(BT_UUID_BAS_VAL)),
+				  BT_UUID_16_ENCODE(BT_UUID_HTS_VAL),
+				  BT_UUID_16_ENCODE(BT_UUID_DIS_VAL),
+				  BT_UUID_16_ENCODE(BT_UUID_BAS_VAL)),
 };
 
 static void connected(struct bt_conn *conn, uint8_t err)
 {
-	if (err) {
+	if (err)
+	{
 		printk("Connection failed (err 0x%02x)\n", err);
-	} else {
+	}
+	else
+	{
 		default_conn = bt_conn_ref(conn);
 		printk("Connected\n");
+
+		dk_set_led_on(LED_RED);
+		dk_set_led_off(LED_GREEN);
 	}
 }
 
@@ -47,10 +59,14 @@ static void disconnected(struct bt_conn *conn, uint8_t reason)
 {
 	printk("Disconnected (reason 0x%02x)\n", reason);
 
-	if (default_conn) {
+	if (default_conn)
+	{
 		bt_conn_unref(default_conn);
 		default_conn = NULL;
 	}
+
+	dk_set_led_on(LED_GREEN);
+	dk_set_led_off(LED_RED);
 }
 
 static struct bt_conn_cb conn_callbacks = {
@@ -67,7 +83,8 @@ static void bt_ready(void)
 	hts_init();
 
 	err = bt_le_adv_start(BT_LE_ADV_CONN_NAME, ad, ARRAY_SIZE(ad), NULL, 0);
-	if (err) {
+	if (err)
+	{
 		printk("Advertising failed to start (err %d)\n", err);
 		return;
 	}
@@ -94,7 +111,8 @@ static void bas_notify(void)
 
 	battery_level--;
 
-	if (!battery_level) {
+	if (!battery_level)
+	{
 		battery_level = 100U;
 	}
 
@@ -103,10 +121,14 @@ static void bas_notify(void)
 
 void main(void)
 {
+
+	dk_leds_init();
+
 	int err;
 
 	err = bt_enable(NULL);
-	if (err) {
+	if (err)
+	{
 		printk("Bluetooth init failed (err %d)\n", err);
 		return;
 	}
@@ -119,13 +141,25 @@ void main(void)
 	/* Implement indicate. At the moment there is no suitable way
 	 * of starting delayed work so we do it here
 	 */
-	while (1) {
+
+	dk_set_led_on(LED_GREEN);
+	dk_set_led_off(LED_RED);
+
+	while (1)
+	{
 		k_sleep(K_SECONDS(1));
 
-		/* Temperature measurements simulation */
-		hts_indicate();
+		if (default_conn)
+		{
+			/* Temperature measurements simulation */
+			hts_indicate();
 
-		/* Battery level simulation */
-		bas_notify();
+			/* Battery level simulation */
+			bas_notify();
+
+			dk_set_led_on(LED_BLUE);
+			k_sleep(K_MSEC(100));
+			dk_set_led_off(LED_BLUE);
+		}
 	}
 }

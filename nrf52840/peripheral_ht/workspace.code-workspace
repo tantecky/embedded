@@ -13,7 +13,11 @@
       "errno.h": "c",
       "kernel_includes.h": "c",
       "types.h": "c",
-      "syscall.h": "c"
+      "syscall.h": "c",
+      "dk_buttons_and_leds.h": "c",
+      "nrfx.h": "c",
+      "bas.h": "c",
+      "hts.h": "c"
     }
   }
 }
