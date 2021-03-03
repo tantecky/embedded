@@ -79,8 +79,6 @@ static void bt_ready(void)
 
 	printk("Bluetooth initialized\n");
 
-	// hts_init();
-
 	err = bt_le_adv_start(BT_LE_ADV_CONN_NAME, ad, ARRAY_SIZE(ad), NULL, 0);
 	if (err)
 	{
@@ -137,7 +135,7 @@ void main(void)
 		if (default_conn)
 		{
 
-			if (update_temperature())
+			if (check_temperature())
 			{
 
 				dk_set_led_on(LED_BLUE);
