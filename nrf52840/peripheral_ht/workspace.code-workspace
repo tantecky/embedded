@@ -17,7 +17,9 @@
       "dk_buttons_and_leds.h": "c",
       "nrfx.h": "c",
       "bas.h": "c",
-      "hts.h": "c"
+      "hts.h": "c",
+      "bluetooth.h": "c",
+      "rand32.h": "c"
     }
   }
 }
