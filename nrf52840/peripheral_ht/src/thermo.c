@@ -40,7 +40,7 @@ void ccc_cfg_changed(const struct bt_gatt_attr *attr,
     printk("Temperature Notifications %s", notif_enabled ? "enabled" : "disabled");
 }
 
-static void update_temperature()
+void update_temperature()
 {
 
     temperature = (float)sys_rand32_get() / (float)(UINT32_MAX / 100);

@@ -13,7 +13,8 @@ extern "C"
     void ccc_cfg_changed(const struct bt_gatt_attr *attr,
                          uint16_t value);
 
-    static void update_temperature();
+    void update_temperature();
+
     bool check_temperature();
 
 #ifdef __cplusplus
