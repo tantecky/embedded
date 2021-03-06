@@ -87,10 +87,8 @@ static void bt_ready(void)
 	printk("Advertising successfully started\n");
 }
 
-void main(void)
+static void bt_init(void)
 {
-
-	dk_leds_init();
 
 	int err;
 
@@ -104,6 +102,13 @@ void main(void)
 	bt_ready();
 
 	bt_conn_cb_register(&conn_callbacks);
+}
+
+void main(void)
+{
+
+	dk_leds_init();
+	bt_init();
 
 	dk_set_led_on(LED_GREEN);
 	// dk_set_led_off(LED_RED);

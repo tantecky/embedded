@@ -43,6 +43,7 @@ void update_temperature()
 {
 
     temperature = (float)sys_rand32_get() / (float)(UINT32_MAX / 100);
+    printk("Updating temp %f\n", temperature);
 }
 
 bool check_temperature()
