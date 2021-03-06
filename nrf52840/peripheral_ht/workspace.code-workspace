@@ -19,7 +19,8 @@
       "bas.h": "c",
       "hts.h": "c",
       "bluetooth.h": "c",
-      "rand32.h": "c"
+      "rand32.h": "c",
+      "math.h": "c"
     }
   }
 }

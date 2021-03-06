@@ -7,7 +7,7 @@
 
 #include "thermo.h"
 
-static float temperature = -1;
+static float temperature = (0.0F / 0.0F);
 static bool notif_enabled = false;
 
 BT_GATT_SERVICE_DEFINE(thermo,
@@ -23,8 +23,6 @@ ssize_t read_temperature(struct bt_conn *conn,
                          const struct bt_gatt_attr *attr, void *buf,
                          uint16_t len, uint16_t offset)
 {
-
-    update_temperature();
 
     return bt_gatt_attr_read(conn, attr, buf, len, offset, &temperature,
                              sizeof(temperature));

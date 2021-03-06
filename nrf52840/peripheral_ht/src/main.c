@@ -33,8 +33,6 @@ struct bt_conn *default_conn;
 static const struct bt_data ad[] = {
 	BT_DATA_BYTES(BT_DATA_FLAGS, (BT_LE_AD_GENERAL | BT_LE_AD_NO_BREDR)),
 	BT_DATA_BYTES(BT_DATA_UUID16_ALL,
-				  //   BT_UUID_16_ENCODE(BT_UUID_HTS_VAL),
-				  //   BT_UUID_16_ENCODE(BT_UUID_DIS_VAL),
 				  BT_UUID_16_ENCODE(BT_UUID_TEMPERATURE_VAL)),
 };
 
@@ -89,18 +87,18 @@ static void bt_ready(void)
 	printk("Advertising successfully started\n");
 }
 
-static void auth_cancel(struct bt_conn *conn)
-{
-	char addr[BT_ADDR_LE_STR_LEN];
+// static void auth_cancel(struct bt_conn *conn)
+// {
+// 	char addr[BT_ADDR_LE_STR_LEN];
 
-	bt_addr_le_to_str(bt_conn_get_dst(conn), addr, sizeof(addr));
+// 	bt_addr_le_to_str(bt_conn_get_dst(conn), addr, sizeof(addr));
 
-	printk("Pairing cancelled: %s\n", addr);
-}
+// 	printk("Pairing cancelled: %s\n", addr);
+// }
 
-static struct bt_conn_auth_cb auth_cb_display = {
-	.cancel = auth_cancel,
-};
+// static struct bt_conn_auth_cb auth_cb_display = {
+// 	.cancel = auth_cancel,
+// };
 
 void main(void)
 {
@@ -119,11 +117,7 @@ void main(void)
 	bt_ready();
 
 	bt_conn_cb_register(&conn_callbacks);
-	bt_conn_auth_cb_register(&auth_cb_display);
-
-	/* Implement indicate. At the moment there is no suitable way
-	 * of starting delayed work so we do it here
-	 */
+	// bt_conn_auth_cb_register(&auth_cb_display);
 
 	dk_set_led_on(LED_GREEN);
 	// dk_set_led_off(LED_RED);
