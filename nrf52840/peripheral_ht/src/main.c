@@ -87,19 +87,6 @@ static void bt_ready(void)
 	printk("Advertising successfully started\n");
 }
 
-// static void auth_cancel(struct bt_conn *conn)
-// {
-// 	char addr[BT_ADDR_LE_STR_LEN];
-
-// 	bt_addr_le_to_str(bt_conn_get_dst(conn), addr, sizeof(addr));
-
-// 	printk("Pairing cancelled: %s\n", addr);
-// }
-
-// static struct bt_conn_auth_cb auth_cb_display = {
-// 	.cancel = auth_cancel,
-// };
-
 void main(void)
 {
 
@@ -117,7 +104,6 @@ void main(void)
 	bt_ready();
 
 	bt_conn_cb_register(&conn_callbacks);
-	// bt_conn_auth_cb_register(&auth_cb_display);
 
 	dk_set_led_on(LED_GREEN);
 	// dk_set_led_off(LED_RED);

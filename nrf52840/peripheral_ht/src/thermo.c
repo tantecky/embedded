@@ -23,6 +23,7 @@ ssize_t read_temperature(struct bt_conn *conn,
                          const struct bt_gatt_attr *attr, void *buf,
                          uint16_t len, uint16_t offset)
 {
+    printk("Reading temp %f\n", temperature);
 
     return bt_gatt_attr_read(conn, attr, buf, len, offset, &temperature,
                              sizeof(temperature));
@@ -35,7 +36,7 @@ void ccc_cfg_changed(const struct bt_gatt_attr *attr,
 
     notif_enabled = (value == BT_GATT_CCC_NOTIFY);
 
-    printk("Temperature Notifications %s", notif_enabled ? "enabled" : "disabled");
+    printk("Temperature Notifications %s\n", notif_enabled ? "enabled" : "disabled");
 }
 
 void update_temperature()
