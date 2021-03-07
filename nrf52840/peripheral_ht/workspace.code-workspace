@@ -20,7 +20,9 @@
       "hts.h": "c",
       "bluetooth.h": "c",
       "rand32.h": "c",
-      "math.h": "c"
+      "math.h": "c",
+      "ios": "cpp",
+      "*.tcc": "cpp"
     }
   }
 }

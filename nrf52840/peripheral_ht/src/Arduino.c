@@ -6,7 +6,7 @@
 
 static struct device *port0 = NULL;
 
-void pinMode(uint8_t pin, uint32_t mode)
+void pinMode(uint32_t pin, uint32_t mode)
 {
     if (!port0)
     {
@@ -15,7 +15,12 @@ void pinMode(uint8_t pin, uint32_t mode)
 
     if (!port0)
     {
-        printk("device_get_binding failed");
+        while (true)
+        {
+            printk("device_get_binding failed");
+            k_sleep(K_SECONDS(1));
+        }
+
         return;
     }
 
@@ -24,12 +29,17 @@ void pinMode(uint8_t pin, uint32_t mode)
 
     if (err)
     {
-        printk("gpio_pin_configure failed %d\n", err);
+        while (true)
+        {
+            printk("gpio_pin_configure failed %d\n", err);
+            k_sleep(K_SECONDS(1));
+        }
+
         return;
     }
 }
 
-void digitalWrite(uint8_t pin, uint32_t val)
+void digitalWrite(uint32_t pin, uint32_t val)
 {
     int err = gpio_pin_set_raw(port0, pin, val);
 
@@ -40,7 +50,7 @@ void digitalWrite(uint8_t pin, uint32_t val)
     }
 }
 
-int digitalRead(uint8_t pin)
+int digitalRead(uint32_t pin)
 {
-    return 0;
+    return gpio_pin_get_raw(port0, pin);
 }

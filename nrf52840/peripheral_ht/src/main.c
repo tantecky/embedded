@@ -24,6 +24,7 @@
 
 #include "Arduino.h"
 #include "thermo.h"
+#include "maxik.h"
 
 #define LED_GREEN (2)
 #define LED_RED (1)
@@ -105,6 +106,8 @@ static void bt_init(void)
 
 void main(void)
 {
+	maxik_init();
+
 	pinMode(12, OUTPUT);
 
 	digitalWrite(12, LOW);

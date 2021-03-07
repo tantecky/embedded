@@ -84,8 +84,12 @@
 class MAX31856
 {
 public:
+    MAX31856()
+    {
+    }
     MAX31856(int, int, int, int); // SDI, SDO, CS, CLK (DRDY and FAULT are not used)
 
+    void init(int, int, int, int); // SDI, SDO, CS, CLK (DRDY and FAULT are not used)
     void writeRegister(byte, byte);
     float readThermocouple(byte unit);
     float readJunction(byte unit);

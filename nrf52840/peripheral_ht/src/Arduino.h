@@ -1,11 +1,16 @@
 #ifndef DA2E9751_365B_4134_8D8F_A48EA6856F43
 #define DA2E9751_365B_4134_8D8F_A48EA6856F43
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #include <stdint.h>
 #include <zephyr.h>
 #include <drivers/gpio.h>
 
-typedef uint8_t byte;
+    typedef uint8_t byte;
 
 #define LOW (0x0)
 #define HIGH (0x1)
@@ -15,8 +20,12 @@ typedef uint8_t byte;
 
 #define delayMicroseconds(x) NRFX_DELAY_US((x))
 
-void pinMode(uint8_t pin, uint32_t mode);
-void digitalWrite(uint8_t pin, uint32_t val);
-int digitalRead(uint8_t pin);
+    void pinMode(uint32_t pin, uint32_t mode);
+    void digitalWrite(uint32_t pin, uint32_t val);
+    int digitalRead(uint32_t pin);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* DA2E9751_365B_4134_8D8F_A48EA6856F43 */
