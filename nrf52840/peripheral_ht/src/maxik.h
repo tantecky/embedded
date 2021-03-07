@@ -7,6 +7,7 @@ extern "C"
 #endif
 
     void maxik_init();
+    float maxik_read_temp();
 
 #ifdef __cplusplus
 }

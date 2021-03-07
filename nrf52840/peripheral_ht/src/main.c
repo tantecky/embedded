@@ -108,6 +108,12 @@ void main(void)
 {
 	maxik_init();
 
+	while (true)
+	{
+		printk("Temp %f\n", maxik_read_temp());
+	}
+
+	/*
 	pinMode(12, OUTPUT);
 
 	digitalWrite(12, LOW);
@@ -119,7 +125,7 @@ void main(void)
 		digitalWrite(12, LOW);
 		delayMicroseconds(1e6);
 		digitalWrite(12, HIGH);
-	}
+	}*/
 
 	/*
 	dk_leds_init();
