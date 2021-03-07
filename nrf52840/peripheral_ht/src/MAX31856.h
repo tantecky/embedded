@@ -87,13 +87,13 @@ public:
     MAX31856(int, int, int, int); // SDI, SDO, CS, CLK (DRDY and FAULT are not used)
 
     void writeRegister(byte, byte);
-    double readThermocouple(byte unit);
-    double readJunction(byte unit);
+    float readThermocouple(byte unit);
+    float readJunction(byte unit);
 
 private:
     long readData();
     void writeByte(byte);
-    double verifyMAX31856();
+    float verifyMAX31856();
     int _sdi, _sdo, _cs, _clk;
     byte _registers[NUM_REGISTERS]; // Shadow registers.  Registers can be restored if power to MAX31855 is lost
 };

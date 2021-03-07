@@ -93,9 +93,9 @@ void MAX31856::writeRegister(byte registerNum, byte data)
 // the conversion takes place in the background within 155 ms, or longer depending on the
 // number of samples in each reading (see CR1).
 // Returns the temperature, or an error (FAULT_OPEN, FAULT_VOLTAGE or NO_MAX31856)
-double MAX31856::readThermocouple(byte unit)
+float MAX31856::readThermocouple(byte unit)
 {
-    double temperature;
+    float temperature;
     long data;
 
     // Select the MAX31856 chip
@@ -133,11 +133,11 @@ double MAX31856::readThermocouple(byte unit)
         // Negative temperatures have been automagically handled by the shift above :-)
 
         // Convert to Celsius
-        temperature = (double)data * 0.0078125;
+        temperature = (float)data * 0.0078125f;
 
         // Convert to Fahrenheit if desired
         if (unit == FAHRENHEIT)
-            temperature = (temperature * 9.0 / 5.0) + 32;
+            temperature = (temperature * 9.0f / 5.0f) + 32;
     }
 
     // Return the temperature
@@ -147,9 +147,9 @@ double MAX31856::readThermocouple(byte unit)
 // Read the junction (IC) temperature either in Degree Celsius or Fahrenheit.
 // This routine also makes sure that communication with the MAX31856 is working and
 // will return NO_MAX31856 if not.
-double MAX31856::readJunction(byte unit)
+float MAX31856::readJunction(byte unit)
 {
-    double temperature;
+    float temperature;
     long data, temperatureOffset;
 
     // Select the MAX31856 chip
@@ -194,11 +194,11 @@ double MAX31856::readJunction(byte unit)
     temperature = data + temperatureOffset;
 
     // Convert to Celsius
-    temperature *= 0.015625;
+    temperature *= 0.015625f;
 
     // Convert to Fahrenheit if desired
     if (unit == FAHRENHEIT)
-        temperature = (temperature * 9.0 / 5.0) + 32;
+        temperature = (temperature * 9.0f / 5.0f) + 32;
 
     // Return the temperature
     return (temperature);
@@ -206,7 +206,7 @@ double MAX31856::readJunction(byte unit)
 
 // When the MAX31856 is uninitialzed and either the junction or thermocouple temperature is read it will return 0.
 // This is a valid temperature, but could indicate that the registers need to be initialized.
-double MAX31856::verifyMAX31856()
+float MAX31856::verifyMAX31856()
 {
     long data, reg;
 
