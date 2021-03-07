@@ -22,6 +22,7 @@
 
 #include <dk_buttons_and_leds.h>
 
+#include "Arduino.h"
 #include "thermo.h"
 
 #define LED_GREEN (2)
@@ -47,7 +48,6 @@ static void connected(struct bt_conn *conn, uint8_t err)
 		default_conn = bt_conn_ref(conn);
 		printk("Connected\n");
 
-		// dk_set_led_on(LED_RED);
 		dk_set_led_off(LED_GREEN);
 	}
 }
@@ -63,7 +63,6 @@ static void disconnected(struct bt_conn *conn, uint8_t reason)
 	}
 
 	dk_set_led_on(LED_GREEN);
-	// dk_set_led_off(LED_RED);
 }
 
 static struct bt_conn_cb conn_callbacks = {
@@ -106,12 +105,24 @@ static void bt_init(void)
 
 void main(void)
 {
+	pinMode(12, OUTPUT);
 
+	digitalWrite(12, LOW);
+	k_sleep(K_SECONDS(2));
+
+	while (1)
+	{
+		delayMicroseconds(1e6);
+		digitalWrite(12, LOW);
+		delayMicroseconds(1e6);
+		digitalWrite(12, HIGH);
+	}
+
+	/*
 	dk_leds_init();
 	bt_init();
 
 	dk_set_led_on(LED_GREEN);
-	// dk_set_led_off(LED_RED);
 
 	while (1)
 	{
@@ -129,4 +140,5 @@ void main(void)
 			}
 		}
 	}
+	*/
 }
