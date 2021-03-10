@@ -1,16 +1,18 @@
+#include <sys/byteorder.h>
 #include <bluetooth/bluetooth.h>
 #include <bluetooth/conn.h>
 #include <bluetooth/gatt.h>
 #include <bluetooth/uuid.h>
 #include <sys/printk.h>
-#include <random/rand32.h>
 
 #include "thermo.h"
+#include "maxik.h"
 
 static float temperature = (0.0F / 0.0F);
+static uint8_t payload[5] = {0};
 static bool notif_enabled = false;
 
-BT_GATT_SERVICE_DEFINE(thermo,
+BT_GATT_SERVICE_DEFINE(thermo_svc,
                        BT_GATT_PRIMARY_SERVICE(BT_UUID_ESS),
                        BT_GATT_CHARACTERISTIC(BT_UUID_TEMPERATURE,
                                               BT_GATT_CHRC_READ | BT_GATT_CHRC_NOTIFY,
@@ -41,14 +43,13 @@ void ccc_cfg_changed(const struct bt_gatt_attr *attr,
 
 void update_temperature()
 {
-
-    temperature = (float)sys_rand32_get() / (float)(UINT32_MAX / 100);
+    // blocking, takes 1 sec
+    temperature = maxik_read_temp();
     printk("Updating temp %f\n", temperature);
 }
 
 bool check_temperature()
 {
-
     if (!notif_enabled)
     {
         return false;
@@ -56,7 +57,14 @@ bool check_temperature()
 
     update_temperature();
 
-    bt_gatt_notify(NULL, &thermo.attrs[1], &temperature, sizeof(temperature));
+    uint32_t mantissa = (uint32_t)(temperature * 100);
+    uint8_t exponent = (uint8_t)-2;
+
+    payload[0] = 0; /* temperature in celcius */
+    sys_put_le24(mantissa, (uint8_t *)&payload[1]);
+    payload[4] = exponent;
+
+    bt_gatt_notify(NULL, &thermo_svc.attrs[1], &payload, sizeof(payload));
 
     return true;
 }

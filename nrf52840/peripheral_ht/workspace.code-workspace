@@ -22,7 +22,8 @@
       "rand32.h": "c",
       "math.h": "c",
       "ios": "cpp",
-      "*.tcc": "cpp"
+      "*.tcc": "cpp",
+      "hrs.h": "c"
     }
   }
 }

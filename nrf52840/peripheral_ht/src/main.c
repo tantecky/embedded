@@ -20,15 +20,13 @@
 #include <bluetooth/uuid.h>
 #include <bluetooth/gatt.h>
 
-#include <dk_buttons_and_leds.h>
-
 #include "Arduino.h"
 #include "thermo.h"
 #include "maxik.h"
 
-#define LED_GREEN (2)
-#define LED_RED (1)
-#define LED_BLUE (3)
+#define LED_GREEN (6)
+#define LED_RED (8)
+#define LED_BLUE (12)
 
 struct bt_conn *default_conn;
 
@@ -49,7 +47,7 @@ static void connected(struct bt_conn *conn, uint8_t err)
 		default_conn = bt_conn_ref(conn);
 		printk("Connected\n");
 
-		dk_set_led_off(LED_GREEN);
+		digitalWrite(LED_GREEN, HIGH);
 	}
 }
 
@@ -63,7 +61,7 @@ static void disconnected(struct bt_conn *conn, uint8_t reason)
 		default_conn = NULL;
 	}
 
-	dk_set_led_on(LED_GREEN);
+	digitalWrite(LED_GREEN, LOW);
 }
 
 static struct bt_conn_cb conn_callbacks = {
@@ -106,32 +104,15 @@ static void bt_init(void)
 
 void main(void)
 {
+
+	pinMode(LED_BLUE, OUTPUT);
+	pinMode(LED_GREEN, OUTPUT);
+
+	digitalWrite(LED_BLUE, HIGH);
+	digitalWrite(LED_GREEN, LOW);
+
 	maxik_init();
-
-	while (true)
-	{
-		printk("Temp %f\n", maxik_read_temp());
-	}
-
-	/*
-	pinMode(12, OUTPUT);
-
-	digitalWrite(12, LOW);
-	k_sleep(K_SECONDS(2));
-
-	while (1)
-	{
-		delayMicroseconds(1e6);
-		digitalWrite(12, LOW);
-		delayMicroseconds(1e6);
-		digitalWrite(12, HIGH);
-	}*/
-
-	/*
-	dk_leds_init();
 	bt_init();
-
-	dk_set_led_on(LED_GREEN);
 
 	while (1)
 	{
@@ -139,15 +120,7 @@ void main(void)
 
 		if (default_conn)
 		{
-
-			if (check_temperature())
-			{
-
-				dk_set_led_on(LED_BLUE);
-				k_sleep(K_MSEC(100));
-				dk_set_led_off(LED_BLUE);
-			}
+			check_temperature();
 		}
 	}
-	*/
 }
