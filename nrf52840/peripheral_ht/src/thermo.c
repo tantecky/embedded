@@ -9,7 +9,7 @@
 #include "maxik.h"
 
 static float temperature = (0.0F / 0.0F);
-static uint8_t payload[5] = {0};
+static uint8_t payload[4] = {0};
 static bool notif_enabled = false;
 
 BT_GATT_SERVICE_DEFINE(thermo_svc,
@@ -57,12 +57,7 @@ bool check_temperature()
 
     update_temperature();
 
-    uint32_t mantissa = (uint32_t)(temperature * 100);
-    uint8_t exponent = (uint8_t)-2;
-
-    payload[0] = 0; /* temperature in celcius */
-    sys_put_le24(mantissa, (uint8_t *)&payload[1]);
-    payload[4] = exponent;
+    sys_put_le32((uint32_t)(temperature * 100.0f), (uint8_t *)&payload[0]);
 
     bt_gatt_notify(NULL, &thermo_svc.attrs[1], &payload, sizeof(payload));
 
