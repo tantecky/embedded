@@ -121,11 +121,18 @@ void main(void)
 
 	while (1)
 	{
-		k_sleep(K_SECONDS(1));
 
 		if (default_conn)
 		{
-			check_temperature();
+			if (!check_temperature())
+			{
+				k_sleep(K_SECONDS(1));
+			}
+		}
+		else
+		{
+
+			k_sleep(K_SECONDS(1));
 		}
 	}
 }

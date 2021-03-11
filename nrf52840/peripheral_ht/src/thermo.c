@@ -5,6 +5,9 @@
 #include <bluetooth/uuid.h>
 #include <sys/printk.h>
 
+#define LED_BLUE (12)
+
+#include "Arduino.h"
 #include "thermo.h"
 #include "maxik.h"
 
@@ -36,6 +39,9 @@ void update_temperature()
     // blocking, takes 1 sec
     temperature = maxik_read_temp();
     printk("Updating temp %f\n", temperature);
+    digitalWrite(LED_BLUE, LOW);
+    k_sleep(K_MSEC(100));
+    digitalWrite(LED_BLUE, HIGH);
 }
 
 bool check_temperature()
