@@ -114,6 +114,11 @@ void main(void)
 	maxik_init();
 	bt_init();
 
+	// while (1)
+	// {
+	// 	update_temperature();
+	// }
+
 	while (1)
 	{
 		k_sleep(K_SECONDS(1));

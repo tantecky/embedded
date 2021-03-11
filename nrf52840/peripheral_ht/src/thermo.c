@@ -15,21 +15,11 @@ static bool notif_enabled = false;
 BT_GATT_SERVICE_DEFINE(thermo_svc,
                        BT_GATT_PRIMARY_SERVICE(BT_UUID_ESS),
                        BT_GATT_CHARACTERISTIC(BT_UUID_TEMPERATURE,
-                                              BT_GATT_CHRC_READ | BT_GATT_CHRC_NOTIFY,
-                                              BT_GATT_PERM_READ, read_temperature, NULL,
-                                              &temperature),
+                                              BT_GATT_CHRC_NOTIFY,
+                                              BT_GATT_PERM_NONE, NULL, NULL,
+                                              NULL),
                        BT_GATT_CCC(ccc_cfg_changed,
-                                   BT_GATT_PERM_READ | BT_GATT_PERM_WRITE), );
-
-ssize_t read_temperature(struct bt_conn *conn,
-                         const struct bt_gatt_attr *attr, void *buf,
-                         uint16_t len, uint16_t offset)
-{
-    printk("Reading temp %f\n", temperature);
-
-    return bt_gatt_attr_read(conn, attr, buf, len, offset, &temperature,
-                             sizeof(temperature));
-}
+                                   BT_GATT_PERM_WRITE), );
 
 void ccc_cfg_changed(const struct bt_gatt_attr *attr,
                      uint16_t value)
