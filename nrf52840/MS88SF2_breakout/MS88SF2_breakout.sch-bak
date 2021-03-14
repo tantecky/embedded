@@ -1,0 +1,77 @@
+EESchema Schematic File Version 4
+EELAYER 30 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 1 1
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+NoConn ~ 3300 2500
+NoConn ~ 3300 2400
+$Comp
+L MS88SF2:MS88SF2 U?
+U 1 1 604DDC15
+P 2750 1650
+F 0 "U?" H 2400 2100 50  0000 C CNN
+F 1 "MS88SF2" H 3050 2100 50  0000 C CNN
+F 2 "" H 2150 1950 50  0001 C CNN
+F 3 "" H 2150 1950 50  0001 C CNN
+	1    2750 1650
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 604E0833
+P 2100 1300
+F 0 "#PWR?" H 2100 1050 50  0001 C CNN
+F 1 "GND" V 2105 1172 50  0000 R CNN
+F 2 "" H 2100 1300 50  0001 C CNN
+F 3 "" H 2100 1300 50  0001 C CNN
+	1    2100 1300
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	2250 1300 2100 1300
+Wire Wire Line
+	3300 2600 3300 2750
+Wire Wire Line
+	3300 2750 2250 2750
+Wire Wire Line
+	2250 2750 2250 2600
+$Comp
+L power:+3V3 #PWR?
+U 1 1 604E1F53
+P 2050 2600
+F 0 "#PWR?" H 2050 2450 50  0001 C CNN
+F 1 "+3V3" V 2065 2728 50  0000 L CNN
+F 2 "" H 2050 2600 50  0001 C CNN
+F 3 "" H 2050 2600 50  0001 C CNN
+	1    2050 2600
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	2050 2600 2250 2600
+Connection ~ 2250 2600
+$Comp
+L power:GND #PWR?
+U 1 1 604E2FE3
+P 2050 2500
+F 0 "#PWR?" H 2050 2250 50  0001 C CNN
+F 1 "GND" V 2055 2372 50  0000 R CNN
+F 2 "" H 2050 2500 50  0001 C CNN
+F 3 "" H 2050 2500 50  0001 C CNN
+	1    2050 2500
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	2250 2500 2050 2500
+Text GLabel 2250 1400 0    50   Input ~ 0
+P1.13
+$EndSCHEMATC
