@@ -1,3 +1,5 @@
 (fp_lib_table
   (lib (name MS88SF2)(type KiCad)(uri ${KIPRJMOD}/MS88SF2.pretty)(options "")(descr ""))
+  (lib (name myfoots)(type KiCad)(uri ${KIPRJMOD}/myfoots.pretty)(options "")(descr ""))
+  (lib (name !myfoots)(type KiCad)(uri ${KIPRJMOD}/!myfoots.pretty)(options "")(descr ""))
 )

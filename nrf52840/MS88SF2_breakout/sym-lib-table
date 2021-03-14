@@ -1,3 +1,4 @@
 (sym_lib_table
   (lib (name MS88SF2)(type Legacy)(uri ${KIPRJMOD}/MS88SF2.lib)(options "")(descr ""))
+  (lib (name !mysyms)(type Legacy)(uri ${KIPRJMOD}/!mysyms.lib)(options "")(descr ""))
 )
