@@ -12,6 +12,9 @@ private:
     static constexpr int NTP_PACKET_SIZE = 48; // NTP time is in the first 48 bytes of message
     static byte packetBuffer[];                //buffer to hold incoming & outgoing packets
 
+    static constexpr int SYNC_INTERVAL = 15 * 60;         // how often to sync clocks
+    static constexpr int SYNC_INTERVAL_NEXT_TRY = 2 * 60; // how often to sync clocks when fails
+
     static time_t prevDisplay; // when the digital clock was displayed
 
     static time_t getNtpTime();
