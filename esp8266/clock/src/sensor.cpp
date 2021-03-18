@@ -45,8 +45,6 @@ void Sensor_::tick()
     text += String(humIn_, '\x000');
     text += "%";
 
-    Serial.println(text);
-
     Oled.drawStr(centerOffset(text), 16, text.c_str());
 
     String text2 = "";

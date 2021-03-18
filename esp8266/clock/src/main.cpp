@@ -34,7 +34,7 @@ void setContrast()
   if (Clock::hour > 20 || Clock::hour < 6)
   {
     Oled.setContrast(0);
-    Led.setBrightness(0);
+    Led.setBrightness(2);
   }
   else
   {
@@ -105,6 +105,7 @@ void setup()
   Sensor.setup();
 
   connect();
+  delay(5000);
 
   Clock::setup();
   logger.setup();
