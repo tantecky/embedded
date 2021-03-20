@@ -1,0 +1,1 @@
+kikit panelize grid --gridsize 2 3 --radius 1 --space 3 --tabwidth 5 --tabheight 5 --panelsize 100 100 --framecutH --mousebites 0.5 1 0 MS88SF2_breakout.kicad_pcb MS88SF2_breakout_panel.kicad_pcb
