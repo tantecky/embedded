@@ -3,6 +3,10 @@
 #include "remote.hpp"
 
 #include <TimeLib.h>
+#include <Timezone.h>
+
+static constexpr TimeChangeRule CEST = {"CEST", Last, Sun, Mar, 2, 120}; // Central European Summer Time
+static constexpr TimeChangeRule CET = {"CET ", Last, Sun, Oct, 3, 60};   // Central European Standard Time
 
 const char Clock::ntpServerName[] = "cz.pool.ntp.org";
 byte Clock::packetBuffer[NTP_PACKET_SIZE]; //buffer to hold incoming & outgoing packets
@@ -91,8 +95,12 @@ void Clock::sendNTPpacket(IPAddress &address)
 
 void Clock::draw()
 {
-    Clock::hour = ::hour();
-    const int min = minute();
+    static Timezone myZone(CEST, CET);
+
+    const time_t utcNow = now();
+    const time_t myTime = myZone.toLocal(utcNow);
+    Clock::hour = ::hour(myTime);
+    const int min = ::minute(myTime);
 
     //colon ON
     constexpr uint8_t dots = 0b11100000;

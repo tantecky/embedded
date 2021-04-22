@@ -8,7 +8,8 @@ class Clock
 
 private:
     static const char ntpServerName[];
-    static constexpr int timeZone = 1;         // Central European Time
+    static constexpr int timeZone = 0; // UTC
+    // static constexpr int timeZone = 1;         // Central European Time
     static constexpr int NTP_PACKET_SIZE = 48; // NTP time is in the first 48 bytes of message
     static byte packetBuffer[];                //buffer to hold incoming & outgoing packets
 
