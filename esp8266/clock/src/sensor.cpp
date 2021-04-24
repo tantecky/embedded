@@ -33,7 +33,7 @@ void Sensor_::tick()
     Remote::enable();
 
     // calibration
-    tempIn_ -= 0.7f;
+    tempIn_ -= 0.7f + 1.5f;
 
     Oled.clearBuffer();                    // clear the internal memory
     Oled.setFont(u8g2_font_logisoso16_tr); // choose a suitable font at https://github.com/olikraus/u8g2/wiki/fntlistall

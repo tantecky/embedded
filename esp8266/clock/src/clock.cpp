@@ -101,15 +101,16 @@ void Clock::draw()
     const time_t myTime = myZone.toLocal(utcNow);
     Clock::hour = ::hour(myTime);
     const int min = ::minute(myTime);
+    const bool leadingZero = Clock::hour == 0;
 
     //colon ON
     constexpr uint8_t dots = 0b11100000;
 
     for (size_t i = 0; i < 2; i++)
     {
-        Led.showNumberDecEx(Clock::hour * 100 + min, dots, false);
+        Led.showNumberDecEx(Clock::hour * 100 + min, dots, leadingZero);
         delay(1000);
-        Led.showNumberDecEx(Clock::hour * 100 + min, 0, false);
+        Led.showNumberDecEx(Clock::hour * 100 + min, 0, leadingZero);
         delay(1000);
     }
 }
