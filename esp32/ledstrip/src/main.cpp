@@ -6,6 +6,7 @@
 #define SAMPLES 512
 constexpr i2s_port_t I2S_PORT = I2S_NUM_0;
 constexpr int BLOCK_SIZE = SAMPLES;
+constexpr int BUF_COUNT = 8;
 
 void setup()
 {
@@ -20,13 +21,13 @@ void setup()
       .channel_format = I2S_CHANNEL_FMT_ONLY_LEFT, // for old esp-idf versions use RIGHT
       .communication_format = i2s_comm_format_t(I2S_COMM_FORMAT_I2S | I2S_COMM_FORMAT_I2S_MSB),
       .intr_alloc_flags = ESP_INTR_FLAG_LEVEL1, // Interrupt level 1
-      .dma_buf_count = 8,                       // number of buffers
+      .dma_buf_count = BUF_COUNT,                       // number of buffers
       .dma_buf_len = BLOCK_SIZE,                // samples per buffer
       .use_apll = true};
   // The pin config as per the setup
   const i2s_pin_config_t pin_config = {
-      .bck_io_num = 14,   // SCK - TMS
-      .ws_io_num = 15,    // SM - TD0
+      .bck_io_num = 16,   // SCK - IO16
+      .ws_io_num = 17,    // WS - IO17
       .data_out_num = -1, // not used (only for speakers)
       .data_in_num = 32   // SD - IO32
   };
@@ -67,7 +68,7 @@ void loop()
   if (err == ESP_OK)
   {
     //   int samples_read = num_bytes_read / 8;
-    for (size_t i = 0; i < num_bytes_read / 8; i++)
+    for (size_t i = 0; i < num_bytes_read / BUF_COUNT; i++)
     {
       //     /* code */
       Serial.println(samples[i]);
