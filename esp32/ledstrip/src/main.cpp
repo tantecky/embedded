@@ -1,93 +1,99 @@
 #include <Arduino.h>
-#include <arduinoFFT.h>
-#include <driver/i2s.h>
+#include <WiFi.h>
+#include <HTTPClient.h>
+#include "secret.hpp"
+#include "I2SMEMSSampler.h"
 
-// size of sample
-#define SAMPLES 1024
-constexpr i2s_port_t I2S_PORT = I2S_NUM_0;
-constexpr int BLOCK_SIZE = SAMPLES;
-constexpr int BUF_COUNT = 16;
+WiFiClient *wifiClientI2S = NULL;
+HTTPClient *httpClientI2S = NULL;
+I2SSampler *i2sSampler = NULL;
+
+// replace this with your machines IP Address
+#define I2S_SERVER_URL "http://192.168.168.2:5003/samples"
+
+// i2s config for reading from both channels of I2S
+i2s_config_t i2sMemsConfigBothChannels = {
+    .mode = (i2s_mode_t)(I2S_MODE_MASTER | I2S_MODE_RX),
+    .sample_rate = 16000,
+    .bits_per_sample = I2S_BITS_PER_SAMPLE_32BIT,
+    .channel_format = I2S_CHANNEL_FMT_ONLY_LEFT,
+    .communication_format = i2s_comm_format_t(I2S_COMM_FORMAT_I2S | I2S_COMM_FORMAT_I2S_MSB),
+    .intr_alloc_flags = ESP_INTR_FLAG_LEVEL1,
+    .dma_buf_count = 4,
+    .dma_buf_len = 1024,
+    .use_apll = false,
+    .tx_desc_auto_clear = false,
+    .fixed_mclk = 0};
+
+// i2s pins
+i2s_pin_config_t i2sPins = {
+    .bck_io_num = 16,   // SCK - IO16
+    .ws_io_num = 17,    // WS - IO17
+    .data_out_num = -1, // not used (only for speakers)
+    .data_in_num = 32   // SD - IO323
+
+};
+
+// send data to a remote address
+void sendData(WiFiClient *wifiClient, HTTPClient *httpClient, const char *url, uint8_t *bytes, size_t count)
+{
+  // send them off to the server
+  digitalWrite(2, HIGH);
+  httpClient->begin(*wifiClient, url);
+  httpClient->addHeader("content-type", "application/octet-stream");
+  httpClient->POST(bytes, count);
+  httpClient->end();
+  digitalWrite(2, LOW);
+}
+
+// Task to write samples to our server
+void i2sMemsWriterTask(void *param)
+{
+  I2SSampler *sampler = (I2SSampler *)param;
+  const TickType_t xMaxBlockTime = pdMS_TO_TICKS(100);
+  while (true)
+  {
+    // wait for some samples to save
+    uint32_t ulNotificationValue = ulTaskNotifyTake(pdTRUE, xMaxBlockTime);
+    if (ulNotificationValue > 0)
+    {
+      sendData(wifiClientI2S, httpClientI2S, I2S_SERVER_URL, (uint8_t *)sampler->getCapturedAudioBuffer(), sampler->getBufferSizeInBytes());
+    }
+  }
+}
 
 void setup()
 {
   Serial.begin(115200);
-  Serial.println("Configuring I2S...");
-  esp_err_t err;
-  // The I2S config as per the example
-  const i2s_config_t i2s_config = {
-      .mode = i2s_mode_t(I2S_MODE_MASTER | I2S_MODE_RX), // Receive, not transfer
-      // .sample_rate = 44100,                              // 44 kHz
-      .sample_rate = 16000,
-      .bits_per_sample = I2S_BITS_PER_SAMPLE_32BIT,
-      .channel_format = I2S_CHANNEL_FMT_ONLY_LEFT, // for old esp-idf versions use RIGHT
-      .communication_format = i2s_comm_format_t(I2S_COMM_FORMAT_I2S | I2S_COMM_FORMAT_I2S_MSB),
-      .intr_alloc_flags = ESP_INTR_FLAG_LEVEL1, // Interrupt level 1
-      .dma_buf_count = BUF_COUNT,               // number of buffers
-      .dma_buf_len = BLOCK_SIZE,                // samples per buffer
-      .use_apll = false,
-      .tx_desc_auto_clear = false,
-      .fixed_mclk = 0};
-  // The pin config as per the setup
-  const i2s_pin_config_t pin_config = {
-      .bck_io_num = 16,   // SCK - IO16
-      .ws_io_num = 17,    // WS - IO17
-      .data_out_num = -1, // not used (only for speakers)
-      .data_in_num = 32   // SD - IO32
-  };
-  // Configuring the I2S driver and pins.
-  // This function must be called before any I2S driver read/write operations.
-  err = i2s_driver_install(I2S_PORT, &i2s_config, 0, NULL);
-  if (err != ESP_OK)
+  // launch WiFi
+  WiFi.mode(WIFI_STA);
+  WiFi.begin(SSID, PASSWORD);
+  if (WiFi.waitForConnectResult() != WL_CONNECTED)
   {
-    Serial.printf("Failed installing driver: %d\n", err);
-    while (true)
-      ;
+    Serial.println("Connection Failed! Rebooting...");
+    delay(5000);
+    ESP.restart();
   }
-  err = i2s_set_pin(I2S_PORT, &pin_config);
-  if (err != ESP_OK)
-  {
-    Serial.printf("Failed setting pin: %d\n", err);
-    while (true)
-      ;
-  }
-  Serial.println("I2S driver installed.");
-  delay(5000);
+  Serial.println("Started up");
+  // indicator LED
+  pinMode(2, OUTPUT);
+  // setup the HTTP Client
+
+  wifiClientI2S = new WiFiClient();
+  httpClientI2S = new HTTPClient();
+
+  // Direct i2s input from INMP441 or the SPH0645
+  i2sSampler = new I2SMEMSSampler(i2sPins, false);
+
+  // set up the i2s sample writer task
+  TaskHandle_t i2sMemsWriterTaskHandle;
+  xTaskCreatePinnedToCore(i2sMemsWriterTask, "I2S Writer Task", 4096, i2sSampler, 1, &i2sMemsWriterTaskHandle, 1);
+
+  // start sampling from i2s device
+  i2sSampler->start(I2S_NUM_1, i2sMemsConfigBothChannels, 32768, i2sMemsWriterTaskHandle);
 }
 
 void loop()
 {
-  static uint8_t i2sData[BLOCK_SIZE];
-  // Read multiple samples at once and calculate the sound pressure
-  size_t num_bytes_read;
-  esp_err_t err = i2s_read(I2S_PORT,
-                           i2sData,
-                           BLOCK_SIZE, // the doc says bytes, but its elements.
-                           &num_bytes_read,
-                           portMAX_DELAY); // no timeout
-
-  // Serial.println(num_bytes_read);
-  // Serial.printf("%X\n", samples[0]);
-  // Serial.printf("%d\n", samples[0]);
-
-  if (err == ESP_OK)
-  {
-    // Serial.write(i2sData, num_bytes_read);
-    int32_t *samples = (int32_t *)i2sData;
-    for (size_t i = 0; i < num_bytes_read / 4; i++)
-    {
-      int32_t sample = (samples[i] >> 11);
-      // int16_t sample = samples[i];
-      // Serial.write(uint8_t((sample >> 24) & 0xFF));
-      // Serial.write(uint8_t((sample >> 16) & 0xFF));
-      Serial.write(uint8_t((sample >> 8) & 0xFF));
-      Serial.write(uint8_t(sample & 0xFF));
-
-      // Serial.println(sample);
-
-      //     /* code */
-      // Serial.write(samples[i] >> 11);
-      // Serial.printf("%X\n", samples[i] >> 11);
-      // Serial.printf("%X\n", samples[i]);
-    }
-  }
+  // nothing to do here - everything is taken care of by tasks
 }
