@@ -3,10 +3,10 @@
 #include <driver/i2s.h>
 
 // size of sample
-#define SAMPLES 512
+#define SAMPLES 1024
 constexpr i2s_port_t I2S_PORT = I2S_NUM_0;
 constexpr int BLOCK_SIZE = SAMPLES;
-constexpr int BUF_COUNT = 8;
+constexpr int BUF_COUNT = 16;
 
 void setup()
 {
@@ -16,14 +16,17 @@ void setup()
   // The I2S config as per the example
   const i2s_config_t i2s_config = {
       .mode = i2s_mode_t(I2S_MODE_MASTER | I2S_MODE_RX), // Receive, not transfer
-      .sample_rate = 44100,                              // 44 kHz
+      // .sample_rate = 44100,                              // 44 kHz
+      .sample_rate = 16000,
       .bits_per_sample = I2S_BITS_PER_SAMPLE_32BIT,
       .channel_format = I2S_CHANNEL_FMT_ONLY_LEFT, // for old esp-idf versions use RIGHT
       .communication_format = i2s_comm_format_t(I2S_COMM_FORMAT_I2S | I2S_COMM_FORMAT_I2S_MSB),
       .intr_alloc_flags = ESP_INTR_FLAG_LEVEL1, // Interrupt level 1
-      .dma_buf_count = BUF_COUNT,                       // number of buffers
+      .dma_buf_count = BUF_COUNT,               // number of buffers
       .dma_buf_len = BLOCK_SIZE,                // samples per buffer
-      .use_apll = true};
+      .use_apll = false,
+      .tx_desc_auto_clear = false,
+      .fixed_mclk = 0};
   // The pin config as per the setup
   const i2s_pin_config_t pin_config = {
       .bck_io_num = 16,   // SCK - IO16
@@ -48,15 +51,16 @@ void setup()
       ;
   }
   Serial.println("I2S driver installed.");
+  delay(5000);
 }
 
 void loop()
 {
-  static int32_t samples[BLOCK_SIZE];
+  static uint8_t i2sData[BLOCK_SIZE];
   // Read multiple samples at once and calculate the sound pressure
   size_t num_bytes_read;
   esp_err_t err = i2s_read(I2S_PORT,
-                           (char *)samples,
+                           i2sData,
                            BLOCK_SIZE, // the doc says bytes, but its elements.
                            &num_bytes_read,
                            portMAX_DELAY); // no timeout
@@ -67,11 +71,23 @@ void loop()
 
   if (err == ESP_OK)
   {
-    //   int samples_read = num_bytes_read / 8;
-    for (size_t i = 0; i < num_bytes_read / BUF_COUNT; i++)
+    // Serial.write(i2sData, num_bytes_read);
+    int32_t *samples = (int32_t *)i2sData;
+    for (size_t i = 0; i < num_bytes_read / 4; i++)
     {
+      int32_t sample = (samples[i] >> 11);
+      // int16_t sample = samples[i];
+      // Serial.write(uint8_t((sample >> 24) & 0xFF));
+      // Serial.write(uint8_t((sample >> 16) & 0xFF));
+      Serial.write(uint8_t((sample >> 8) & 0xFF));
+      Serial.write(uint8_t(sample & 0xFF));
+
+      // Serial.println(sample);
+
       //     /* code */
-      Serial.println(samples[i]);
+      // Serial.write(samples[i] >> 11);
+      // Serial.printf("%X\n", samples[i] >> 11);
+      // Serial.printf("%X\n", samples[i]);
     }
   }
 }
