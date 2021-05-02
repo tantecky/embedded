@@ -8,11 +8,11 @@
 #define I2S_SERVER_URL "http://192.168.168.2:5003/samples"
 
 constexpr size_t SampleCount = 512;
-constexpr size_t BufferSampleCapacity = 60 * SampleCount;
+constexpr size_t BufferSampleCapacity = 30 * SampleCount;
 size_t BufferTip = 0;
 
-int16_t *WifiBuffer = nullptr;
-int16_t *AudioBuffer = nullptr;
+float *WifiBuffer = nullptr;
+float *AudioBuffer = nullptr;
 
 WiFiClient *wifiClientI2S = nullptr;
 HTTPClient *httpClientI2S = nullptr;
@@ -61,7 +61,7 @@ void writerTask(void *param)
   while (true)
   {
     ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
-    constexpr size_t toSend = sizeof(int16_t) * BufferSampleCapacity;
+    constexpr size_t toSend = sizeof(float) * BufferSampleCapacity;
     sendData(wifiClientI2S, httpClientI2S, I2S_SERVER_URL, (uint8_t *)WifiBuffer, toSend);
   }
 }
@@ -69,9 +69,11 @@ void writerTask(void *param)
 void setup()
 {
   Serial.begin(115200);
+  // init FPU
+  Serial.println(float(millis()) + 1337.0f);
 
-  AudioBuffer = new int16_t[BufferSampleCapacity];
-  WifiBuffer = new int16_t[BufferSampleCapacity];
+  AudioBuffer = new float[BufferSampleCapacity];
+  WifiBuffer = new float[BufferSampleCapacity];
 
   // launch WiFi
   WiFi.mode(WIFI_STA);
@@ -125,14 +127,17 @@ void loop()
 
     // 4 because of 32-bit sampling
     const int samplesReceived = bytesRead / 4;
+    // const auto a = ESP.getCycleCount();
     for (size_t i = 0; i < samplesReceived; i++)
     {
       // >> 8 because a mic is 24 bit
       // >> 4 to reduce volume
 
-      AudioBuffer[BufferTip] = (int16_t)(p[i] >> 12);
+      AudioBuffer[BufferTip] = float(p[i] >> 12);
       BufferTip++;
     }
+    // const auto b = ESP.getCycleCount();
+    // Serial.println(b - a);
 
     if (BufferTip == BufferSampleCapacity)
     {
