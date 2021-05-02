@@ -1,26 +1,33 @@
 #include <Arduino.h>
 #include <WiFi.h>
 #include <HTTPClient.h>
+#include <driver/i2s.h>
 #include "secret.hpp"
-#include "I2SMEMSSampler.h"
-
-WiFiClient *wifiClientI2S = NULL;
-HTTPClient *httpClientI2S = NULL;
-I2SSampler *i2sSampler = NULL;
 
 // replace this with your machines IP Address
 #define I2S_SERVER_URL "http://192.168.168.2:5003/samples"
 
+constexpr size_t SampleCount = 512;
+constexpr size_t BufferSampleCapacity = 60 * SampleCount;
+size_t BufferTip = 0;
+
+int16_t *WifiBuffer = nullptr;
+int16_t *AudioBuffer = nullptr;
+
+WiFiClient *wifiClientI2S = nullptr;
+HTTPClient *httpClientI2S = nullptr;
+TaskHandle_t writerTaskHandle;
+
 // i2s config for reading from both channels of I2S
-i2s_config_t i2sMemsConfigBothChannels = {
+i2s_config_t i2sConfig = {
     .mode = (i2s_mode_t)(I2S_MODE_MASTER | I2S_MODE_RX),
-    .sample_rate = 16000,
+    .sample_rate = 44100,
     .bits_per_sample = I2S_BITS_PER_SAMPLE_32BIT,
     .channel_format = I2S_CHANNEL_FMT_ONLY_LEFT,
     .communication_format = i2s_comm_format_t(I2S_COMM_FORMAT_I2S | I2S_COMM_FORMAT_I2S_MSB),
     .intr_alloc_flags = ESP_INTR_FLAG_LEVEL1,
     .dma_buf_count = 4,
-    .dma_buf_len = 1024,
+    .dma_buf_len = SampleCount,
     .use_apll = false,
     .tx_desc_auto_clear = false,
     .fixed_mclk = 0};
@@ -33,6 +40,8 @@ i2s_pin_config_t i2sPins = {
     .data_in_num = 32   // SD - IO323
 
 };
+
+i2s_port_t i2sPort = I2S_NUM_1;
 
 // send data to a remote address
 void sendData(WiFiClient *wifiClient, HTTPClient *httpClient, const char *url, uint8_t *bytes, size_t count)
@@ -47,24 +56,23 @@ void sendData(WiFiClient *wifiClient, HTTPClient *httpClient, const char *url, u
 }
 
 // Task to write samples to our server
-void i2sMemsWriterTask(void *param)
+void writerTask(void *param)
 {
-  I2SSampler *sampler = (I2SSampler *)param;
-  const TickType_t xMaxBlockTime = pdMS_TO_TICKS(100);
   while (true)
   {
-    // wait for some samples to save
-    uint32_t ulNotificationValue = ulTaskNotifyTake(pdTRUE, xMaxBlockTime);
-    if (ulNotificationValue > 0)
-    {
-      sendData(wifiClientI2S, httpClientI2S, I2S_SERVER_URL, (uint8_t *)sampler->getCapturedAudioBuffer(), sampler->getBufferSizeInBytes());
-    }
+    ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
+    constexpr size_t toSend = sizeof(int16_t) * BufferSampleCapacity;
+    sendData(wifiClientI2S, httpClientI2S, I2S_SERVER_URL, (uint8_t *)WifiBuffer, toSend);
   }
 }
 
 void setup()
 {
   Serial.begin(115200);
+
+  AudioBuffer = new int16_t[BufferSampleCapacity];
+  WifiBuffer = new int16_t[BufferSampleCapacity];
+
   // launch WiFi
   WiFi.mode(WIFI_STA);
   WiFi.begin(SSID, PASSWORD);
@@ -82,18 +90,59 @@ void setup()
   wifiClientI2S = new WiFiClient();
   httpClientI2S = new HTTPClient();
 
-  // Direct i2s input from INMP441 or the SPH0645
-  i2sSampler = new I2SMEMSSampler(i2sPins, false);
+  esp_err_t err = i2s_driver_install(i2sPort, &i2sConfig, 0, NULL);
+  if (err != ESP_OK)
+  {
+    while (true)
+    {
+      Serial.printf("Failed installing driver: %d\n", err);
+    }
+  }
 
-  // set up the i2s sample writer task
-  TaskHandle_t i2sMemsWriterTaskHandle;
-  xTaskCreatePinnedToCore(i2sMemsWriterTask, "I2S Writer Task", 4096, i2sSampler, 1, &i2sMemsWriterTaskHandle, 1);
+  err = i2s_set_pin(I2S_NUM_1, &i2sPins);
+  if (err != ESP_OK)
+  {
+    while (true)
+    {
+      Serial.printf("Failed setting pin: %d\n", err);
+    }
+  }
 
-  // start sampling from i2s device
-  i2sSampler->start(I2S_NUM_1, i2sMemsConfigBothChannels, 32768, i2sMemsWriterTaskHandle);
+  xTaskCreatePinnedToCore(writerTask, "writerTask", 4096, NULL, 1, &writerTaskHandle, 1);
 }
 
 void loop()
 {
-  // nothing to do here - everything is taken care of by tasks
+  size_t bytesRead = 0;
+  static uint8_t i2sData[SampleCount];
+
+  i2s_read(i2sPort, i2sData, SampleCount, &bytesRead, portMAX_DELAY); //10 tu bylo
+
+  if (bytesRead == SampleCount)
+  {
+
+    int32_t *p = (int32_t *)i2sData;
+
+    // 4 because of 32-bit sampling
+    const int samplesReceived = bytesRead / 4;
+    for (size_t i = 0; i < samplesReceived; i++)
+    {
+      // >> 8 because a mic is 24 bit
+      // >> 4 to reduce volume
+
+      AudioBuffer[BufferTip] = (int16_t)(p[i] >> 12);
+      BufferTip++;
+    }
+
+    if (BufferTip == BufferSampleCapacity)
+    {
+      auto temp = WifiBuffer;
+      WifiBuffer = AudioBuffer;
+      AudioBuffer = temp;
+      BufferTip = 0;
+      xTaskNotifyGive(writerTaskHandle);
+    }
+  }
+
+  // Serial.println(bytesRead);
 }
