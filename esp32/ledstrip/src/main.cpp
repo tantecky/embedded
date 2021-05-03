@@ -83,8 +83,38 @@ void setup()
 
 // xTaskCreateUniversal(loopTask, "loopTask", 8192, NULL, 1, &loopTaskHandle, CONFIG_ARDUINO_RUNNING_CORE);
 
+void test()
+{
+
+  const int N = 8;
+
+  struct blk a[] = {
+      {.r = 0.0f, .i = 0.0f},
+      {1.0f, 0.0f},
+      {2.0f, 0.0f},
+      {3.0f, 0.0f},
+      {4.0f, 0.0f},
+      {5.0f, 0.0f},
+      {6.0f, 0.0f},
+      {7.0f, 0.0f},
+  };
+
+  fft(a, N, -1);
+
+  Serial.println("======");
+
+  for (int i = 0; i < N; i++)
+  {
+    auto x = a[i];
+    Serial.printf("%f %fj\n", x.r, x.i);
+  }
+
+  Serial.println("======");
+}
+
 void loop()
 {
+  test();
   // const auto a = ESP.getCycleCount();
   // const auto a = micros();
 

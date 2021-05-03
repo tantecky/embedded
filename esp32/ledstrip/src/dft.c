@@ -11,7 +11,8 @@ iftr(*blk,sz)         Complex-Real IFT      sz = # of real outputs
 #include <math.h>
 #include "dft.h"
 
-#define RMS 1.414213562 /* adjust FFT results to read rms */
+// #define RMS 1.414213562 /* adjust FFT results to read rms */
+#define RMS 1 /* adjust FFT results to read rms */
 
 void fft(struct blk *x, int sz, int dir)
 /* In-place complex to complex transform. From Oppenheim & Schafer, pg 332
