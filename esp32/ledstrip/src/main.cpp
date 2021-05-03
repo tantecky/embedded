@@ -1,21 +1,12 @@
 #include <Arduino.h>
-#include <WiFi.h>
-#include <HTTPClient.h>
 #include <driver/i2s.h>
-#include "secret.hpp"
 
-// replace this with your machines IP Address
-#define I2S_SERVER_URL "http://192.168.168.2:5003/samples"
-
-constexpr size_t SampleCount = 512;
-constexpr size_t BufferSampleCapacity = 30 * SampleCount;
+constexpr size_t BytesPerRead = 512;
+constexpr size_t SampleCount = 2048;
 size_t BufferTip = 0;
 
-float *WifiBuffer = nullptr;
 float *AudioBuffer = nullptr;
 
-WiFiClient *wifiClientI2S = nullptr;
-HTTPClient *httpClientI2S = nullptr;
 TaskHandle_t writerTaskHandle;
 
 // i2s config for reading from both channels of I2S
@@ -27,7 +18,7 @@ i2s_config_t i2sConfig = {
     .communication_format = i2s_comm_format_t(I2S_COMM_FORMAT_I2S | I2S_COMM_FORMAT_I2S_MSB),
     .intr_alloc_flags = ESP_INTR_FLAG_LEVEL1,
     .dma_buf_count = 4,
-    .dma_buf_len = SampleCount,
+    .dma_buf_len = BytesPerRead,
     .use_apll = false,
     .tx_desc_auto_clear = false,
     .fixed_mclk = 0};
@@ -43,26 +34,12 @@ i2s_pin_config_t i2sPins = {
 
 i2s_port_t i2sPort = I2S_NUM_1;
 
-// send data to a remote address
-void sendData(WiFiClient *wifiClient, HTTPClient *httpClient, const char *url, uint8_t *bytes, size_t count)
-{
-  // send them off to the server
-  digitalWrite(2, HIGH);
-  httpClient->begin(*wifiClient, url);
-  httpClient->addHeader("content-type", "application/octet-stream");
-  httpClient->POST(bytes, count);
-  httpClient->end();
-  digitalWrite(2, LOW);
-}
-
 // Task to write samples to our server
 void writerTask(void *param)
 {
   while (true)
   {
     ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
-    constexpr size_t toSend = sizeof(float) * BufferSampleCapacity;
-    sendData(wifiClientI2S, httpClientI2S, I2S_SERVER_URL, (uint8_t *)WifiBuffer, toSend);
   }
 }
 
@@ -72,27 +49,15 @@ void setup()
   // init FPU
   Serial.println(float(millis()) + 1337.0f);
 
-  AudioBuffer = new float[BufferSampleCapacity];
-  WifiBuffer = new float[BufferSampleCapacity];
+  AudioBuffer = new float[SampleCount];
 
-  // launch WiFi
-  WiFi.mode(WIFI_STA);
-  WiFi.begin(SSID, PASSWORD);
-  if (WiFi.waitForConnectResult() != WL_CONNECTED)
-  {
-    Serial.println("Connection Failed! Rebooting...");
-    delay(5000);
-    ESP.restart();
-  }
-  Serial.println("Started up");
-  // indicator LED
-  pinMode(2, OUTPUT);
-  // setup the HTTP Client
-
-  wifiClientI2S = new WiFiClient();
-  httpClientI2S = new HTTPClient();
+  pinMode(BUILTIN_LED, OUTPUT);
+  digitalWrite(BUILTIN_LED, HIGH);
+  delay(10);
+  digitalWrite(BUILTIN_LED, LOW);
 
   esp_err_t err = i2s_driver_install(i2sPort, &i2sConfig, 0, NULL);
+
   if (err != ESP_OK)
   {
     while (true)
@@ -110,24 +75,30 @@ void setup()
     }
   }
 
-  xTaskCreatePinnedToCore(writerTask, "writerTask", 4096, NULL, 1, &writerTaskHandle, 1);
+  // ARDUINO_RUNNING_CORE 1
+
+  // xTaskCreatePinnedToCore(writerTask, "writerTask", 4096, NULL, 1, &writerTaskHandle, 0);
 }
+
+// xTaskCreateUniversal(loopTask, "loopTask", 8192, NULL, 1, &loopTaskHandle, CONFIG_ARDUINO_RUNNING_CORE);
 
 void loop()
 {
+  // const auto a = ESP.getCycleCount();
+  // const auto a = micros();
+
   size_t bytesRead = 0;
-  static uint8_t i2sData[SampleCount];
+  static uint8_t i2sData[BytesPerRead];
 
-  i2s_read(i2sPort, i2sData, SampleCount, &bytesRead, portMAX_DELAY); //10 tu bylo
+  i2s_read(i2sPort, i2sData, BytesPerRead, &bytesRead, portMAX_DELAY);
 
-  if (bytesRead == SampleCount)
+  if (bytesRead == BytesPerRead)
   {
 
     int32_t *p = (int32_t *)i2sData;
 
     // 4 because of 32-bit sampling
-    const int samplesReceived = bytesRead / 4;
-    // const auto a = ESP.getCycleCount();
+    const size_t samplesReceived = bytesRead / 4;
     for (size_t i = 0; i < samplesReceived; i++)
     {
       // >> 8 because a mic is 24 bit
@@ -136,18 +107,17 @@ void loop()
       AudioBuffer[BufferTip] = float(p[i] >> 12);
       BufferTip++;
     }
-    // const auto b = ESP.getCycleCount();
-    // Serial.println(b - a);
 
-    if (BufferTip == BufferSampleCapacity)
+    if (BufferTip == SampleCount)
     {
-      auto temp = WifiBuffer;
-      WifiBuffer = AudioBuffer;
-      AudioBuffer = temp;
       BufferTip = 0;
-      xTaskNotifyGive(writerTaskHandle);
+      // xTaskNotifyGive(writerTaskHandle);
     }
   }
 
-  // Serial.println(bytesRead);
+  // const auto b = ESP.getCycleCount();
+  // const auto b = micros();
+  // const float ms = (b - a) * (1.0f / 240000000.0f * 1000000.0f);
+  // const auto us = b - a;
+  // Serial.printf("%ld us\n", us);
 }
