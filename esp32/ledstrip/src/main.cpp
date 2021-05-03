@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include <driver/i2s.h>
+#include "dft.h"
 
 constexpr size_t BytesPerRead = 512;
 constexpr size_t SampleCount = 2048;
