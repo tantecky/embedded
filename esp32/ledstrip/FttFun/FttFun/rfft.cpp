@@ -48,7 +48,7 @@ static constexpr float M_SQRT2 = 1.41421356237309504880f;
 static constexpr float M_1_SQRT2 = 1.0f / 1.41421356237309504880f;
 
 void
-rfft(float *x, int n, int m)
+rfft(float *x, const int n, const int m)
 {
 	int j, i, k, is, id;
 	int i0, i1, i2, i3, i4, i5, i6, i7, i8;
