@@ -12,6 +12,9 @@ cfg.json
 secret.hpp
 config.hpp
 .vscode
+.vs
+x64/
+x86/
 
 # kicad
 # Temporary files
