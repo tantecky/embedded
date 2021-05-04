@@ -16,6 +16,7 @@
 #include <math.h>
 
 #include "rfft.hpp"
+#include "Table.hpp"
 
   /*---------------------------------------------------------------------------
    * FUNCTION NAME: rfft
@@ -43,7 +44,6 @@
    *
    *---------------------------------------------------------------------------*/
 
-static constexpr float M_PI = 3.14159265358979323846f;
 static constexpr float M_SQRT2 = 1.41421356237309504880f;
 static constexpr float M_1_SQRT2 = 1.0f / 1.41421356237309504880f;
 

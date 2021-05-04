@@ -5,6 +5,7 @@
 #include <complex>
 #include <numeric>
 #include "FftFun.hpp"
+#include "Table.hpp"
 #include "rfft.hpp"
 
 inline bool approx(float a, float b, float epsilon = 1e-2)
@@ -17,8 +18,13 @@ int main()
 	// N = 2 ** M 
 	//  Re(0), Re(1), ..., Re(n/2), Im(N/2-1), ..., Im(1)
 	constexpr int N = sizeof(Data) / sizeof(float);
+	//constexpr int N = 16;
 	constexpr int N_HALF = N / 2;
 	const int M = int(log(N) / log(2));
+
+	Table table(N, M);
+	table.init();
+	//return; 
 
 	std::complex<float> nums[N_HALF + 1] = { 0 };
 
@@ -47,7 +53,7 @@ int main()
 	printf("SUM:\n");
 
 	printf("%f %fi\n", sum.real(), sum.imag());
-	assert(approx(sum.real(), 16256));
-	assert(approx(sum.imag(), 51918.82345680864));
+	assert(approx(sum.real(), 16256.0f));
+	assert(approx(sum.imag(), 51918.82345680864f));
 }
 

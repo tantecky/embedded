@@ -29,5 +29,8 @@
     <ClInclude Include="FftFun.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="Table.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
