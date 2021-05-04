@@ -7,9 +7,9 @@
 #include "FftFun.hpp"
 #include "rfft.hpp"
 
-inline bool approx(float a, float b, float epsilon = 1e-3)
+inline bool approx(float a, float b, float epsilon = 1e-2)
 {
-	return fabs(a - b) <= ((fabs(a) < fabs(b) ? fabs(b) : fabs(a)) * epsilon);
+	return fabs(a - b) <= epsilon;
 }
 
 int main()
@@ -47,8 +47,7 @@ int main()
 	printf("SUM:\n");
 
 	printf("%f %fi\n", sum.real(), sum.imag());
-	assert(approx(sum.real(), 12));
-	assert(approx(sum.imag(), 15.313709f));
-
+	assert(approx(sum.real(), 16256));
+	assert(approx(sum.imag(), 51918.82345680864));
 }
 
