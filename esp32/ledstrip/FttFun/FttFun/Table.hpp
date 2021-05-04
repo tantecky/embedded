@@ -10,6 +10,17 @@ struct Point {
 	float Sin;
 	float Cos3;
 	float Sin3;
+
+	void set(const float angle)
+	{
+		Cos = cosf(angle);
+		Sin = sinf(angle);
+
+		const float angle3 = 3.0f * angle;
+		Cos3 = cosf(angle3);
+		Sin3 = sinf(angle3);
+
+	}
 };
 
 class Table
@@ -26,9 +37,14 @@ public:
 
 	}
 
+	inline const Point& getPoint(const int k, const int j) const
+	{
+		return table[k - 3][j - 1];
+	}
+
 	void init()
 	{
-		printf("N:%d M:%d Levels:%d\n", N, M, Levels);
+		//printf("N:%d M:%d Levels:%d\n", N, M, Levels);
 
 		if (Levels < 1)
 		{
@@ -39,15 +55,30 @@ public:
 
 		for (int k = 1; k < M; k++) {
 			n2 <<= 1;
-			int n8 = n2 >> 3;
+			const int n8 = n2 >> 3;
 
-			printf("n2:%d j: ", n2);
-
-			for (int j = 1; j < n8; j++) {
-				printf("%d ", j);
+			if (n8 < 2)
+			{
+				continue;
 			}
 
-			printf("\n");
+			const float e = (M_PI * 2) / n2;
+			const int level = k - 3;
+
+			//printf("L:%d n2:%d j: ", level, n2);
+
+			table[level] = new Point[n8];
+
+			for (int j = 1; j < n8; j++) {
+				const float angle = j * e;
+				Point& p = table[level][j - 1];
+				p.set(angle);
+				//printf("%d ", j);
+			}
+
+			//printf("\n");
 		}
 	}
 };
+
+extern Table SinCos;

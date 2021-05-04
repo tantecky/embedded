@@ -8,6 +8,12 @@
 #include "Table.hpp"
 #include "rfft.hpp"
 
+constexpr int N = sizeof(Data) / sizeof(float);
+constexpr int N_HALF = N / 2;
+const int M = int(log(N) / log(2));
+
+Table SinCos(N, M);
+
 inline bool approx(float a, float b, float epsilon = 1e-2)
 {
 	return fabs(a - b) <= epsilon;
@@ -17,14 +23,7 @@ int main()
 {
 	// N = 2 ** M 
 	//  Re(0), Re(1), ..., Re(n/2), Im(N/2-1), ..., Im(1)
-	constexpr int N = sizeof(Data) / sizeof(float);
-	//constexpr int N = 16;
-	constexpr int N_HALF = N / 2;
-	const int M = int(log(N) / log(2));
-
-	Table table(N, M);
-	table.init();
-	//return; 
+	SinCos.init();
 
 	std::complex<float> nums[N_HALF + 1] = { 0 };
 
@@ -42,9 +41,9 @@ int main()
 		nums[i].imag(Data[N - i]);
 	}
 
-	for (auto& v : nums) {
-		printf("%f %fi\n", v.real(), v.imag());
-	}
+	//for (auto& v : nums) {
+	//	printf("%f %fi\n", v.real(), v.imag());
+	//}
 
 	std::complex<float> sum(0, 0);
 

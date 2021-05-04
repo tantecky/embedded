@@ -1,3 +1,6 @@
+// sin/cos cache added
+// original authors:
+
 /*===============================================================================*/
 /*      ETSI ES 202 050   Distributed Speech Recognition                         */
 /*      Advanced Front-End Feature Extraction Algorithm & Compression Algorithm  */
@@ -47,19 +50,17 @@
 static constexpr float M_SQRT2 = 1.41421356237309504880f;
 static constexpr float M_1_SQRT2 = 1.0f / 1.41421356237309504880f;
 
-void
-rfft(float *x, const int n, const int m)
+void rfft(float *x, const int n, const int m)
 {
 	int j, i, k, is, id;
 	int i0, i1, i2, i3, i4, i5, i6, i7, i8;
 	int n2, n4, n8;
-	float xt, a0, e, a, a3;
+	float xt, a0;
 	float t1, t2, t3, t4, t5, t6;
 	float cc1, ss1, cc3, ss3;
 	float *r0;
 
 	/* Digit reverse counter */
-
 	j = 0;
 	r0 = x;
 
@@ -104,7 +105,6 @@ rfft(float *x, const int n, const int m)
 		n2 <<= 1;
 		n4 = n2 >> 2;
 		n8 = n2 >> 3;
-		e = (M_PI * 2) / n2;
 		is = 0;
 		id = n2 << 1;
 		while (is < n) {
@@ -136,12 +136,12 @@ rfft(float *x, const int n, const int m)
 		}
 
 		for (j = 1; j < n8; j++) {
-			a = j * e;
-			a3 = 3 * a;
-			cc1 = cosf(a);
-			ss1 = sinf(a);
-			cc3 = cosf(a3);
-			ss3 = sinf(a3);
+			const Point& p = SinCos.getPoint(k, j);
+
+			cc1 = p.Cos;
+			ss1 = p.Sin;
+			cc3 = p.Cos3;
+			ss3 = p.Sin3;
 
 			is = 0;
 			id = n2 << 1;
