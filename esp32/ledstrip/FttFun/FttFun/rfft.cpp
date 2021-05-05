@@ -14,38 +14,38 @@
  *
  *-------------------------------------------------------------------------------*/
  /*-----------------
-  * File Inclusions
-  *-----------------*/
+   * File Inclusions
+   *-----------------*/
 #include <math.h>
 
-#include "rfft.hpp"
 #include "SinCosTable.hpp"
+#include "rfft.hpp"
 
-  /*---------------------------------------------------------------------------
-   * FUNCTION NAME: rfft
-   *
-   * PURPOSE:       Real valued, in-place split-radix FFT
-   *
-   * INPUT:
-   *   x            Pointer to input and output array
-   *   n            Length of FFT, must be power of 2
-   *
-   * OUTPUT         Output order
-   *                  Re(0), Re(1), ..., Re(n/2), Im(N/2-1), ..., Im(1)
-   *
-   * RETURN VALUE
-   *   none
-   *
-   * DESIGN REFERENCE:
-   *                IEEE Transactions on Acoustic, Speech, and Signal Processing,
-   *                Vol. ASSP-35. No. 6, June 1987, pp. 849-863.
-   *
-   *                Subroutine adapted from fortran routine pp. 858-859.
-   *                Note corrected printing errors on page 859:
-   *                    SS1 = SIN(A3) -> should be SS1 = SIN(A);
-   *                    CC3 = COS(3)  -> should be CC3 = COS(A3)
-   *
-   *---------------------------------------------------------------------------*/
+   /*---------------------------------------------------------------------------
+	  * FUNCTION NAME: rfft
+	  *
+	  * PURPOSE:       Real valued, in-place split-radix FFT
+	  *
+	  * INPUT:
+	  *   x            Pointer to input and output array
+	  *   n            Length of FFT, must be power of 2
+	  *
+	  * OUTPUT         Output order
+	  *                  Re(0), Re(1), ..., Re(n/2), Im(N/2-1), ..., Im(1)
+	  *
+	  * RETURN VALUE
+	  *   none
+	  *
+	  * DESIGN REFERENCE:
+	  *                IEEE Transactions on Acoustic, Speech, and Signal Processing,
+	  *                Vol. ASSP-35. No. 6, June 1987, pp. 849-863.
+	  *
+	  *                Subroutine adapted from fortran routine pp. 858-859.
+	  *                Note corrected printing errors on page 859:
+	  *                    SS1 = SIN(A3) -> should be SS1 = SIN(A);
+	  *                    CC3 = COS(3)  -> should be CC3 = COS(A3)
+	  *
+	  *---------------------------------------------------------------------------*/
 
 static constexpr float M_SQRT2_F = 1.41421356237309504880f;
 static constexpr float M_1_SQRT2_F = 1.0f / 1.41421356237309504880f;
@@ -64,9 +64,11 @@ void rfft(float *x, const int n, const int m)
 	j = 0;
 	r0 = x;
 
-	for (i = 0; i < n - 1; i++) {
+	for (i = 0; i < n - 1; i++)
+	{
 
-		if (i < j) {
+		if (i < j)
+		{
 			xt = x[j];
 			x[j] = *r0;
 			*r0 = xt;
@@ -75,7 +77,8 @@ void rfft(float *x, const int n, const int m)
 
 		k = n >> 1;
 
-		while (k <= j) {
+		while (k <= j)
+		{
 			j = j - k;
 			k >>= 1;
 		}
@@ -86,9 +89,11 @@ void rfft(float *x, const int n, const int m)
 	is = 0;
 	id = 4;
 
-	while (is < n - 1) {
+	while (is < n - 1)
+	{
 
-		for (i0 = is; i0 < n; i0 += id) {
+		for (i0 = is; i0 < n; i0 += id)
+		{
 			i1 = i0 + 1;
 			a0 = x[i0];
 			x[i0] += x[i1];
@@ -101,14 +106,17 @@ void rfft(float *x, const int n, const int m)
 
 	/* L shaped butterflies */
 	n2 = 2;
-	for (k = 1; k < m; k++) {
+	for (k = 1; k < m; k++)
+	{
 		n2 <<= 1;
 		n4 = n2 >> 2;
 		n8 = n2 >> 3;
 		is = 0;
 		id = n2 << 1;
-		while (is < n) {
-			for (i = is; i <= n - 1; i += id) {
+		while (is < n)
+		{
+			for (i = is; i <= n - 1; i += id)
+			{
 				i1 = i;
 				i2 = i1 + n4;
 				i3 = i2 + n4;
@@ -118,7 +126,8 @@ void rfft(float *x, const int n, const int m)
 				x[i3] = x[i1] - t1;
 				x[i1] += t1;
 
-				if (n4 != 1) {
+				if (n4 != 1)
+				{
 					i1 += n8;
 					i2 += n8;
 					i3 += n8;
@@ -135,8 +144,9 @@ void rfft(float *x, const int n, const int m)
 			id <<= 2;
 		}
 
-		for (j = 1; j < n8; j++) {
-			const Point& p = SinCos.getPoint(k, j);
+		for (j = 1; j < n8; j++)
+		{
+			const Point &p = SinCos.getPoint(k, j);
 
 			cc1 = p.Cos;
 			ss1 = p.Sin;
@@ -146,8 +156,10 @@ void rfft(float *x, const int n, const int m)
 			is = 0;
 			id = n2 << 1;
 
-			while (is < n) {
-				for (i = is; i <= n - 1; i += id) {
+			while (is < n)
+			{
+				for (i = is; i <= n - 1; i += id)
+				{
 					i1 = i + j;
 					i2 = i1 + n4;
 					i3 = i2 + n4;
@@ -182,4 +194,23 @@ void rfft(float *x, const int n, const int m)
 			}
 		}
 	}
+}
+
+//  int: Re(0), Re(1), ..., Re(n/2), Im(N/2-1), ..., Im(1)
+//  out: mag(0)**2, mag(1)**2, ..., mag(n/2)**2
+void mag2(float *x, const int n)
+{
+	const int nHalf = n / 2;
+
+	// imag. part is 0
+	x[0] *= x[0];
+
+	for (int i = 1; i < nHalf; i++)
+	{
+		x[i] *= x[i];
+		x[i] += x[n - i] * x[n - i];
+	}
+
+	// imag. part is 0
+	x[nHalf] *= x[nHalf];
 }

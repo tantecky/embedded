@@ -1,11 +1,13 @@
-﻿#pragma once
+﻿#ifndef B71C8773_2136_4D4F_9D6D_B1F00570DBC8
+#define B71C8773_2136_4D4F_9D6D_B1F00570DBC8
 
 #include <cstdio>
 #include <cmath>
 
 constexpr float M_PI_F = 3.14159265358979323846f;
 
-struct Point {
+struct Point
+{
 	float Cos;
 	float Sin;
 	float Cos3;
@@ -19,7 +21,6 @@ struct Point {
 		const float angle3 = 3.0f * angle;
 		Cos3 = cosf(angle3);
 		Sin3 = sinf(angle3);
-
 	}
 };
 
@@ -28,16 +29,15 @@ class SinCosTable
 	const int N;
 	const int M;
 	const int Levels;
-	Point** table;
+	Point **table;
 
 public:
 	SinCosTable(const int n, const int m) : N(n), M(m), Levels(m - 3)
 	{
-		table = new Point*[Levels];
-
+		table = new Point *[Levels];
 	}
 
-	inline const Point& getPoint(const int k, const int j) const
+	inline const Point &getPoint(const int k, const int j) const
 	{
 		return table[k - 3][j - 1];
 	}
@@ -53,7 +53,8 @@ public:
 
 		int n2 = 2;
 
-		for (int k = 1; k < M; k++) {
+		for (int k = 1; k < M; k++)
+		{
 			n2 <<= 1;
 			const int n8 = n2 >> 3;
 
@@ -69,9 +70,10 @@ public:
 
 			table[level] = new Point[n8];
 
-			for (int j = 1; j < n8; j++) {
+			for (int j = 1; j < n8; j++)
+			{
 				const float angle = j * e;
-				Point& p = table[level][j - 1];
+				Point &p = table[level][j - 1];
 				p.set(angle);
 				//printf("%d ", j);
 			}
@@ -82,3 +84,5 @@ public:
 };
 
 extern SinCosTable SinCos;
+
+#endif /* B71C8773_2136_4D4F_9D6D_B1F00570DBC8 */

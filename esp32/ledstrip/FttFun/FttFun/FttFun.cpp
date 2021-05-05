@@ -10,6 +10,7 @@
 #include "rfft.hpp"
 
 constexpr int N = sizeof(Data) / sizeof(float);
+//constexpr int N = 8;
 constexpr int N_HALF = N / 2;
 const int M = int(log(N) / log(2));
 
@@ -51,7 +52,6 @@ int main()
 	//}
 
 	std::complex<float> sum(0, 0);
-
 	sum = std::accumulate(nums, nums + N_HALF + 1, sum);
 
 	printf("SUM:\n");
@@ -59,4 +59,15 @@ int main()
 	printf("%f %fi\n", sum.real(), sum.imag());
 	assert(approx(sum.real(), 261632.0f));
 	assert(approx(sum.imag(), 1062055.67936177f));
+
+	mag2(Data, N);
+
+	float sumMag2 = 0;
+	for (int i = 0; i < N_HALF + 1; i++)
+	{
+		sumMag2 += Data[i];
+
+	}
+	printf("SUM MAG**2: %f\n", sumMag2);
+	assert(sumMag2, 320154370048.0f);
 }
