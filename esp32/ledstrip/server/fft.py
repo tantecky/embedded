@@ -7,7 +7,9 @@ print(len(x))
 print('======')
 yf = rfft(x)
 print(np.sum(yf))
+
 print('SUM MAG**2:')
-# print(np.sum(yf * np.conj(yf)))
-print(np.abs(yf)**2)
 print(np.sum(np.abs(yf)**2))
+
+print('SUM MAG:')
+print(np.sum(np.abs(yf)))

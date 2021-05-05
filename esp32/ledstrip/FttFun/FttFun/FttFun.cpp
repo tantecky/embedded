@@ -60,14 +60,25 @@ int main()
 	assert(approx(sum.real(), 261632.0f));
 	assert(approx(sum.imag(), 1062055.67936177f));
 
-	mag2(Data, N);
+	//mag2(Data, N);
 
-	float sumMag2 = 0;
+	//float sumMag2 = 0;
+	//for (int i = 0; i < N_HALF + 1; i++)
+	//{
+	//	sumMag2 += Data[i];
+
+	//}
+	//printf("SUM MAG**2: %f\n", sumMag2);
+	//assert(sumMag2, 320154370048.0f);
+
+	mag(Data, N);
+
+	float sumMag = 0;
 	for (int i = 0; i < N_HALF + 1; i++)
 	{
-		sumMag2 += Data[i];
+		sumMag += Data[i];
 
 	}
-	printf("SUM MAG**2: %f\n", sumMag2);
-	assert(sumMag2, 320154370048.0f);
+	printf("SUM MAG: %f\n", sumMag);
+	assert(sumMag, 1701764.342344414f);
 }

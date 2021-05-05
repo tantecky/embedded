@@ -214,3 +214,23 @@ void mag2(float *x, const int n)
 	// imag. part is 0
 	x[nHalf] *= x[nHalf];
 }
+
+//  int: Re(0), Re(1), ..., Re(n/2), Im(N/2-1), ..., Im(1)
+//  out: mag(0), mag(1), ..., mag(n/2)
+void mag(float *x, const int n)
+{
+	const int nHalf = n / 2;
+
+	// imag. part is 0
+	x[0] = fabsf(x[0]);
+
+	for (int i = 1; i < nHalf; i++)
+	{
+		x[i] *= x[i];
+		x[i] += x[n - i] * x[n - i];
+		x[i] = sqrtf(x[i]);
+	}
+
+	// imag. part is 0
+	x[nHalf] = fabsf(x[nHalf]);
+}
