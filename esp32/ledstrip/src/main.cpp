@@ -1,12 +1,30 @@
 #include <Arduino.h>
 #include <driver/i2s.h>
-#include "dft.h"
+#include <type_traits>
+#include "SinCosTable.hpp"
+#include "rfft.hpp"
 
-constexpr size_t BytesPerRead = 512;
-constexpr size_t SampleCount = 2048;
+constexpr size_t SampleCount = 1024;
+
 size_t BufferTip = 0;
+constexpr size_t BytesPerRead = 512;
+
+static_assert(BytesPerRead <= 512, "out of range");
+static_assert(SampleCount >= BytesPerRead, "out of range");
+
+constexpr bool isPowerof2(int v)
+{
+  return v && ((v & (v - 1)) == 0);
+}
+
+static_assert(isPowerof2(SampleCount), "has to be power of 2");
+static_assert(isPowerof2(BytesPerRead), "has to be power of 2");
+
+const int M = int(log(SampleCount) / log(2));
 
 float *AudioBuffer = nullptr;
+
+SinCosTable SinCos(SampleCount, M);
 
 TaskHandle_t writerTaskHandle;
 
@@ -49,13 +67,12 @@ void setup()
   Serial.begin(115200);
   // init FPU
   Serial.println(float(millis()) + 1337.0f);
+  // init sin/cos cache
+  SinCos.init();
 
   AudioBuffer = new float[SampleCount];
 
   pinMode(BUILTIN_LED, OUTPUT);
-  digitalWrite(BUILTIN_LED, HIGH);
-  delay(10);
-  digitalWrite(BUILTIN_LED, LOW);
 
   esp_err_t err = i2s_driver_install(i2sPort, &i2sConfig, 0, NULL);
 
@@ -78,46 +95,13 @@ void setup()
 
   // ARDUINO_RUNNING_CORE 1
 
-  // xTaskCreatePinnedToCore(writerTask, "writerTask", 4096, NULL, 1, &writerTaskHandle, 0);
+  xTaskCreatePinnedToCore(writerTask, "writerTask", 4096, NULL, 1, &writerTaskHandle, 0);
 }
 
 // xTaskCreateUniversal(loopTask, "loopTask", 8192, NULL, 1, &loopTaskHandle, CONFIG_ARDUINO_RUNNING_CORE);
 
-void test()
-{
-
-  const int N = 8;
-
-  struct blk a[] = {
-      {.r = 0.0f, .i = 0.0f},
-      {1.0f, 0.0f},
-      {2.0f, 0.0f},
-      {3.0f, 0.0f},
-      {4.0f, 0.0f},
-      {5.0f, 0.0f},
-      {6.0f, 0.0f},
-      {7.0f, 0.0f},
-  };
-
-  fft(a, N, -1);
-
-  Serial.println("======");
-
-  for (int i = 0; i < N; i++)
-  {
-    auto x = a[i];
-    Serial.printf("%f %fj\n", x.r, x.i);
-  }
-
-  Serial.println("======");
-}
-
 void loop()
 {
-  test();
-  // const auto a = ESP.getCycleCount();
-  // const auto a = micros();
-
   size_t bytesRead = 0;
   static uint8_t i2sData[BytesPerRead];
 
@@ -141,14 +125,12 @@ void loop()
 
     if (BufferTip == SampleCount)
     {
+      const unsigned long a = micros();
+      rfft(AudioBuffer, SampleCount, M);
+      Serial.printf("%ld\n", micros() - a);
       BufferTip = 0;
-      // xTaskNotifyGive(writerTaskHandle);
+
+      xTaskNotifyGive(writerTaskHandle);
     }
   }
-
-  // const auto b = ESP.getCycleCount();
-  // const auto b = micros();
-  // const float ms = (b - a) * (1.0f / 240000000.0f * 1000000.0f);
-  // const auto us = b - a;
-  // Serial.printf("%ld us\n", us);
 }

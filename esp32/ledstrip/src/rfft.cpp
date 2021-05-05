@@ -13,15 +13,15 @@
  * PURPOSE: Real valued, in-place split-radix FFT.
  *
  *-------------------------------------------------------------------------------*/
- /*-----------------
+/*-----------------
   * File Inclusions
   *-----------------*/
 #include <math.h>
 
-#include "rfft.hpp"
 #include "SinCosTable.hpp"
+#include "rfft.hpp"
 
-  /*---------------------------------------------------------------------------
+/*---------------------------------------------------------------------------
    * FUNCTION NAME: rfft
    *
    * PURPOSE:       Real valued, in-place split-radix FFT
@@ -64,9 +64,11 @@ void rfft(float *x, const int n, const int m)
 	j = 0;
 	r0 = x;
 
-	for (i = 0; i < n - 1; i++) {
+	for (i = 0; i < n - 1; i++)
+	{
 
-		if (i < j) {
+		if (i < j)
+		{
 			xt = x[j];
 			x[j] = *r0;
 			*r0 = xt;
@@ -75,7 +77,8 @@ void rfft(float *x, const int n, const int m)
 
 		k = n >> 1;
 
-		while (k <= j) {
+		while (k <= j)
+		{
 			j = j - k;
 			k >>= 1;
 		}
@@ -86,9 +89,11 @@ void rfft(float *x, const int n, const int m)
 	is = 0;
 	id = 4;
 
-	while (is < n - 1) {
+	while (is < n - 1)
+	{
 
-		for (i0 = is; i0 < n; i0 += id) {
+		for (i0 = is; i0 < n; i0 += id)
+		{
 			i1 = i0 + 1;
 			a0 = x[i0];
 			x[i0] += x[i1];
@@ -101,14 +106,17 @@ void rfft(float *x, const int n, const int m)
 
 	/* L shaped butterflies */
 	n2 = 2;
-	for (k = 1; k < m; k++) {
+	for (k = 1; k < m; k++)
+	{
 		n2 <<= 1;
 		n4 = n2 >> 2;
 		n8 = n2 >> 3;
 		is = 0;
 		id = n2 << 1;
-		while (is < n) {
-			for (i = is; i <= n - 1; i += id) {
+		while (is < n)
+		{
+			for (i = is; i <= n - 1; i += id)
+			{
 				i1 = i;
 				i2 = i1 + n4;
 				i3 = i2 + n4;
@@ -118,7 +126,8 @@ void rfft(float *x, const int n, const int m)
 				x[i3] = x[i1] - t1;
 				x[i1] += t1;
 
-				if (n4 != 1) {
+				if (n4 != 1)
+				{
 					i1 += n8;
 					i2 += n8;
 					i3 += n8;
@@ -135,8 +144,9 @@ void rfft(float *x, const int n, const int m)
 			id <<= 2;
 		}
 
-		for (j = 1; j < n8; j++) {
-			const Point& p = SinCos.getPoint(k, j);
+		for (j = 1; j < n8; j++)
+		{
+			const Point &p = SinCos.getPoint(k, j);
 
 			cc1 = p.Cos;
 			ss1 = p.Sin;
@@ -146,8 +156,10 @@ void rfft(float *x, const int n, const int m)
 			is = 0;
 			id = n2 << 1;
 
-			while (is < n) {
-				for (i = is; i <= n - 1; i += id) {
+			while (is < n)
+			{
+				for (i = is; i <= n - 1; i += id)
+				{
 					i1 = i + j;
 					i2 = i1 + n4;
 					i3 = i2 + n4;
