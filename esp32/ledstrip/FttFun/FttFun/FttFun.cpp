@@ -1,20 +1,21 @@
-
+﻿
 #include <cstdio>
 #include <cassert>
 #include <cmath>
 #include <complex>
+#include <chrono>
 #include <numeric>
 #include "FftFun.hpp"
-#include "Table.hpp"
+#include "SinCosTable.hpp"
 #include "rfft.hpp"
 
 constexpr int N = sizeof(Data) / sizeof(float);
 constexpr int N_HALF = N / 2;
 const int M = int(log(N) / log(2));
 
-Table SinCos(N, M);
+SinCosTable SinCos(N, M);
 
-inline bool approx(float a, float b, float epsilon = 1e-2)
+inline bool approx(float a, float b, float epsilon = 1)
 {
 	return fabs(a - b) <= epsilon;
 }
@@ -27,7 +28,11 @@ int main()
 
 	std::complex<float> nums[N_HALF + 1] = { 0 };
 
+	auto start = std::chrono::steady_clock::now();
 	rfft(Data, N, M);
+	auto end = std::chrono::steady_clock::now();
+	auto elapsed = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+	printf("%lld us\n", elapsed.count());
 
 	nums[0].real(Data[0]);
 
@@ -52,7 +57,6 @@ int main()
 	printf("SUM:\n");
 
 	printf("%f %fi\n", sum.real(), sum.imag());
-	assert(approx(sum.real(), 16256.0f));
-	assert(approx(sum.imag(), 51918.82345680864f));
+	assert(approx(sum.real(), 261632.0f));
+	assert(approx(sum.imag(), 1062055.67936177f));
 }
-

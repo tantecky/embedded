@@ -1,4 +1,4 @@
-// sin/cos cache added
+﻿// sin/cos caching added
 // original authors:
 
 /*===============================================================================*/
@@ -19,7 +19,7 @@
 #include <math.h>
 
 #include "rfft.hpp"
-#include "Table.hpp"
+#include "SinCosTable.hpp"
 
   /*---------------------------------------------------------------------------
    * FUNCTION NAME: rfft

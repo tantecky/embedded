@@ -29,7 +29,7 @@
     <ClInclude Include="FftFun.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="Table.hpp">
+    <ClInclude Include="SinCosTable.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

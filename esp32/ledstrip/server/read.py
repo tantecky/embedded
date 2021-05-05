@@ -10,7 +10,7 @@ data = np.fromfile('data.raw', dtype='<f4')
 
 
 # Number of sample points
-N = 2048
+N = 1024
 # sample spacing
 T = 1.0 / 44100
 # x = np.linspace(0.0, N*T, N, endpoint=False)
@@ -18,9 +18,9 @@ y = data[:N]
 w = hann(N, False)
 yf = np.abs(rfft(y * w))
 xf = rfftfreq(N, d=T)
-print(len(xf))
+print(len(xf), xf[:5])
 mag = np.abs(yf) * 2 / N
-dbfs = 10 * np.log10(mag)
+# dbfs = 10 * np.log10(mag)
 # plt.semilogx(xf, dbfs, '-o')
 plt.semilogx(xf, mag, '-o')
 print(xf[np.argmax(yf)])
