@@ -127,6 +127,7 @@ void loop()
     {
       const unsigned long a = micros();
       rfft(AudioBuffer, SampleCount, M);
+      mag(AudioBuffer, SampleCount);
       Serial.printf("%ld\n", micros() - a);
       BufferTip = 0;
 
