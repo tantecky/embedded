@@ -8,7 +8,7 @@ constexpr bool isPowerof2(int v)
 
 constexpr int log2(int n)
 {
-    return ((n < 2) ? 1 : 1 + log2(n / 2));
+    return ((n < 2) ? 0 : 1 + log2(n / 2));
 }
 
 #endif /* DB882A5D_FBDB_40F3_8A7D_214441CF15FD */

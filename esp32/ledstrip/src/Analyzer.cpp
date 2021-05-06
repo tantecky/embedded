@@ -24,6 +24,14 @@ const i2s_pin_config_t Analyzer::i2sPins = {
 
 void Analyzer::setup()
 {
+    freqs = new float[sampleCountHalf1];
+
+    for (size_t i = 0; i < sampleCountHalf1; i++)
+    {
+        constexpr float step = samplingRate / SampleCount;
+        freqs[i] = step * i;
+    }
+
     audioBuffer = new float[SampleCount];
 
     esp_err_t err = i2s_driver_install(i2sPort, &Analyzer::i2sConfig, 0, NULL);
@@ -49,13 +57,11 @@ void Analyzer::setup()
 void Analyzer::read()
 {
     size_t bytesRead = 0;
-    static uint8_t i2sData[bytesPerRead];
 
     i2s_read(i2sPort, i2sData, bytesPerRead, &bytesRead, portMAX_DELAY);
 
     if (bytesRead == bytesPerRead)
     {
-
         int32_t *p = (int32_t *)i2sData;
 
         // 4 because of 32-bit sampling
@@ -71,11 +77,12 @@ void Analyzer::read()
 
         if (bufferTip == SampleCount)
         {
-            const unsigned long a = micros();
+            bufferTip = 0;
+            // const unsigned long a = micros();
             rfft(audioBuffer, SampleCount, M);
             mag(audioBuffer, SampleCount);
-            Serial.printf("%ld\n", micros() - a);
-            bufferTip = 0;
+            Serial.printf("mag:%f freq:%f Hz\n", maxMag(), maxFreq());
+            // Serial.printf("%ld\n", micros() - a);
         }
     }
 }
