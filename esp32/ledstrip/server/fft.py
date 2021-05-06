@@ -17,5 +17,5 @@ print(np.sum(np.abs(yf)**2))
 print('SUM MAG:')
 print(np.sum(np.abs(yf)))
 
-print(rfftfreq(N, d=T))
+# print(rfftfreq(N, d=T))
 print(len(rfftfreq(N, d=T)))

@@ -1,3 +1,4 @@
+
 #include "Analyzer.hpp"
 #include "rfft.hpp"
 
@@ -24,9 +25,9 @@ const i2s_pin_config_t Analyzer::i2sPins = {
 
 void Analyzer::setup()
 {
-    freqs = new float[sampleCountHalf1];
+    freqs = new float[SampleCountHalf1];
 
-    for (size_t i = 0; i < sampleCountHalf1; i++)
+    for (size_t i = 0; i < SampleCountHalf1; i++)
     {
         constexpr float step = samplingRate / SampleCount;
         freqs[i] = step * i;
@@ -82,6 +83,8 @@ void Analyzer::read()
             rfft(audioBuffer, SampleCount, M);
             mag(audioBuffer, SampleCount);
             Serial.printf("mag:%f freq:%f Hz\n", maxMag(), maxFreq());
+            bands.fill(freqs, audioBuffer);
+            bands.print();
             // Serial.printf("%ld\n", micros() - a);
         }
     }

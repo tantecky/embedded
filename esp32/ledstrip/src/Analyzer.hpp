@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <iterator>
 
+#include "Bands.hpp"
 #include "Utils.hpp"
 
 class Analyzer
@@ -14,10 +15,10 @@ class Analyzer
 public:
     static constexpr int SampleCount = 1024;
     static constexpr int M = log2(SampleCount);
+    static constexpr int SampleCountHalf = SampleCount / 2;
+    static constexpr int SampleCountHalf1 = SampleCountHalf + 1;
 
 private:
-    static constexpr int sampleCountHalf = SampleCount / 2;
-    static constexpr int sampleCountHalf1 = sampleCountHalf + 1;
     static constexpr int bytesPerRead = 512;
     static constexpr int samplingRate = 44100;
 
@@ -35,11 +36,12 @@ private:
     uint8_t i2sData[bytesPerRead];
     float *audioBuffer = nullptr;
     float *freqs = nullptr;
+    Bands bands;
 
     inline const auto maxIdx() const
     {
         return std::distance(audioBuffer,
-                             std::max_element(audioBuffer, audioBuffer + sampleCountHalf1));
+                             std::max_element(audioBuffer, audioBuffer + SampleCountHalf1));
     }
 
 public:
