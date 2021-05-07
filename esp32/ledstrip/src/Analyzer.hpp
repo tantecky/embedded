@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <iterator>
 
+#include "SinCosTable.hpp"
 #include "Bands.hpp"
 #include "Utils.hpp"
 
@@ -38,12 +39,35 @@ private:
     uint8_t i2sData[bytesPerRead];
     float *audioBuffer = nullptr;
     float *freqs = nullptr;
+    const float *window = nullptr;
     Bands bands;
 
     inline const auto maxIdx() const
     {
         return std::distance(audioBuffer,
                              std::max_element(audioBuffer, audioBuffer + SampleCountHalf1));
+    }
+
+    const float *createHann(const int n)
+    {
+        // n + 1 because non-symmetric window
+        const int n1 = n + 1;
+        float *w = new float[n1];
+
+        for (size_t i = 0; i < n1; i++)
+        {
+            w[i] = 0.5f - 0.5f * cosf((2.0f * M_PI_F * i) / n);
+        }
+
+        return w;
+    }
+
+    void applyWindow()
+    {
+        for (size_t i = 0; i < SampleCount; i++)
+        {
+            audioBuffer[i] *= window[i];
+        }
     }
 
 public:

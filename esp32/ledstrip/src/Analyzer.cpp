@@ -26,6 +26,7 @@ const i2s_pin_config_t Analyzer::i2sPins = {
 void Analyzer::setup()
 {
     freqs = new float[SampleCountHalf1];
+    window = createHann(SampleCount);
 
     for (size_t i = 0; i < SampleCountHalf1; i++)
     {
@@ -79,12 +80,13 @@ void Analyzer::read()
         if (bufferTip == SampleCount)
         {
             bufferTip = 0;
+            applyWindow();
             // const unsigned long a = micros();
             rfft(audioBuffer, SampleCount, M);
             mag(audioBuffer, SampleCount);
-            // Serial.printf("mag:%f freq:%f Hz\n", maxMag(), maxFreq());
+            Serial.printf("mag:%f freq:%f Hz\n", maxMag(), maxFreq());
             bands.fill(freqs, audioBuffer);
-            // bands.print();
+            bands.print();
             // Serial.printf("%ld\n", micros() - a);
         }
     }
