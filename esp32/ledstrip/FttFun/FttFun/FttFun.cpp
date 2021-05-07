@@ -21,6 +21,21 @@ inline bool approx(float a, float b, float epsilon = 1)
 	return fabs(a - b) <= epsilon;
 }
 
+// returns non-symmetric Hann window of size n
+const float* createHann(const int n)
+{
+	// n + 1 because non-symmetric
+	const int n1 = n + 1;
+	float* w = new float[n1];
+
+	for (size_t i = 0; i < n1; i++)
+	{
+		w[i] = 0.5f - 0.5f * cosf((2.0f * M_PI_F * i) / n);
+	}
+
+	return w;
+}
+
 int main()
 {
 	// N = 2 ** M 
@@ -81,4 +96,8 @@ int main()
 	}
 	printf("SUM MAG: %f\n", sumMag);
 	assert(sumMag, 1701764.342344414f);
+
+	const float* w = createHann(N);
+
+	printf("%e %e %e %e\n", w[0], w[1], w[2], w[1023]);
 }
