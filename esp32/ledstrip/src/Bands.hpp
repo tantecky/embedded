@@ -34,6 +34,8 @@ private:
 
     static_assert(sizeof(values) == sizeof(Freqs), "lengths have to match");
 
+    void normalize();
+
 public:
     void fill(const float *const freqs, const float *const mags);
     inline const float getValue(const int bandIdx) const { return values[bandIdx]; }
