@@ -17,7 +17,7 @@ public:
     static constexpr int M = log2(SampleCount);
     static constexpr int SampleCountHalf = SampleCount / 2;
     static constexpr int SampleCountHalf1 = SampleCountHalf + 1;
-    static constexpr float NoiseFloor = 75000;
+    static constexpr float NoiseFloor = 35000;
     static constexpr float AmplitudeNorm = 1.0f / 1200000.0f;
 
 private:

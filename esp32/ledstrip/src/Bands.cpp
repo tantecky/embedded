@@ -2,6 +2,7 @@
 
 #include "Bands.hpp"
 #include "Analyzer.hpp"
+
 constexpr float Bands::Freqs[];
 
 void Bands::normalize()
@@ -19,6 +20,7 @@ void Bands::normalize()
 
 void Bands::fill(const float *const freqs, const float *const mags)
 {
+
     memset(values, 0, sizeof(values));
     size_t lastMatch = 0;
 
@@ -32,10 +34,20 @@ void Bands::fill(const float *const freqs, const float *const mags)
         }
 
         const float freq = freqs[i];
+        constexpr int Count1 = Count - 1;
 
-        for (size_t idx = lastMatch; idx < Count; idx++)
+        if (lastMatch == 0 && freq < Freqs[0])
         {
-            if (Freqs[idx] >= freq)
+            continue;
+        }
+        else if (lastMatch > 0 && freq > Freqs[Count1])
+        {
+            values[Count1] += mag;
+        }
+
+        for (size_t idx = lastMatch; idx < Count1; idx++)
+        {
+            if (freq >= Freqs[idx] && freq < Freqs[idx + 1])
             {
                 values[idx] += mag;
                 lastMatch = idx;
