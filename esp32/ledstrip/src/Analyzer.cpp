@@ -56,7 +56,7 @@ void Analyzer::setup()
     }
 }
 
-void Analyzer::read()
+bool Analyzer::read()
 {
     size_t bytesRead = 0;
 
@@ -84,10 +84,14 @@ void Analyzer::read()
             // const unsigned long a = micros();
             rfft(audioBuffer, SampleCount, M);
             mag(audioBuffer, SampleCount);
-            Serial.printf("mag:%f freq:%f Hz\n", maxMag(), maxFreq());
+            // Serial.printf("mag:%f freq:%f Hz\n", maxMag(), maxFreq());
             bands.fill(freqs, audioBuffer);
-            bands.print();
+            // bands.print();
             // Serial.printf("%ld\n", micros() - a);
+
+            return true;
         }
     }
+
+    return false;
 }

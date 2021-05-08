@@ -76,7 +76,11 @@ public:
     }
 
     void setup();
-    void read();
+
+    // returns `true` when data changed
+    bool read();
+
+    inline const Bands &getBands() const { return bands; }
 
     inline const float maxMag() const
     {

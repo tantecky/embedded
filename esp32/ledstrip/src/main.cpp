@@ -1,24 +1,14 @@
 #include <Arduino.h>
 #include <driver/i2s.h>
 #include <type_traits>
+#include "LedDriver.hpp"
 #include "Analyzer.hpp"
 #include "SinCosTable.hpp"
 #include "rfft.hpp"
 
 Analyzer analyzer;
-
 SinCosTable SinCos(Analyzer::SampleCount, Analyzer::M);
-
-TaskHandle_t writerTaskHandle;
-
-// Task to write samples to our server
-void writerTask(void *param)
-{
-  while (true)
-  {
-    ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
-  }
-}
+LedDriver<64, 22> ledDriver;
 
 void setup()
 {
@@ -26,13 +16,17 @@ void setup()
 
   SinCos.init();
   analyzer.setup();
-
-  // xTaskCreatePinnedToCore(writerTask, "writerTask", 4096, NULL, 1, &writerTaskHandle, 0);
+  ledDriver.setup();
 }
 
 // ARDUINO_RUNNING_CORE 1
 // xTaskCreateUniversal(loopTask, "loopTask", 8192, NULL, 1, &loopTaskHandle, CONFIG_ARDUINO_RUNNING_CORE);
 void loop()
 {
-  analyzer.read();
+  const bool changed = analyzer.read();
+
+  if (changed)
+  {
+    ledDriver.update(analyzer.getBands());
+  }
 }
