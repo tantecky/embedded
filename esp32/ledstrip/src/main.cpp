@@ -8,7 +8,8 @@
 
 Analyzer analyzer;
 SinCosTable SinCos(Analyzer::SampleCount, Analyzer::M);
-LedDriver<64, 22> ledDriver;
+// LED count, data pin
+LedDriver<64, 27> ledDriver;
 
 void setup()
 {
