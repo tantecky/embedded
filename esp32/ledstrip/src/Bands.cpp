@@ -4,17 +4,14 @@
 #include "Analyzer.hpp"
 
 constexpr float Bands::Freqs[];
+constexpr float Bands::Amplitudes[];
 
 void Bands::normalize()
 {
     for (size_t i = 0; i < Bands::Count; i++)
     {
-        values[i] *= Analyzer::AmplitudeNorm;
-
-        if (values[i] > 1)
-        {
-            values[i] = 1.0f;
-        }
+        values[i] *= Bands::Amplitudes[i] * Analyzer::AmplitudeFactor;
+        values[i] = std::min(1.0f, values[i]);
     }
 }
 
@@ -42,14 +39,15 @@ void Bands::fill(const float *const freqs, const float *const mags)
         }
         else if (lastMatch > 0 && freq > Freqs[Count1])
         {
-            values[Count1] += mag;
+            values[Count1] = std::max(mag, values[Count1]);
         }
 
         for (size_t idx = lastMatch; idx < Count1; idx++)
         {
             if (freq >= Freqs[idx] && freq < Freqs[idx + 1])
             {
-                values[idx] += mag;
+                values[idx] = std::max(mag, values[idx]);
+
                 lastMatch = idx;
                 break;
             }

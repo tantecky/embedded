@@ -29,10 +29,31 @@ public:
             17000,
     };
 
+    static constexpr float Amplitudes[] =
+        {
+            1.0f / 1e6,
+            1.0f / 3.70E+06,
+            1.0f / 1.00E+06,
+            1.0f / 2.10E+06,
+            1.0f / 5.00E+05,
+            1.0f / 7.00E+05,
+            1.0f / 1.30E+06,
+            1.0f / 1.30E+06,
+            1.0f / 1.30E+06,
+            1.0f / 8.00E+05,
+            1.0f / 1.20E+05,
+            1.0f / 4.00E+05,
+            1.0f / 1.00E+05,
+            1.0f / 5.00E+05,
+            1.0f / 8.20E+04,
+            1.0f / 5.00E+04,
+    };
+
 private:
     float values[Count] = {0};
 
     static_assert(sizeof(values) == sizeof(Freqs), "lengths have to match");
+    static_assert(sizeof(Amplitudes) == sizeof(Freqs), "lengths have to match");
 
     void normalize();
 
