@@ -61,10 +61,12 @@ void Bands::fill(const float *const freqs, const float *const mags)
 
 void Bands::print() const
 {
-    Serial.println("----------\n");
+    Serial.println("++++");
 
     for (size_t i = 0; i < Bands::Count; i++)
     {
-        Serial.printf("%d %d Hz %f\n", i, int(Freqs[i]), values[i]);
+        Serial.printf("%d %d %f\n", i, int(Freqs[i]), values[i]);
     }
+
+    Serial.println("----");
 }
