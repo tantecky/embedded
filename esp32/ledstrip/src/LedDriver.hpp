@@ -39,12 +39,16 @@ public:
         {
             const uint8_t mag = uint8_t(bands.getValue(i) * 255);
 
-            for (size_t j = 0; i < ledsPerBand; i++)
+            for (size_t j = 0; j < ledsPerBand; j++)
             {
                 const int idx = j + i * ledsPerBand;
                 leds[idx] = pallete[mag];
+
+                // Serial.println(idx);
             }
         }
+
+        // fill_rainbow(leds, ledCount, 0, 7);
 
         FastLED.show();
     }

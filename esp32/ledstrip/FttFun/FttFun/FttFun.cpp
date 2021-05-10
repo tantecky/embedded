@@ -100,4 +100,15 @@ int main()
 	const float* w = createHann(N);
 
 	printf("%e %e %e %e\n", w[0], w[1], w[2], w[1023]);
+
+	for (size_t i = 0; i < 16; i++)
+	{
+		for (size_t j = 0; j < 4; j++)
+		{
+			const int idx = j + i * 4;
+
+			printf("%d ", idx);
+		}
+	}
+
 }
