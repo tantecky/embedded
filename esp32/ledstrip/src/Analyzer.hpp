@@ -19,7 +19,7 @@ public:
     static constexpr int SampleCountHalf = SampleCount / 2;
     static constexpr int SampleCountHalf1 = SampleCountHalf + 1;
     static constexpr float NoiseFloor = 0;
-    static constexpr float AmplitudeFactor = 1.0f;
+    static constexpr float AmplitudeFactor = 0.2f;
 
 private:
     static constexpr int bytesPerRead = 512;

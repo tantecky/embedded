@@ -24,10 +24,17 @@ void setup()
 // xTaskCreateUniversal(loopTask, "loopTask", 8192, NULL, 1, &loopTaskHandle, CONFIG_ARDUINO_RUNNING_CORE);
 void loop()
 {
-  const bool changed = analyzer.read();
-
-  if (changed)
+  EVERY_N_MILLISECONDS(50)
   {
-    ledDriver.update(analyzer.getBands());
+    while (true)
+    {
+      const bool changed = analyzer.read();
+
+      if (changed)
+      {
+        ledDriver.update(analyzer.getBands());
+        break;
+      }
+    }
   }
 }

@@ -31,7 +31,7 @@ public:
 
     static constexpr float Amplitudes[] =
         {
-            1.0f / 1e6,
+            1.0f / 2e6,
             1.0f / 3.70E+06,
             1.0f / 1.00E+06,
             1.0f / 2.10E+06,
