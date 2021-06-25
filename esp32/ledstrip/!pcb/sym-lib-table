@@ -1,3 +1,4 @@
 (sym_lib_table
   (lib (name ESP32_mini)(type Legacy)(uri ${KIPRJMOD}/ESP32_mini.lib)(options "")(descr ""))
+  (lib (name _syms)(type Legacy)(uri ${KIPRJMOD}/_syms.lib)(options "")(descr ""))
 )

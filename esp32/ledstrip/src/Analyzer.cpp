@@ -19,7 +19,7 @@ const i2s_pin_config_t Analyzer::i2sPins = {
     .bck_io_num = 16,   // SCK - IO16
     .ws_io_num = 17,    // WS - IO17
     .data_out_num = -1, // not used (only for speakers)
-    .data_in_num = 32   // SD - IO323
+    .data_in_num = 32   // SD - IO32
 
 };
 
