@@ -36,17 +36,20 @@ public:
 
     void update(const Bands &bands)
     {
+        uint8_t ledMag = 0;
+
         for (size_t i = 0; i < Bands::Count; i++)
         {
             const float delta = (bands.getValue(i) - avgValues[i]) * 0.25f;
             avgValues[i] = std::min(1.0f, std::max(0.0f, avgValues[i] + delta));
 
-            const uint8_t mag = uint8_t(avgValues[i] * 255);
+            const uint8_t bandMag = uint8_t(avgValues[i] * 255);
 
             for (size_t j = 0; j < ledsPerBand; j++)
             {
                 const int idx = j + i * ledsPerBand;
-                const CRGB &pixel = pallete[mag];
+                ledMag = uint8_t((ledMag + bandMag) / 2);
+                const CRGB &pixel = pallete[ledMag];
                 leds[idx] = pixel;
 
                 // Serial.println(idx);
