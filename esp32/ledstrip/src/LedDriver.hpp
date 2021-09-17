@@ -21,6 +21,7 @@ private:
 
     CLEDController &controller;
     CRGB leds[ledCount];
+    float avgValues[Bands::Count] = {0};
 
 public:
     LedDriver() : controller(FastLED.addLeds<WS2812B, pin>(leds, ledCount))
@@ -37,12 +38,16 @@ public:
     {
         for (size_t i = 0; i < Bands::Count; i++)
         {
-            const uint8_t mag = uint8_t(bands.getValue(i) * 255);
+            const float delta = (bands.getValue(i) - avgValues[i]) * 0.25f;
+            avgValues[i] = std::min(1.0f, std::max(0.0f, avgValues[i] + delta));
+
+            const uint8_t mag = uint8_t(avgValues[i] * 255);
 
             for (size_t j = 0; j < ledsPerBand; j++)
             {
                 const int idx = j + i * ledsPerBand;
-                leds[idx] = pallete[mag];
+                const CRGB &pixel = pallete[mag];
+                leds[idx] = pixel;
 
                 // Serial.println(idx);
             }
