@@ -47,3 +47,7 @@ Release/
 #nrf5
 nRF5_SDK_17
 _build
+
+spice/*.log
+spice/*.raw
+
