@@ -1,0 +1,12 @@
+{
+  "folders": [
+	{
+		"name": "bt_thermocouple",
+		"path": "."
+	}
+],
+  "settings": {
+    "nrf-connect.applications": ["${workspaceFolder}"],
+    "nrf-connect.topdir": "${nrf-connect.sdk:1.7.1}"
+  }
+}

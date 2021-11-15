@@ -1,0 +1,7 @@
+{
+  "nrf-connect.topdir": "d:\\Programy\\ncs\\v1.7.1",
+  "nrf-connect.toolchain.path": "d:\\Programy\\ncs\\v1.7.1\\toolchain",
+  "nrf-connect.applications": [
+    "e:\\Downloads\\embedded-github\\nrf52840\\bt_thermocouple"
+  ]
+}
