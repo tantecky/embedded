@@ -1,11 +1,3 @@
-/* main.c - Application main entry point */
-
-/*
- * Copyright (c) 2019 Aaron Tsui <aaron.tsui@outlook.com>
- *
- * SPDX-License-Identifier: Apache-2.0
- */
-
 #include <zephyr/types.h>
 #include <stddef.h>
 #include <string.h>
@@ -107,11 +99,6 @@ void main(void)
 
     maxik_init();
     bt_init();
-
-    // while (1)
-    // {
-    // 	update_temperature();
-    // }
 
     while (1) {
         if (default_conn) {
