@@ -108,7 +108,7 @@ void main(void)
     digitalWrite(LED_GREEN, LOW);
 #endif
 
-    maxik_init();
+    maxik_init(13, 15, 17, 20);
     bt_init();
 
     while (1) {

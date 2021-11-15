@@ -3,11 +3,6 @@
 #include "maxik.h"
 #include "MAX31856.h"
 
-static constexpr int SDI = 13;
-static constexpr int SDO = 15;
-static constexpr int CS = 17;
-static constexpr int SCK = 20;
-
 static constexpr int CR0_INIT = (CR0_ONE_SHOT + CR0_OPEN_CIRCUIT_FAULT_TYPE_K
     + CR0_NOISE_FILTER_50HZ + CR0_FAULT_CLEAR + CR0_FAULT_INTERRUPT_MODE);
 static constexpr int CR1_16X
@@ -18,9 +13,9 @@ static constexpr int MASK_INIT
 
 static MAX31856 sensor_;
 
-void maxik_init()
+void maxik_init(const int sdi, const int sdo, const int cs, const int sck)
 {
-    sensor_.init(SDI, SDO, CS, SCK);
+    sensor_.init(sdi, sdo, cs, sck);
     sensor_.writeRegister(REGISTER_MASK, MASK_INIT);
     sensor_.writeRegister(REGISTER_CR1, CR1_16X);
 }

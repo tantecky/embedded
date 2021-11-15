@@ -5,7 +5,7 @@
 extern "C" {
 #endif
 
-void maxik_init();
+void maxik_init(const int sdi, const int sdo, const int cs, const int sck);
 float maxik_read_temp();
 
 #ifdef __cplusplus
