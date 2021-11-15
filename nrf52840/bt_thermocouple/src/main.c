@@ -106,9 +106,12 @@ void main(void)
     pinMode(LED_GREEN, OUTPUT);
     digitalWrite(LED_BLUE, HIGH);
     digitalWrite(LED_GREEN, LOW);
-#endif
 
     maxik_init(13, 15, 17, 20);
+#else
+    maxik_init(13, 15, 18, 20);
+#endif
+
     bt_init();
 
     while (1) {
