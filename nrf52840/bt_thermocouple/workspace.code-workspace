@@ -14,7 +14,9 @@
     "files.associations": {
       "*.j2": "html",
       "*.tcc": "cpp",
-      "bluetooth.h": "c"
-    }
+      "bluetooth.h": "c",
+      "types.h": "c"
+    },
+    "nrf-connect.boardRoots": ["${workspaceFolder}"]
   }
 }
