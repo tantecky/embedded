@@ -16,9 +16,16 @@
 #include "thermo.h"
 #include "maxik.h"
 
+#if DT_NODE_EXISTS(DT_ALIAS(led0)) && DT_NODE_EXISTS(DT_ALIAS(led1))           \
+    && DT_NODE_EXISTS(DT_ALIAS(led2))
+#define IS_DEV_BOARD
+#endif
+
+#ifdef IS_DEV_BOARD
 #define LED_GREEN (6)
 #define LED_RED (8)
 #define LED_BLUE (12)
+#endif
 
 struct bt_conn* default_conn;
 
@@ -36,7 +43,9 @@ static void connected(struct bt_conn* conn, uint8_t err)
         default_conn = bt_conn_ref(conn);
         printk("Connected\n");
 
+#ifdef IS_DEV_BOARD
         digitalWrite(LED_GREEN, HIGH);
+#endif
     }
 }
 
@@ -49,7 +58,9 @@ static void disconnected(struct bt_conn* conn, uint8_t reason)
         default_conn = NULL;
     }
 
+#ifdef IS_DEV_BOARD
     digitalWrite(LED_GREEN, LOW);
+#endif
 }
 
 static struct bt_conn_cb conn_callbacks = {
@@ -74,7 +85,6 @@ static void bt_ready(void)
 
 static void bt_init(void)
 {
-
     int err;
 
     err = bt_enable(NULL);
@@ -91,11 +101,12 @@ static void bt_init(void)
 void main(void)
 {
 
+#ifdef IS_DEV_BOARD
     pinMode(LED_BLUE, OUTPUT);
     pinMode(LED_GREEN, OUTPUT);
-
     digitalWrite(LED_BLUE, HIGH);
     digitalWrite(LED_GREEN, LOW);
+#endif
 
     maxik_init();
     bt_init();

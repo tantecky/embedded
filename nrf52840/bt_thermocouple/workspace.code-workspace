@@ -10,6 +10,11 @@
     "editor.rulers": [80],
     "C_Cpp.clang_format_fallbackStyle": "{ BasedOnStyle: WebKit, ColumnLimit: 80, SortIncludes: false}",
     "nrf-connect.applications": ["${workspaceFolder}"],
-    "nrf-connect.topdir": "${nrf-connect.sdk:1.7.1}"
+    "nrf-connect.topdir": "${nrf-connect.sdk:1.7.1}",
+    "files.associations": {
+      "*.j2": "html",
+      "*.tcc": "cpp",
+      "bluetooth.h": "c"
+    }
   }
 }
