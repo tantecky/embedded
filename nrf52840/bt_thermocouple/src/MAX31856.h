@@ -73,23 +73,23 @@
 #define NUM_REGISTERS 12 // (read/write registers)
 
 // Errors
-#define FAULT_OPEN 10000    // No thermocouple
-#define FAULT_VOLTAGE 10001 // Under/over voltage error.  Wrong thermocouple type?
-#define NO_MAX31856 10002   // MAX31856 not communicating or not connected
+#define FAULT_OPEN 10000 // No thermocouple
+#define FAULT_VOLTAGE                                                          \
+    10001 // Under/over voltage error.  Wrong thermocouple type?
+#define NO_MAX31856 10002 // MAX31856 not communicating or not connected
 #define IS_MAX31856_ERROR(x) (x == FAULT_OPEN && x <= NO_MAX31856)
 
 #define CELSIUS 0
 #define FAHRENHEIT 1
 
-class MAX31856
-{
+class MAX31856 {
 public:
-    MAX31856()
-    {
-    }
-    MAX31856(int, int, int, int); // SDI, SDO, CS, CLK (DRDY and FAULT are not used)
+    MAX31856() { }
+    MAX31856(
+        int, int, int, int); // SDI, SDO, CS, CLK (DRDY and FAULT are not used)
 
-    void init(int, int, int, int); // SDI, SDO, CS, CLK (DRDY and FAULT are not used)
+    void init(
+        int, int, int, int); // SDI, SDO, CS, CLK (DRDY and FAULT are not used)
     void writeRegister(byte, byte);
     float readThermocouple(byte unit);
     float readJunction(byte unit);
@@ -99,7 +99,8 @@ private:
     void writeByte(byte);
     float verifyMAX31856();
     int _sdi, _sdo, _cs, _clk;
-    byte _registers[NUM_REGISTERS]; // Shadow registers.  Registers can be restored if power to MAX31855 is lost
+    byte _registers[NUM_REGISTERS]; // Shadow registers.  Registers can be
+                                    // restored if power to MAX31855 is lost
 };
 
 #endif // MAX31856_H

@@ -2,12 +2,11 @@
 #define F7F0F49F_0EF3_4087_99BC_312DE8E6A413
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
-    void maxik_init();
-    float maxik_read_temp();
+void maxik_init();
+float maxik_read_temp();
 
 #ifdef __cplusplus
 }
