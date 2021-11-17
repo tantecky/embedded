@@ -4,7 +4,6 @@ build/
 *.FCStd1
 *.o
 *.raw
-main
 top_block.py
 NetAlarm/tests/tests
 googletest-master
