@@ -12,6 +12,8 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.Button
+import androidx.lifecycle.ViewModelProvider
 import cz.antecky.bthermo.Utils.gotPermission
 import cz.antecky.bthermo.Utils.toHexString
 import cz.antecky.bthermo.Utils.toTemperature
@@ -29,6 +31,8 @@ class MainActivity : AppCompatActivity() {
 
     private val TEMPERATURE_CHARACTERISTIC = UUID.fromString("00002a6e-0000-1000-8000-00805f9b34fb")
     private val TEMPERATURE_CCCD = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb")
+
+    private lateinit var viewModel: ThermoViewModel
 
     private val scanSettings = ScanSettings.Builder()
         .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
@@ -164,6 +168,14 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         Log.i(TAG, "onCreate")
 
+        viewModel = ViewModelProvider(this)[ThermoViewModel::class.java]
+
+        val buttonStart = findViewById<Button>(R.id.button_start)
+        buttonStart.setOnClickListener {
+            btAdapter?.let { btAdapter -> viewModel.onStartClicked(btAdapter) }
+        }
+
+
     }
 
     override fun onResume() {
@@ -171,7 +183,21 @@ class MainActivity : AppCompatActivity() {
 
         Log.i(TAG, "onResume")
         Log.i(TAG, "isConnected: $isConnected")
-        findDevice()
+        // findDevice()
+        prepareBt()
+    }
+
+    private fun prepareBt() {
+        if (!isBtCapable) {
+            toast("BT is NOT supported");
+            return
+        }
+
+        requestPermissions()
+
+        if (!isBtEnabled) {
+            enableBt();
+        }
     }
 
     private fun findDevice() {
@@ -190,13 +216,13 @@ class MainActivity : AppCompatActivity() {
             return
         }
 
-        if (gotPermissions()) {
+        if (requestPermissions()) {
             Log.i(TAG, "startScan")
             btScanner.startScan(null, scanSettings, scanCallback)
         }
     }
 
-    private fun gotPermissions(): Boolean {
+    private fun requestPermissions(): Boolean {
         val version = Build.VERSION.SDK_INT
         Log.i(TAG, "SDK version $version")
 
@@ -223,8 +249,6 @@ class MainActivity : AppCompatActivity() {
                 )
                 return false
             }
-
-
         } else {
             val gotFine = gotPermission(
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -250,8 +274,7 @@ class MainActivity : AppCompatActivity() {
             BLUETOOTH_TURN_ON_CODE -> {
                 if (!isBtEnabled) {
                     toast("BT is disabled");
-                } else {
-                    findDevice()
+                    prepareBt()
                 }
             }
         }
@@ -266,9 +289,9 @@ class MainActivity : AppCompatActivity() {
 
         if (requestCode == PERMISSION_REQUEST) { // Checks if the result is for the COARSE_LOCATION request.
             if (grantResults.isNotEmpty() && grantResults.all { it == PackageManager.PERMISSION_GRANTED }) {
-                findDevice()
             } else {
                 toast("The permission is required for BT")
+                prepareBt()
             }
         }
     }
