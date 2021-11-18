@@ -20,16 +20,23 @@ class MainActivity : AppCompatActivity() {
     private val PERMISSION_REQUEST = 21
     private val DEVICE_NAME = "BThermo"
 
-    private val btAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter();
+    private var isConnected = false
+
+    private val btAdapter: BluetoothAdapter? by lazy {
+        val bluetoothManager = getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
+        bluetoothManager.adapter
+    }
 
     private val gattCallback = object : BluetoothGattCallback() {
         override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
             super.onConnectionStateChange(gatt, status, newState)
             when (newState) {
                 BluetoothProfile.STATE_CONNECTED -> {
+                    isConnected = true
                     Log.i(TAG, "GATT STATE_CONNECTED")
                 }
                 BluetoothProfile.STATE_DISCONNECTED -> {
+                    isConnected = false
                     Log.i(TAG, "GATT STATE_DISCONNECTED")
                 }
             }
@@ -80,19 +87,14 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         Log.i(TAG, "onCreate")
 
-        if (!isBtCapable) {
-            toast(this, "BT is NOT supported");
-            return
-        }
-
         registerReceiver(receiver, IntentFilter(BluetoothDevice.ACTION_FOUND))
+    }
 
+    override fun onResume() {
+        super.onResume()
 
-        if (!isBtEnabled) {
-            enableBt();
-        } else {
-            findDevice()
-        }
+        Log.i(TAG, "onResume")
+        findDevice()
     }
 
     override fun onDestroy() {
@@ -103,8 +105,23 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun findDevice() {
+        if (!isBtCapable) {
+            toast(this, "BT is NOT supported");
+            return
+        }
+
+        if (!isBtEnabled) {
+            isConnected = false
+            enableBt();
+            return;
+        }
+
+        if (isConnected) {
+            return
+        }
+
         if (gotPermissions()) {
-            val ret = btAdapter!!.startDiscovery()
+            val ret = btAdapter?.startDiscovery() ?: false
             Log.i(TAG, "startDiscovery: $ret")
         }
     }
@@ -163,6 +180,8 @@ class MainActivity : AppCompatActivity() {
             BLUETOOTH_TURN_ON_CODE -> {
                 if (!isBtEnabled) {
                     toast(this, "BT is disabled");
+                } else {
+                    findDevice()
                 }
             }
         }
@@ -179,7 +198,7 @@ class MainActivity : AppCompatActivity() {
             if (grantResults.isNotEmpty() && grantResults.all { it == PackageManager.PERMISSION_GRANTED }) {
                 findDevice()
             } else {
-                toast(this, "The permission is required")
+                toast(this, "The permission is required for BT")
             }
         }
     }
