@@ -5,10 +5,12 @@ import android.bluetooth.le.ScanCallback
 import android.bluetooth.le.ScanResult
 import android.bluetooth.le.ScanSettings
 import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import cz.antecky.bthermo.Utils.toHexString
 import cz.antecky.bthermo.Utils.toTemperature
 import java.util.*
+import java.util.concurrent.atomic.AtomicBoolean
 
 object ThermoRepository {
     private val TAG = "ThermoRepository"
@@ -24,13 +26,23 @@ object ThermoRepository {
         .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
         .build()
 
-    private var _isConnected = MutableLiveData<Boolean>(false)
-    private var _isScanning = MutableLiveData<Boolean>(false)
-    private var _temperature = MutableLiveData<Float>(Float.NaN)
+    private val _isConnected = MutableLiveData<Boolean>(false)
+    private val _isScanning = MutableLiveData<Boolean>(false)
+    private val _temperature = MutableLiveData<Float>(Float.NaN)
+
+    private val closeRequested = AtomicBoolean(false)
+
+    val temperature: LiveData<Float>
+        get() = _temperature
 
     private val scanCallback = object : ScanCallback() {
         override fun onScanResult(callbackType: Int, result: ScanResult?) {
             super.onScanResult(callbackType, result)
+
+            if (closeRequested.get()) {
+                stopScan()
+                return
+            }
 
             result?.let {
                 val device = it.device
@@ -77,6 +89,12 @@ object ThermoRepository {
             characteristic: BluetoothGattCharacteristic?
         ) {
             super.onCharacteristicChanged(gatt, characteristic)
+
+            if (closeRequested.get()) {
+                Log.i(TAG, "gatt?.close()")
+                gatt?.close()
+                return
+            }
 
             characteristic?.let {
                 with(it) {
@@ -136,17 +154,24 @@ object ThermoRepository {
 
     private fun stopScan() {
         _isScanning.postValue(false)
+        Log.i(TAG, "stopScan()")
         btScanner.stopScan(scanCallback)
     }
 
     fun start(btAdapter: BluetoothAdapter) {
         this.btAdapter = btAdapter
 
+        closeRequested.set(false)
+
         if (!_isScanning.value!!) {
             _isScanning.value = true
             Log.i(TAG, "startScan")
             btScanner.startScan(null, scanSettings, scanCallback)
         }
+    }
+
+    fun stop() {
+        closeRequested.set(true)
     }
 
 }

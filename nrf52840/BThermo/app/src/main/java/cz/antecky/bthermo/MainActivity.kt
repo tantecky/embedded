@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
+import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
 import cz.antecky.bthermo.Utils.gotPermission
 import cz.antecky.bthermo.Utils.toHexString
@@ -175,7 +176,16 @@ class MainActivity : AppCompatActivity() {
             btAdapter?.let { btAdapter -> viewModel.onStartClicked(btAdapter) }
         }
 
+        val buttonStop = findViewById<Button>(R.id.button_stop)
+        buttonStop.setOnClickListener {
+            viewModel.onStopClicked()
+        }
 
+        val textViewTemperature = findViewById<TextView>(R.id.tv_temperature)
+
+        viewModel.temperature.observeForever { temperature ->
+            textViewTemperature.text = "%.2f°C".format(temperature)
+        }
     }
 
     override fun onResume() {
