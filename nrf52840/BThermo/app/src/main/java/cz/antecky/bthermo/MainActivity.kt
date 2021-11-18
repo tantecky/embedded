@@ -2,6 +2,8 @@ package cz.antecky.bthermo
 
 import android.Manifest
 import android.bluetooth.*
+import android.bluetooth.le.ScanCallback
+import android.bluetooth.le.ScanResult
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -27,6 +29,10 @@ class MainActivity : AppCompatActivity() {
         bluetoothManager.adapter
     }
 
+    private val btScanner by lazy {
+        btAdapter!!.bluetoothLeScanner
+    }
+
     private val gattCallback = object : BluetoothGattCallback() {
         override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
             super.onConnectionStateChange(gatt, status, newState)
@@ -44,28 +50,30 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private val receiver = object : BroadcastReceiver() {
+    private val scanCallback = object : ScanCallback() {
+        override fun onScanResult(callbackType: Int, result: ScanResult?) {
+            super.onScanResult(callbackType, result)
+            result?.let {
+                val device = it.device
+                val name = device.name
 
-        override fun onReceive(context: Context, intent: Intent) {
-            when (intent.action!!) {
-                BluetoothDevice.ACTION_FOUND -> {
-                    // Discovery has found a device. Get the BluetoothDevice
-                    // object and its info from the Intent.
-                    val device: BluetoothDevice =
-                        intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)!!
-                    val deviceName = device.name
-                    Log.i(TAG, deviceName)
+                Log.i(TAG, name)
 
-                    if (deviceName == DEVICE_NAME) {
-                        connect(device)
-
-                    }
+                if (name == DEVICE_NAME) {
+                    connect(device)
                 }
             }
         }
+
+        override fun onScanFailed(errorCode: Int) {
+            super.onScanFailed(errorCode)
+            Log.i(TAG, "onScanFailed errorCode: $errorCode")
+        }
     }
 
+
     private fun connect(device: BluetoothDevice) {
+        btScanner.stopScan(scanCallback)
         device.connectGatt(this, false, gattCallback)
 
     }
@@ -87,7 +95,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         Log.i(TAG, "onCreate")
 
-        registerReceiver(receiver, IntentFilter(BluetoothDevice.ACTION_FOUND))
     }
 
     override fun onResume() {
@@ -95,13 +102,6 @@ class MainActivity : AppCompatActivity() {
 
         Log.i(TAG, "onResume")
         findDevice()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-
-        // Don't forget to unregister the ACTION_FOUND receiver.
-        unregisterReceiver(receiver)
     }
 
     private fun findDevice() {
@@ -121,8 +121,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         if (gotPermissions()) {
-            val ret = btAdapter?.startDiscovery() ?: false
-            Log.i(TAG, "startDiscovery: $ret")
+            Log.i(TAG, "startScan")
+            btScanner.startScan(scanCallback)
         }
     }
 
