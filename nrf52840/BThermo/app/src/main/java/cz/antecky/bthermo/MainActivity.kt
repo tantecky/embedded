@@ -1,8 +1,7 @@
 package cz.antecky.bthermo
 
 import android.Manifest
-import android.bluetooth.BluetoothAdapter
-import android.bluetooth.BluetoothDevice
+import android.bluetooth.*
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -23,7 +22,21 @@ class MainActivity : AppCompatActivity() {
 
     private val btAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter();
 
-    // Create a BroadcastReceiver for ACTION_FOUND.
+    private val gattCallback = object : BluetoothGattCallback() {
+        override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
+            super.onConnectionStateChange(gatt, status, newState)
+            when (newState) {
+                BluetoothProfile.STATE_CONNECTED -> {
+                    Log.i(TAG, "GATT STATE_CONNECTED")
+                }
+                BluetoothProfile.STATE_DISCONNECTED -> {
+                    Log.i(TAG, "GATT STATE_DISCONNECTED")
+                }
+            }
+        }
+
+    }
+
     private val receiver = object : BroadcastReceiver() {
 
         override fun onReceive(context: Context, intent: Intent) {
@@ -36,12 +49,18 @@ class MainActivity : AppCompatActivity() {
                     val deviceName = device.name
                     Log.i(TAG, deviceName)
 
-                    if(deviceName == DEVICE_NAME) {
+                    if (deviceName == DEVICE_NAME) {
+                        connect(device)
 
                     }
                 }
             }
         }
+    }
+
+    private fun connect(device: BluetoothDevice) {
+        device.connectGatt(this, false, gattCallback)
+
     }
 
     private val isBtCapable: Boolean
