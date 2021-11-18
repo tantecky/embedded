@@ -5,6 +5,8 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import java.nio.ByteBuffer
+import java.nio.ByteOrder
 
 object Utils {
     fun Context.toast(text: CharSequence) {
@@ -16,5 +18,16 @@ object Utils {
             this,
             permission
         ) == PackageManager.PERMISSION_GRANTED
+    }
+
+    fun ByteArray.toHexString(): String =
+        joinToString(separator = " ") { String.format("%02X", it) }
+
+    fun ByteArray.toTemperature(): Float {
+        if (this.count() != 4) {
+            throw IllegalArgumentException("4 bytes required")
+        }
+
+        return ByteBuffer.wrap(this).order(ByteOrder.LITTLE_ENDIAN).int / 100.0f
     }
 }

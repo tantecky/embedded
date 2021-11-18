@@ -5,17 +5,18 @@ import android.bluetooth.*
 import android.bluetooth.le.ScanCallback
 import android.bluetooth.le.ScanResult
 import android.bluetooth.le.ScanSettings
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import cz.antecky.bthermo.Utils.gotPermission
+import cz.antecky.bthermo.Utils.toHexString
+import cz.antecky.bthermo.Utils.toTemperature
 import cz.antecky.bthermo.Utils.toast
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
     private val TAG = "MainActivity"
@@ -24,6 +25,10 @@ class MainActivity : AppCompatActivity() {
     private val DEVICE_NAME = "BThermo"
 
     private var isConnected = false
+    private var isConnecting = false
+
+    private val TEMPERATURE_CHARACTERISTIC = UUID.fromString("00002a6e-0000-1000-8000-00805f9b34fb")
+    private val TEMPERATURE_CCCD = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb")
 
     private val scanSettings = ScanSettings.Builder()
         .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
@@ -44,29 +49,64 @@ class MainActivity : AppCompatActivity() {
             when (newState) {
                 BluetoothProfile.STATE_CONNECTED -> {
                     isConnected = true
+                    isConnecting = false
                     Log.i(TAG, "GATT STATE_CONNECTED")
+
+                    gatt?.discoverServices()
+
                 }
                 BluetoothProfile.STATE_DISCONNECTED -> {
                     isConnected = false
+                    isConnecting = false
                     Log.i(TAG, "GATT STATE_DISCONNECTED")
                 }
             }
         }
 
+        override fun onServicesDiscovered(gatt: BluetoothGatt?, status: Int) {
+            super.onServicesDiscovered(gatt, status)
+            Log.i(TAG, "onServicesDiscovered")
+            gatt?.let {
+                enableNotification(it)
+            }
+        }
+
+        override fun onCharacteristicChanged(
+            gatt: BluetoothGatt?,
+            characteristic: BluetoothGattCharacteristic?
+        ) {
+            super.onCharacteristicChanged(gatt, characteristic)
+
+            characteristic?.let {
+                with(it) {
+                    Log.i(
+                        TAG,
+                        "Characteristic $uuid changed | value: ${value.toTemperature()} ${value.toHexString()}"
+                    )
+                }
+            }
+
+        }
     }
 
     private val scanCallback = object : ScanCallback() {
         override fun onScanResult(callbackType: Int, result: ScanResult?) {
             super.onScanResult(callbackType, result)
+
+            if (isConnecting || isConnected) {
+                return;
+            }
+
             result?.let {
                 val device = it.device
                 val name = device.name
 
-                Log.i(TAG, name)
-
                 if (name == DEVICE_NAME) {
+                    isConnecting = true
                     connect(device)
                 }
+
+                Log.i(TAG, name)
             }
         }
 
@@ -76,11 +116,35 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
     private fun connect(device: BluetoothDevice) {
         btScanner.stopScan(scanCallback)
         device.connectGatt(this, false, gattCallback)
 
+    }
+
+    private fun enableNotification(gatt: BluetoothGatt) {
+        for (service in gatt.services) {
+            Log.i(TAG, service.uuid.toString())
+
+            for (characteristic in service.characteristics) {
+                val uuid = characteristic.uuid
+                Log.i(TAG, " -> $uuid")
+
+                if (uuid == TEMPERATURE_CHARACTERISTIC) {
+                    val okChar = gatt.setCharacteristicNotification(characteristic, true)
+                    Log.i(TAG, "setCharacteristicNotification: $okChar")
+
+                    if (okChar) {
+                        val descriptor = characteristic.getDescriptor(TEMPERATURE_CCCD)
+                        descriptor.value = BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
+                        val okDesc = gatt.writeDescriptor(descriptor)
+                        Log.i(TAG, "writeDescriptor: $okDesc")
+                    }
+
+                    return
+                }
+            }
+        }
     }
 
     private val isBtCapable: Boolean
@@ -112,7 +176,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun findDevice() {
         if (!isBtCapable) {
-            toast( "BT is NOT supported");
+            toast("BT is NOT supported");
             return
         }
 
@@ -163,7 +227,7 @@ class MainActivity : AppCompatActivity() {
 
         } else {
             val gotFine = gotPermission(
-                 Manifest.permission.ACCESS_FINE_LOCATION
+                Manifest.permission.ACCESS_FINE_LOCATION
             )
 
             Log.i(TAG, "ACCESS_FINE_LOCATION: $gotFine")
@@ -185,7 +249,7 @@ class MainActivity : AppCompatActivity() {
         when (requestCode) {
             BLUETOOTH_TURN_ON_CODE -> {
                 if (!isBtEnabled) {
-                    toast( "BT is disabled");
+                    toast("BT is disabled");
                 } else {
                     findDevice()
                 }
@@ -204,7 +268,7 @@ class MainActivity : AppCompatActivity() {
             if (grantResults.isNotEmpty() && grantResults.all { it == PackageManager.PERMISSION_GRANTED }) {
                 findDevice()
             } else {
-                toast( "The permission is required for BT")
+                toast("The permission is required for BT")
             }
         }
     }
