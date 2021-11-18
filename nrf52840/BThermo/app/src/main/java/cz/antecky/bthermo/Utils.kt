@@ -7,13 +7,13 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 
 object Utils {
-    fun toast(context: Context, text: CharSequence) {
-        Toast.makeText(context, text, Toast.LENGTH_LONG).show();
+    fun Context.toast(text: CharSequence) {
+        Toast.makeText(this, text, Toast.LENGTH_LONG).show();
     }
 
-    fun gotPermission(context: Context, permission: String): Boolean {
+    fun Context.gotPermission(permission: String): Boolean {
         return ContextCompat.checkSelfPermission(
-            context,
+            this,
             permission
         ) == PackageManager.PERMISSION_GRANTED
     }

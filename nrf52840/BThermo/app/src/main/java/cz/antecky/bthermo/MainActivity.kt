@@ -4,6 +4,7 @@ import android.Manifest
 import android.bluetooth.*
 import android.bluetooth.le.ScanCallback
 import android.bluetooth.le.ScanResult
+import android.bluetooth.le.ScanSettings
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -23,6 +24,10 @@ class MainActivity : AppCompatActivity() {
     private val DEVICE_NAME = "BThermo"
 
     private var isConnected = false
+
+    private val scanSettings = ScanSettings.Builder()
+        .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
+        .build()
 
     private val btAdapter: BluetoothAdapter? by lazy {
         val bluetoothManager = getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
@@ -101,12 +106,13 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
 
         Log.i(TAG, "onResume")
+        Log.i(TAG, "isConnected: $isConnected")
         findDevice()
     }
 
     private fun findDevice() {
         if (!isBtCapable) {
-            toast(this, "BT is NOT supported");
+            toast( "BT is NOT supported");
             return
         }
 
@@ -122,7 +128,7 @@ class MainActivity : AppCompatActivity() {
 
         if (gotPermissions()) {
             Log.i(TAG, "startScan")
-            btScanner.startScan(scanCallback)
+            btScanner.startScan(null, scanSettings, scanCallback)
         }
     }
 
@@ -132,13 +138,13 @@ class MainActivity : AppCompatActivity() {
 
         if (version >= Build.VERSION_CODES.S) {
             val gotScan = gotPermission(
-                this, Manifest.permission.BLUETOOTH_SCAN
+                Manifest.permission.BLUETOOTH_SCAN
             )
 
             Log.i(TAG, "BLUETOOTH_SCAN: $gotScan")
 
             val gotConnect = gotPermission(
-                this, Manifest.permission.BLUETOOTH_CONNECT
+                Manifest.permission.BLUETOOTH_CONNECT
             )
 
             Log.i(TAG, "BLUETOOTH_CONNECT: $gotConnect")
@@ -157,7 +163,7 @@ class MainActivity : AppCompatActivity() {
 
         } else {
             val gotFine = gotPermission(
-                this, Manifest.permission.ACCESS_FINE_LOCATION
+                 Manifest.permission.ACCESS_FINE_LOCATION
             )
 
             Log.i(TAG, "ACCESS_FINE_LOCATION: $gotFine")
@@ -179,7 +185,7 @@ class MainActivity : AppCompatActivity() {
         when (requestCode) {
             BLUETOOTH_TURN_ON_CODE -> {
                 if (!isBtEnabled) {
-                    toast(this, "BT is disabled");
+                    toast( "BT is disabled");
                 } else {
                     findDevice()
                 }
@@ -198,7 +204,7 @@ class MainActivity : AppCompatActivity() {
             if (grantResults.isNotEmpty() && grantResults.all { it == PackageManager.PERMISSION_GRANTED }) {
                 findDevice()
             } else {
-                toast(this, "The permission is required for BT")
+                toast( "The permission is required for BT")
             }
         }
     }
