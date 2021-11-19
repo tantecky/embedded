@@ -20,6 +20,7 @@ import cz.antecky.bthermo.Utils.toast
 
 import android.animation.ObjectAnimator
 import android.graphics.Color
+import android.view.WindowManager
 import androidx.core.content.res.ResourcesCompat
 
 
@@ -53,8 +54,10 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
         Log.i(TAG, "onCreate")
+
+        setContentView(R.layout.activity_main)
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
         viewModel = ViewModelProvider(this)[ThermoViewModel::class.java]
 
