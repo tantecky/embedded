@@ -15,6 +15,9 @@ class ThermoViewModel : ViewModel() {
     val isRunning: LiveData<Boolean>
         get() = ThermoRepository.isRunning
 
+    val rssi: LiveData<Int>
+        get() = ThermoRepository.rssi
+
 
     fun onStartClicked(btAdapter: BluetoothAdapter) {
         ThermoRepository.start(btAdapter)

@@ -1,6 +1,7 @@
 package cz.antecky.bthermo
 
 import android.bluetooth.*
+import android.bluetooth.BluetoothGatt.GATT_SUCCESS
 import android.bluetooth.le.ScanCallback
 import android.bluetooth.le.ScanResult
 import android.bluetooth.le.ScanSettings
@@ -27,12 +28,16 @@ object ThermoRepository {
         .build()
 
     private val _isRunning = MutableLiveData<Boolean>(false)
+    private val _rssi = MutableLiveData<Int>(0)
     private val _temperature = MutableLiveData<Float>(Float.NaN)
 
     private val closeRequested = AtomicBoolean(false)
 
     val isRunning: LiveData<Boolean>
         get() = _isRunning
+
+    val rssi: LiveData<Int>
+        get() = _rssi
 
     val temperature: LiveData<Float>
         get() = _temperature
@@ -75,6 +80,7 @@ object ThermoRepository {
                 BluetoothProfile.STATE_CONNECTED -> {
                     Log.i(TAG, "GATT STATE_CONNECTED")
 
+                    gatt?.readRemoteRssi()
                     gatt?.discoverServices().let { ok ->
                         Log.i(TAG, "discoverServices ok: $ok")
                     }
@@ -84,6 +90,14 @@ object ThermoRepository {
                     _isRunning.postValue(false)
                     Log.i(TAG, "GATT STATE_DISCONNECTED")
                 }
+            }
+        }
+
+        override fun onReadRemoteRssi(gatt: BluetoothGatt?, rssi: Int, status: Int) {
+            super.onReadRemoteRssi(gatt, rssi, status)
+
+            if (status == GATT_SUCCESS) {
+                _rssi.postValue(rssi)
             }
         }
 
@@ -98,6 +112,8 @@ object ThermoRepository {
                 gatt?.close()
                 return
             }
+
+            gatt?.readRemoteRssi()
 
             characteristic?.let {
                 with(it) {

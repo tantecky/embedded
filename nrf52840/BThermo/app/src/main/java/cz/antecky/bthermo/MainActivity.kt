@@ -1,6 +1,7 @@
 package cz.antecky.bthermo
 
 import android.Manifest
+import android.animation.Animator
 import android.animation.ArgbEvaluator
 import android.bluetooth.*
 import android.bluetooth.le.ScanSettings
@@ -11,18 +12,13 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.View.GONE
-import android.view.View.VISIBLE
 import android.widget.Button
 import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
 import cz.antecky.bthermo.Utils.gotPermission
 import cz.antecky.bthermo.Utils.toast
-import java.util.*
-import android.view.animation.Animation
 
 import android.animation.ObjectAnimator
-import android.animation.ValueAnimator
 import android.graphics.Color
 import androidx.core.content.res.ResourcesCompat
 
@@ -73,23 +69,24 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        val textViewRssi = findViewById<TextView>(R.id.tv_rssi)
+        val animRssi = createAnimator(
+            textViewRssi
+        )
+
+        viewModel.rssi.observeForever { rssi ->
+            textViewRssi.text = "$rssi dBm"
+            animRssi.start()
+        }
 
         val textViewTemperature = findViewById<TextView>(R.id.tv_temperature)
-        val anim = ObjectAnimator.ofInt(
-            textViewTemperature,
-            "textColor",
-            Color.WHITE,
-            ResourcesCompat.getColor(resources, R.color.purple_200, null),
-            Color.WHITE
+        val animTemperature = createAnimator(
+            textViewTemperature
         )
-        anim.duration = 150
-        anim.setEvaluator(ArgbEvaluator())
-        anim.repeatCount = 0
 
         viewModel.temperature.observeForever { temperature ->
             textViewTemperature.text = "%.2f°C".format(temperature)
-
-            anim.start()
+            animTemperature.start()
         }
 
         viewModel.isRunning.observeForever { isRunning ->
@@ -107,6 +104,22 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
         Log.i(TAG, "onResume")
         prepareBt()
+    }
+
+    private fun createAnimator(tv: TextView): Animator {
+        val anim = ObjectAnimator.ofInt(
+            tv,
+            "textColor",
+            Color.WHITE,
+            ResourcesCompat.getColor(resources, R.color.purple_200, null),
+            Color.WHITE
+        )
+
+        anim.duration = 150
+        anim.setEvaluator(ArgbEvaluator())
+        anim.repeatCount = 0
+
+        return anim
     }
 
     private fun prepareBt() {
