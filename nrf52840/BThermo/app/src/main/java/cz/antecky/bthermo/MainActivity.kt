@@ -1,9 +1,8 @@
 package cz.antecky.bthermo
 
 import android.Manifest
+import android.animation.ArgbEvaluator
 import android.bluetooth.*
-import android.bluetooth.le.ScanCallback
-import android.bluetooth.le.ScanResult
 import android.bluetooth.le.ScanSettings
 import android.content.Context
 import android.content.Intent
@@ -12,26 +11,26 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.widget.Button
 import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
 import cz.antecky.bthermo.Utils.gotPermission
-import cz.antecky.bthermo.Utils.toHexString
-import cz.antecky.bthermo.Utils.toTemperature
 import cz.antecky.bthermo.Utils.toast
 import java.util.*
+import android.view.animation.Animation
+
+import android.animation.ObjectAnimator
+import android.animation.ValueAnimator
+import android.graphics.Color
+import androidx.core.content.res.ResourcesCompat
+
 
 class MainActivity : AppCompatActivity() {
     private val TAG = "MainActivity"
     private val BLUETOOTH_TURN_ON_CODE = 21
     private val PERMISSION_REQUEST = 21
-    private val DEVICE_NAME = "BThermo"
-
-    private var isConnected = false
-    private var isConnecting = false
-
-    private val TEMPERATURE_CHARACTERISTIC = UUID.fromString("00002a6e-0000-1000-8000-00805f9b34fb")
-    private val TEMPERATURE_CCCD = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb")
 
     private lateinit var viewModel: ThermoViewModel
 
@@ -42,114 +41,6 @@ class MainActivity : AppCompatActivity() {
     private val btAdapter: BluetoothAdapter? by lazy {
         val bluetoothManager = getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
         bluetoothManager.adapter
-    }
-
-    private val btScanner by lazy {
-        btAdapter!!.bluetoothLeScanner
-    }
-
-    private val gattCallback = object : BluetoothGattCallback() {
-        override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
-            super.onConnectionStateChange(gatt, status, newState)
-            when (newState) {
-                BluetoothProfile.STATE_CONNECTED -> {
-                    isConnected = true
-                    isConnecting = false
-                    Log.i(TAG, "GATT STATE_CONNECTED")
-
-                    gatt?.discoverServices()
-
-                }
-                BluetoothProfile.STATE_DISCONNECTED -> {
-                    isConnected = false
-                    isConnecting = false
-                    Log.i(TAG, "GATT STATE_DISCONNECTED")
-                }
-            }
-        }
-
-        override fun onServicesDiscovered(gatt: BluetoothGatt?, status: Int) {
-            super.onServicesDiscovered(gatt, status)
-            Log.i(TAG, "onServicesDiscovered")
-            gatt?.let {
-                enableNotification(it)
-            }
-        }
-
-        override fun onCharacteristicChanged(
-            gatt: BluetoothGatt?,
-            characteristic: BluetoothGattCharacteristic?
-        ) {
-            super.onCharacteristicChanged(gatt, characteristic)
-
-            characteristic?.let {
-                with(it) {
-                    Log.i(
-                        TAG,
-                        "Characteristic $uuid changed | value: ${value.toTemperature()} ${value.toHexString()}"
-                    )
-                }
-            }
-
-        }
-    }
-
-    private val scanCallback = object : ScanCallback() {
-        override fun onScanResult(callbackType: Int, result: ScanResult?) {
-            super.onScanResult(callbackType, result)
-
-            if (isConnecting || isConnected) {
-                return;
-            }
-
-            result?.let {
-                val device = it.device
-                val name = device.name
-
-                if (name == DEVICE_NAME) {
-                    isConnecting = true
-                    connect(device)
-                }
-
-                Log.i(TAG, name)
-            }
-        }
-
-        override fun onScanFailed(errorCode: Int) {
-            super.onScanFailed(errorCode)
-            Log.i(TAG, "onScanFailed errorCode: $errorCode")
-        }
-    }
-
-    private fun connect(device: BluetoothDevice) {
-        btScanner.stopScan(scanCallback)
-        device.connectGatt(this, false, gattCallback)
-
-    }
-
-    private fun enableNotification(gatt: BluetoothGatt) {
-        for (service in gatt.services) {
-            Log.i(TAG, service.uuid.toString())
-
-            for (characteristic in service.characteristics) {
-                val uuid = characteristic.uuid
-                Log.i(TAG, " -> $uuid")
-
-                if (uuid == TEMPERATURE_CHARACTERISTIC) {
-                    val okChar = gatt.setCharacteristicNotification(characteristic, true)
-                    Log.i(TAG, "setCharacteristicNotification: $okChar")
-
-                    if (okChar) {
-                        val descriptor = characteristic.getDescriptor(TEMPERATURE_CCCD)
-                        descriptor.value = BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
-                        val okDesc = gatt.writeDescriptor(descriptor)
-                        Log.i(TAG, "writeDescriptor: $okDesc")
-                    }
-
-                    return
-                }
-            }
-        }
     }
 
     private val isBtCapable: Boolean
@@ -171,29 +62,50 @@ class MainActivity : AppCompatActivity() {
 
         viewModel = ViewModelProvider(this)[ThermoViewModel::class.java]
 
-        val buttonStart = findViewById<Button>(R.id.button_start)
-        buttonStart.setOnClickListener {
-            btAdapter?.let { btAdapter -> viewModel.onStartClicked(btAdapter) }
+        val buttonStartStop = findViewById<Button>(R.id.button_start)
+        buttonStartStop.setOnClickListener {
+            btAdapter?.let { btAdapter ->
+                if (viewModel.isRunning.value!!) {
+                    viewModel.onStopClicked()
+                } else {
+                    viewModel.onStartClicked(btAdapter)
+                }
+            }
         }
 
-        val buttonStop = findViewById<Button>(R.id.button_stop)
-        buttonStop.setOnClickListener {
-            viewModel.onStopClicked()
-        }
 
         val textViewTemperature = findViewById<TextView>(R.id.tv_temperature)
+        val anim = ObjectAnimator.ofInt(
+            textViewTemperature,
+            "textColor",
+            Color.WHITE,
+            ResourcesCompat.getColor(resources, R.color.purple_200, null),
+            Color.WHITE
+        )
+        anim.duration = 150
+        anim.setEvaluator(ArgbEvaluator())
+        anim.repeatCount = 0
 
         viewModel.temperature.observeForever { temperature ->
             textViewTemperature.text = "%.2f°C".format(temperature)
+
+            anim.start()
         }
+
+        viewModel.isRunning.observeForever { isRunning ->
+            if (isRunning) {
+                buttonStartStop.text = "STOP"
+
+            } else {
+                buttonStartStop.text = "START"
+            }
+        }
+
     }
 
     override fun onResume() {
         super.onResume()
-
         Log.i(TAG, "onResume")
-        Log.i(TAG, "isConnected: $isConnected")
-        // findDevice()
         prepareBt()
     }
 
@@ -207,28 +119,6 @@ class MainActivity : AppCompatActivity() {
 
         if (!isBtEnabled) {
             enableBt();
-        }
-    }
-
-    private fun findDevice() {
-        if (!isBtCapable) {
-            toast("BT is NOT supported");
-            return
-        }
-
-        if (!isBtEnabled) {
-            isConnected = false
-            enableBt();
-            return;
-        }
-
-        if (isConnected) {
-            return
-        }
-
-        if (requestPermissions()) {
-            Log.i(TAG, "startScan")
-            btScanner.startScan(null, scanSettings, scanCallback)
         }
     }
 

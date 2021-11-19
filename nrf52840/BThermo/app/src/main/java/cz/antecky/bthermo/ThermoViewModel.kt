@@ -12,6 +12,9 @@ class ThermoViewModel : ViewModel() {
     val temperature: LiveData<Float>
         get() = ThermoRepository.temperature
 
+    val isRunning: LiveData<Boolean>
+        get() = ThermoRepository.isRunning
+
 
     fun onStartClicked(btAdapter: BluetoothAdapter) {
         ThermoRepository.start(btAdapter)

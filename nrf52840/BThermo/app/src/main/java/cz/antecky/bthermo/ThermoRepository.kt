@@ -26,11 +26,13 @@ object ThermoRepository {
         .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
         .build()
 
-    private val _isConnected = MutableLiveData<Boolean>(false)
-    private val _isScanning = MutableLiveData<Boolean>(false)
+    private val _isRunning = MutableLiveData<Boolean>(false)
     private val _temperature = MutableLiveData<Float>(Float.NaN)
 
     private val closeRequested = AtomicBoolean(false)
+
+    val isRunning: LiveData<Boolean>
+        get() = _isRunning
 
     val temperature: LiveData<Float>
         get() = _temperature
@@ -40,6 +42,7 @@ object ThermoRepository {
             super.onScanResult(callbackType, result)
 
             if (closeRequested.get()) {
+                _isRunning.postValue(false)
                 stopScan()
                 return
             }
@@ -59,6 +62,7 @@ object ThermoRepository {
 
         override fun onScanFailed(errorCode: Int) {
             super.onScanFailed(errorCode)
+            _isRunning.postValue(false)
             stopScan()
         }
     }
@@ -69,7 +73,6 @@ object ThermoRepository {
 
             when (newState) {
                 BluetoothProfile.STATE_CONNECTED -> {
-                    _isConnected.postValue(true)
                     Log.i(TAG, "GATT STATE_CONNECTED")
 
                     gatt?.discoverServices().let { ok ->
@@ -78,7 +81,7 @@ object ThermoRepository {
 
                 }
                 BluetoothProfile.STATE_DISCONNECTED -> {
-                    _isConnected.postValue(false)
+                    _isRunning.postValue(false)
                     Log.i(TAG, "GATT STATE_DISCONNECTED")
                 }
             }
@@ -153,7 +156,6 @@ object ThermoRepository {
     }
 
     private fun stopScan() {
-        _isScanning.postValue(false)
         Log.i(TAG, "stopScan()")
         btScanner.stopScan(scanCallback)
     }
@@ -163,15 +165,13 @@ object ThermoRepository {
 
         closeRequested.set(false)
 
-        if (!_isScanning.value!!) {
-            _isScanning.value = true
-            Log.i(TAG, "startScan")
-            btScanner.startScan(null, scanSettings, scanCallback)
-        }
+        _isRunning.postValue(true)
+        Log.i(TAG, "startScan")
+        btScanner.startScan(null, scanSettings, scanCallback)
     }
 
     fun stop() {
         closeRequested.set(true)
+        _isRunning.postValue(false)
     }
-
 }
