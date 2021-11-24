@@ -109,7 +109,8 @@ void main(void)
 
     maxik_init(13, 15, 17, 20);
 #else
-    maxik_init(13, 15, 18, 20);
+    // sdi, sdo, cs, sck
+    maxik_init(13, 15, 22, 20);
 #endif
 
     bt_init();
