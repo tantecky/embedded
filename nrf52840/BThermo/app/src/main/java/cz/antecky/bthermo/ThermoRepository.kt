@@ -54,7 +54,7 @@ object ThermoRepository {
 
             result?.let {
                 val device = it.device
-                val name = device.name
+                val name = device?.name ?: "null"
 
                 if (name == DEVICE_NAME) {
                     stopScan()
