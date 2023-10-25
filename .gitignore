@@ -2,6 +2,7 @@ tags
 build/
 .depend
 *.FCStd1
+*.FCBak
 *.o
 *.raw
 top_block.py
@@ -49,4 +50,3 @@ _build
 
 spice/*.log
 spice/*.raw
-
