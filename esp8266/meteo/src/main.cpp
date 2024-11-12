@@ -2,6 +2,7 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>
 #include <bsec.h>
+#include <WiFiClient.h>
 
 #include "main.hpp"
 #include "secret.hpp"
@@ -11,6 +12,9 @@
 #define REPORT_INTERVAL (20)
 #define MAX_RETRIES (3)
 constexpr char TABLE[] = "viva";
+
+
+WiFiClient wifiClient;
 
 Bsec bme;
 unsigned long lastReport = 0;
@@ -123,7 +127,7 @@ void setup()
   Serial.begin(115200);
   Wire.begin();
 
-  bme.begin(BME680_I2C_ADDR_SECONDARY, Wire);
+  bme.begin(0x77, Wire);
   checkBmeStatus();
 
   bsec_virtual_sensor_t sensorList[10] = {
@@ -154,9 +158,9 @@ void report()
 {
   disable433();
 
-  IPAddress ip(192, 168, 168, 4);
-  IPAddress gw(192, 168, 168, 1);
-  IPAddress subnet(255, 255, 255, 224);
+  IPAddress ip(192, 168, 1, 200);
+  IPAddress gw(192, 168, 1, 1);
+  IPAddress subnet(255, 255, 255, 0);
 
   WiFi.mode(WIFI_STA);
   WiFi.config(ip, gw, subnet);
@@ -221,7 +225,7 @@ void report()
       HTTPClient http; //Declare object of class HTTPClient
       String url = "http://37.205.8.10:50517/write?db=mydb&u=esp&p=";
       url += DB_PASS;
-      http.begin(url);
+      http.begin(wifiClient, url);
       http.addHeader("Content-Type", "application/x-www-form-urlencoded");
 
       int httpCode = http.POST(data);    //Send the request
@@ -260,34 +264,34 @@ void report()
 void checkBmeStatus()
 {
   String output;
-  if (bme.status != BSEC_OK)
+  if (bme.bsecStatus != BSEC_OK)
   {
-    if (bme.status < BSEC_OK)
+    if (bme.bsecStatus < BSEC_OK)
     {
-      output = "BSEC error code : " + String(bme.status);
+      output = "BSEC error code : " + String(bme.bsecStatus);
       Serial.println(output);
       for (;;)
         blink(); /* Halt in case of failure */
     }
     else
     {
-      output = "BSEC warning code : " + String(bme.status);
+      output = "BSEC warning code : " + String(bme.bsecStatus);
       Serial.println(output);
     }
   }
 
-  if (bme.bme680Status != BME680_OK)
+  if (bme.bme68xStatus != BME68X_OK)
   {
-    if (bme.bme680Status < BME680_OK)
+    if (bme.bme68xStatus < BME68X_OK)
     {
-      output = "BME680 error code : " + String(bme.bme680Status);
+      output = "BME680 error code : " + String(bme.bme68xStatus);
       Serial.println(output);
       for (;;)
         blink(); /* Halt in case of failure */
     }
     else
     {
-      output = "BME680 warning code : " + String(bme.bme680Status);
+      output = "BME680 warning code : " + String(bme.bme68xStatus);
       Serial.println(output);
     }
   }
